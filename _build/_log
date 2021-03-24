@@ -1,0 +1,6 @@
+### Starting build.
+# Target: gui.ml.depends, tags: { package(Graphics), extension:ml, file:gui.ml, ocaml, ocamldep, quiet, traverse }
+ocamlfind ocamldep -package Graphics -modules gui.ml > gui.ml.depends
+# Target: gui.cmo, tags: { package(Graphics), byte, compile, extension:cmo, extension:ml, file:gui.cmo, file:gui.ml, implem, ocaml, quiet, traverse }
+ocamlfind ocamlc -c -package Graphics -o gui.cmo gui.ml
+# Compilation successful.
