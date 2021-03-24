@@ -1,0 +1,16 @@
+{
+  "levels": [
+    {
+      "id": "empty room",
+      "entrance": "(0, 0)",
+      "exit": "(1, 1)",
+      "exit_id": "heaven"
+    },
+    {
+      "id": "heaven",
+      "entrance": "(3, 4)",
+      "exit": "",
+      "exit_id": ""
+    }
+  ]
+}
