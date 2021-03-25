@@ -1,2 +1,3 @@
 PKG graphics
 PKG yojson
+PKG camlimages
