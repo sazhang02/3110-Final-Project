@@ -3,4 +3,8 @@
 #require "camlimages";;
 #require "camlimages.png";;
 #require "camlimages.graphics";;
+#require "ounit2";;
 #load "graphics.cma";;
+#directory "_build";;
+#load "levels.cmo";;
+#load "player_state.cmo"
