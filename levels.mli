@@ -30,4 +30,4 @@ val next_level : t -> level_id -> level_id
 
 (** [prev_level] is the [level_id] of the level from which the level
     [lev] enters. Raises [UnknownLevel] if [lev] is the starting level. *)
-val prev_level : t -> level_id
+val prev_level : t -> level_id -> level_id
