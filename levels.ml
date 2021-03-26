@@ -2,14 +2,25 @@ type level_id = int
 
 type pos = int * int
 
-type level = {
-  level_id : level_id;
-  entrance : pos;
-  exit : pos;
-  exit_id : level_id;
+type tile = {
+  pos : pos;
+  tile_type : unit;  (**TODO: change to pipe/wall type*)
 }
 
-type t = { levels : level list }
+(**TODO: replace with Board type*)
+type board = unit
+
+type level = {
+  level_id : level_id;
+  entrance_pos : pos;
+  exit_pos : pos;
+  exit_id : level_id; (* objects : tile list; *)
+}
+
+type t = {
+  levels : level list;
+  board : board;
+}
 
 exception UnknownLevel of level_id
 
@@ -26,18 +37,29 @@ let to_tuple str =
 let level_of_json j =
   {
     level_id = j |> member "id" |> to_int;
-    entrance = j |> member "entrance" |> to_string |> to_tuple;
-    exit = j |> member "exit" |> to_string |> to_tuple;
+    entrance_pos = j |> member "entrance" |> to_string |> to_tuple;
+    exit_pos = j |> member "exit" |> to_string |> to_tuple;
     exit_id = j |> member "exit_id" |> to_int;
   }
 
-let from_json j =
-  { levels = j |> member "rooms" |> to_list |> List.map level_of_json }
+let tiles_of_json j = failwith "Unimplemented"
 
-let entrance_pipe (levels : t) (id : level_id) : pos =
+let from_json j =
+  {
+    levels = j |> member "rooms" |> to_list |> List.map level_of_json;
+    board = ();
+  }
+
+let rec level_from_id lev = failwith "unimpl"
+
+(* let rec map_room room_id room_list f = match room_list with | [] ->
+   raise (UnknownRoom room_id) | h :: t -> if h.id = room_id then f h
+   else map_room room_id t f *)
+
+let entrance_pipe (levels : t) (id : level_id) : tile =
   failwith "Unimplemented"
 
-let exit_pipe (levels : t) (id : level_id) : pos =
+let exit_pipe (levels : t) (id : level_id) : tile =
   failwith "Unimplemented"
 
 let next_level (levels : t) (id : level_id) : level_id =
