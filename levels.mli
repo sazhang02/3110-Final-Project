@@ -23,12 +23,12 @@ exception UnknownLevel of level_id
     [j] is a valid json representation.*)
 val from_json : Yojson.Basic.t -> t
 
-(** [entrance_pipe levels lev] is the position [pos] of the entrance
-    pipe of the level [lev] in levels [levels]. *)
+(** [entrance_pipe levels lev] a [tile] with position [pos] of the
+    entrance pipe of the level [lev] in levels [levels]. *)
 val entrance_pipe : t -> level_id -> tile
 
-(** [exit_pipe levels lev] is the position [pos] of the exit pipe of the
-    level [lev] in levels [levels]. *)
+(** [exit_pipe levels lev] is a [tile] with position [pos] of the exit
+    pipe of the level [lev] in levels [levels]. *)
 val exit_pipe : t -> level_id -> tile
 
 (** [next_level levels id] is the [level_id] of the level to which the

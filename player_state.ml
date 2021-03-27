@@ -5,12 +5,14 @@ type level_id = Levels.level_id
 
 type position = int * int
 
+exception UnknownPosition of position
+
 type p = {
   current_pos : position;
   current_level : level_id;
 }
 
-let init_state = failwith "Unimplemented"
+let init_state levels = failwith "Unimplemented"
 
 let get_current_level (ps : p) = ps.current_level
 

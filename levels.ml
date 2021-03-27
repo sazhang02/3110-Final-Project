@@ -42,26 +42,35 @@ let level_of_json j =
     exit_id = j |> member "exit_id" |> to_int;
   }
 
-let tiles_of_json j = failwith "Unimplemented"
-
 let from_json j =
   {
-    levels = j |> member "rooms" |> to_list |> List.map level_of_json;
+    levels = j |> member "levels" |> to_list |> List.map level_of_json;
     board = ();
   }
 
-let rec level_from_id lev = failwith "unimpl"
+let rec map_level id level_list f =
+  match level_list with
+  | [] -> raise (UnknownLevel id)
+  | h :: t -> if h.level_id = id then f h else map_level id t f
 
-(* let rec map_room room_id room_list f = match room_list with | [] ->
-   raise (UnknownRoom room_id) | h :: t -> if h.id = room_id then f h
-   else map_room room_id t f *)
+let to_tile levels id f tile_type =
+  let pos = map_level id levels.levels f in
+  { pos; tile_type }
 
+let entrance_pos level = level.entrance_pos
+
+(**TODO: change tile_type to pipe *)
 let entrance_pipe (levels : t) (id : level_id) : tile =
-  failwith "Unimplemented"
+  to_tile levels id entrance_pos ()
 
+let exit_pos level = level.exit_pos
+
+(**TODO: change tile_type to pipe. Decide how to handle final level when
+   there is no exit. *)
 let exit_pipe (levels : t) (id : level_id) : tile =
-  failwith "Unimplemented"
+  to_tile levels id exit_pos ()
 
+(** empty str means exit does not exist????*)
 let next_level (levels : t) (id : level_id) : level_id =
   failwith "Unimplemented"
 

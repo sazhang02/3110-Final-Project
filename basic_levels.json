@@ -4,16 +4,16 @@
   ],
   "levels": [
     {
-      "id": "01",
+      "id": 1,
       "entrance": "(0, 0)",
       "exit": "(1, 1)",
-      "exit_id": "2"
+      "exit_id": 2
     },
     {
-      "id": "02",
+      "id": 2,
       "entrance": "(3, 4)",
-      "exit": "",
-      "exit_id": ""
+      "exit": "(-1, -1)",
+      "exit_id": -1
     }
   ]
 }
