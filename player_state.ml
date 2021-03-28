@@ -1,6 +1,4 @@
-open Yojson.Basic.Util
 open Levels
-open Gui
 
 type level_id = Levels.level_id
 
