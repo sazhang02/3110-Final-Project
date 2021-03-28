@@ -1,6 +1,9 @@
 type level_id = int
 
-type pos = int * int
+type pos = {
+  x : int;
+  y : int;
+}
 
 type tile = {
   pos : pos;
@@ -26,19 +29,24 @@ exception UnknownLevel of level_id
 
 open Yojson.Basic.Util
 
-let list_to_tuple = function [] -> (0, 0) | h :: t -> (h, List.hd t)
+(* let list_to_tuple = function [] -> (0, 0) | h :: t -> (h, List.hd t) *)
 
-let to_tuple str =
-  String.length str - 2
-  |> String.sub str 1
-  |> String.split_on_char ','
-  |> List.map String.trim |> List.map int_of_string |> list_to_tuple
+(* let to_tuple str = String.length str - 2 |> String.sub str 1 |>
+   String.split_on_char ',' |> List.map String.trim |> List.map
+   int_of_string |> list_to_tuple *)
+
+let get_pos tile = tile.pos
+
+let get_tile_type tile = tile.tile_type
+
+let pos_of_json_tile j =
+  { x = j |> member "x" |> to_int; y = j |> member "y" |> to_int }
 
 let level_of_json j =
   {
     level_id = j |> member "id" |> to_int;
-    entrance_pos = j |> member "entrance" |> to_string |> to_tuple;
-    exit_pos = j |> member "exit" |> to_string |> to_tuple;
+    entrance_pos = j |> member "entrance" |> pos_of_json_tile;
+    exit_pos = j |> member "exit" |> pos_of_json_tile;
     exit_id = j |> member "exit_id" |> to_int;
   }
 

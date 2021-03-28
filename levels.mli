@@ -3,10 +3,15 @@
 (** The abstract type of values representing levels.*)
 type t
 
+type pos = {
+  x : int;
+  y : int;
+}
+
 (** The type representing a tile in a level. A tile has a position and a
     type (ie wall, pipe, etc). *)
 type tile = {
-  pos : int * int;
+  pos : pos;
   tile_type : unit;  (**TODO: change when we implement walls/pipes*)
 }
 
@@ -15,6 +20,10 @@ type board = unit
 
 (** The type of level identifier. Each level's [level_id] is unique.*)
 type level_id = int
+
+val get_pos : tile -> pos
+
+val get_tile_type : tile -> unit
 
 (** Raised when an unknown level is met. *)
 exception UnknownLevel of level_id

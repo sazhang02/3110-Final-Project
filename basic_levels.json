@@ -1,18 +1,27 @@
 {
-  "board": [
-    {}
-  ],
   "levels": [
     {
       "id": 1,
-      "entrance": "(0, 0)",
-      "exit": "(1, 1)",
+      "entrance": {
+        "x": 0,
+        "y": 0
+      },
+      "exit": {
+        "x": 1,
+        "y": 1
+      },
       "exit_id": 2
     },
     {
       "id": 2,
-      "entrance": "(3, 4)",
-      "exit": "(-1, -1)",
+      "entrance": {
+        "x": 3,
+        "y": 4
+      },
+      "exit": {
+        "x": -1,
+        "y": -1
+      },
       "exit_id": -1
     }
   ]
