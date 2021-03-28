@@ -4,11 +4,16 @@ type p
 (* The type of the level identifier. Each level's [level_id] is unique. *)
 type level_id = int
 
-(* The type of player's position: an (x,y) coordinate in the GUI grid *)
-type position = Gui.coords
+(* The abstract type of player's position: with x and y coordinates in
+   the GUI grid *)
+type position
 
 (** Raised when an unknown position is met. *)
 exception UnknownPosition of position
+
+val get_x : position -> int
+
+val get_y : position -> int
 
 (** [init_state a] is the initial state of the game when playing in each
     level. In that state the character is currently located in the
@@ -25,7 +30,7 @@ val get_current_pos : p -> position
 
 val update_pos : char -> p -> position
 
-val update : p -> p
+val update : char -> p -> p
 
 (** The type representing the result of an attempted movement. *)
 type result =

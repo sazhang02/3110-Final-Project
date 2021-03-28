@@ -15,10 +15,6 @@ type coords = {
   y : int;
 }
 
-let get_x pos = pos.x
-
-let get_y pos = pos.y
-
 (** [current_image loc] is the image at [loc]. *)
 let current_image loc = get_image loc.x loc.y width height
 

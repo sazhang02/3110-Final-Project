@@ -4,7 +4,14 @@ open Gui
 
 type level_id = Levels.level_id
 
-type position = Gui.coords
+type position = {
+  x : int;
+  y : int;
+}
+
+let get_x pos = pos.x
+
+let get_y pos = pos.y
 
 type coins = int
 
@@ -16,7 +23,11 @@ type p = {
   coins : coins;
 }
 
-let init_state lev lev_id = entrance_pipe lev lev_id
+(* Implement after levels.ml is updated *)
+let init_state lev lev_id = failwith "Unimplemented"
+
+(* { current_pos = (let pipe = entrance_pipe lev lev_id in pipe.pos);
+   current_level = 01; coins = 0; } *)
 
 let get_current_level (ps : p) = ps.current_level
 
@@ -24,15 +35,15 @@ let get_current_pos (ps : p) = ps.current_pos
 
 let update_pos (move : char) (p : p) =
   match move with
-  | 'w' -> { x = get_x p.current_pos; y = get_y p.current_pos + 1 }
-  | 's' -> { x = p.current_pos.x; y = get_y p.current_pos - 1 }
-  | 'a' -> { x = get_x p.current_pos - 1; y = get_y p.current_pos }
-  | 'd' -> { x = get_x p.current_pos + 1; y = get_y p.current_pos }
-  | _ -> failwith "Not a valid move."
+  | 'w' -> { x = p.current_pos.x; y = p.current_pos.y + 1 }
+  | 's' -> { x = p.current_pos.x; y = p.current_pos.y - 1 }
+  | 'a' -> { x = p.current_pos.x - 1; y = p.current_pos.y }
+  | 'd' -> { x = p.current_pos.x + 1; y = p.current_pos.y }
+  | _ -> failwith "Impossible"
 
 (* Take char as input from gui.ml, return new state *)
-let update p =
-  match Graphics.read_key () with
+let update move p =
+  match move with
   | 'w' ->
       {
         current_pos = update_pos 'w' p;
@@ -57,7 +68,7 @@ let update p =
         current_level = p.current_level;
         coins = p.coins;
       }
-  | _ -> failwith "Not a valid move."
+  | _ -> failwith "Impossible"
 
 type result =
   | Legal of p
