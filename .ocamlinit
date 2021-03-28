@@ -8,3 +8,4 @@
 #load "levels.cmo";;
 #load "board.cmo";;
 #load "player_state.cmo";;
+#load "gui.cmo";;
