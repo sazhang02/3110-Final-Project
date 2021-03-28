@@ -1,6 +1,5 @@
 #require "graphics";;
 #require "yojson";;
-#require "camlimages";;
 #require "camlimages.png";;
 #require "camlimages.graphics";;
 #require "ounit2";;

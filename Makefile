@@ -3,9 +3,9 @@ OBJECTS=$(MODULES:=.cmo)
 MLS=$(MODULES:=.ml)
 MLIS=$(MODULES:=.mli)
 TEST=test.byte
+MAIN=gui.byte
 OCAMLBUILD=ocamlbuild -use-ocamlfind
-# OCAMLBUILD=ocamlbuild -use-ocamlfind -pkg camlimages.graphics -pkg camlimages.png
-#  OCAMLBUILD=ocamlbuild -use-ocamlfind -pkg camlimages
+
 default: build
 	eval $(opam config env)
 	OCAMLRUNPARAM=b utop
@@ -15,3 +15,6 @@ build:
 
 test:
 	$(OCAMLBUILD) -tag 'debug' $(TEST) && ./$(TEST) -runner sequential
+	
+play:
+	$(OCAMLBUILD) -tag 'debug' $(MAIN) && OCAMLRUNPARAM=b ./$(MAIN)
