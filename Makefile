@@ -18,3 +18,6 @@ test:
 	
 play:
 	$(OCAMLBUILD) -tag 'debug' $(MAIN) && OCAMLRUNPARAM=b ./$(MAIN)
+
+zip:
+	zip desert.zip *.ml* *.json *_tags .merlin .ocamlformat .ocamlinit LICENSE Makefile
