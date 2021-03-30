@@ -3,6 +3,7 @@
 (** The abstract type of values representing levels.*)
 type t
 
+(**The type representing the position of a tile*)
 type pos = {
   x : int;
   y : int;
@@ -28,6 +29,9 @@ val get_tile_type : tile -> unit
 (** Raised when an unknown level is met. *)
 exception UnknownLevel of level_id
 
+(** Raised when an invalid tile is met.*)
+exception InvalidTile of pos
+
 (** [from_json j] is the set of levels that [j] represents. Requires:
     [j] is a valid json representation.*)
 val from_json : Yojson.Basic.t -> t
@@ -37,7 +41,8 @@ val from_json : Yojson.Basic.t -> t
 val entrance_pipe : t -> level_id -> tile
 
 (** [exit_pipe levels lev] is a [tile] with position [pos] of the exit
-    pipe of the level [lev] in levels [levels]. *)
+    pipe of the level [lev] in levels [levels]. Raises [InvalidTile] if
+    the [lev] is the last level (i.e. There is no exit) *)
 val exit_pipe : t -> level_id -> tile
 
 (** [next_level levels id] is the [level_id] of the level to which the
