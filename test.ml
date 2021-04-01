@@ -61,6 +61,20 @@ let levels_tests =
       prev_level basic 0 (UnknownLevel (-1));
   ]
 
+(** [tile_to_string t] is the string representation of itle [t]. *)
+let tile_to_string tile =
+  match tile with
+  | { coords = c; tile_type = t } ->
+      begin
+        match t with
+        | Wall _ -> "Wall @ ("
+        | Pipe _ -> "Pipe @\n   ("
+        | Entrance -> "Entrance @ ("
+        | Exit -> "Exit @ ("
+        | Empty -> "Blank @ ("
+      end
+      ^ string_of_int c.x ^ ", " ^ string_of_int c.y ^ ")"
+
 let add_tile_test name tile dimx t expected =
   name >:: fun _ -> assert_equal expected (add_tile tile dimx t)
 
@@ -68,15 +82,18 @@ let index_of_coord_test name dimx coord expected =
   name >:: fun _ -> assert_equal expected (index_of_coord dimx coord)
 
 let get_tile_test name index t expected =
-  name >:: fun _ -> assert_equal expected (get_tile index t)
+  name >:: fun _ ->
+  assert_equal expected (tile_to_string (get_tile index t))
 
 let board_tests =
+  let entrance = { coords = { x = 0; y = 0 }; tile_type = Entrance } in
+  let exit = { coords = { x = 1; y = 1 }; tile_type = Exit } in
+  let t = make_board 2 2 entrance exit in
   [
-    (let t = create_default 1 1 in
-     let entrance =
-       { coords = { x = 0; y = 0 }; tile_type = Entrance }
-     in
-     add_tile entrance 1 t);
+    get_tile_test "entrance 0,0" 0 t "Entrance @ (0, 0)";
+    get_tile_test "blank 1,0" 1 t "Blank @ (1, 0)";
+    get_tile_test "blank 0,1" 2 t "Blank @ (0, 1)";
+    get_tile_test "exit 1,1" 3 t "Exit @ (1, 1)";
   ]
 
 let start_st = init_state basic 0
@@ -113,6 +130,6 @@ let player_state_tests =
 
 let suite =
   "test suite for A2"
-  >::: List.flatten [ levels_tests; player_state_tests ]
+  >::: List.flatten [ levels_tests; player_state_tests; board_tests ]
 
 let _ = run_test_tt_main suite

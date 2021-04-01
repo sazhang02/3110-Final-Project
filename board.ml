@@ -24,12 +24,18 @@ type t = tile array
 let blank = { coords = { x = 0; y = 0 }; tile_type = Empty }
 
 (** [create_default x y] makes a level layout with blank tiles*)
-let create_default dimx dimy = Array.make (dimx * dimy) blank
 
 let index_of_coord dimx coord =
   match coord with { x; y } -> x + (dimx * y)
 
 let coord_of_index dimx index = { x = index mod dimx; y = index / dimx }
+
+let create_default dimx dimy =
+  let default = Array.make (dimx * dimy) blank in
+  for i = 0 to Array.length default - 1 do
+    default.(i) <- { coords = coord_of_index dimx i; tile_type = Empty }
+  done;
+  default
 
 (** [change_to_wall] is the list of tiles that are walls *)
 
@@ -50,16 +56,8 @@ let add_tile tile dimx t = t.(index_of_coord dimx tile.coords) <- tile
 
 let get_tile index (t : t) = t.(index)
 
-(* let tile_to_string tile = match tile with *)
-
-(** [make_board x en ex t] makes a level [t] with dimx [x], entrance
-    [en], exit [ex]*)
-let make_board dimx entrance exit t =
-  add_tile entrance dimx t;
-  add_tile exit dimx t
-
-(** [create_walls x y walls] creates a level of dimensions [x] by [y]
-    with walls [walls]*)
-
-(*let create_walls dimx dimy wall_lst = Array.make (dimx * dimy) blank
-  |> *)
+let make_board dimx dimy entrance exit =
+  let board = create_default dimx dimy in
+  add_tile entrance dimx board;
+  add_tile exit dimx board;
+  board

@@ -43,6 +43,9 @@ val add_tile : tile -> int -> t -> unit
     any walls or pipes. *)
 val create_default : int -> int -> t
 
-(** [create_walls] makes a level with walls *)
+(** [make_board x y en ex t] makes a level with dimensions [x] by [y] with entrance [en] and exit [ex]. *)
+val make_board : int -> int -> tile -> tile -> t
+
+(* [create_walls] makes a level with walls *)
 
 (* val create_walls : int -> int -> 'a -> t *)
