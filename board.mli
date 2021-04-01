@@ -7,6 +7,11 @@ type pipe
 
 type tile_type
 
+type coord = {
+  x : int;
+  y : int;
+}
+
 (** The type representing a tile in a level. A tile has a position and a
     type (ie wall, pipe, etc). *)
 type tile
