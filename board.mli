@@ -3,6 +3,11 @@ type t
 
 type wall
 
+type coord = {
+  x : int;
+  y : int;
+}
+
 type pipe
 
 type tile_type

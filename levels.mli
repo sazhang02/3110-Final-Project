@@ -1,13 +1,11 @@
 (** Representation of levels data*)
+open Board
 
 (** The abstract type of values representing levels.*)
 type t
 
 (**The type representing the position of a tile*)
-type pos = {
-  x : int;
-  y : int;
-}
+type pos = Board.coord
 
 (** The type representing a tile in a level. A tile has a position and a
     type (ie wall, pipe, etc). *)

@@ -1,9 +1,10 @@
+open Board
+
 type level_id = int
 
-type pos = {
-  x : int;
-  y : int;
-}
+(* type pos = { x : int; y : int; } *)
+
+type pos = Board.coord
 
 type tile = {
   pos : pos;
