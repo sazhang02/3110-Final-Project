@@ -79,13 +79,37 @@ let board_tests =
      add_tile entrance 1 t);
   ]
 
-let basic_st = init_state basic 0
+let start_st = init_state basic 0
+
+let right_st = update 'd' start_st
+
+let string_of_coords (coords : Gui.coords) =
+  match coords with
+  | { x = v1; y = v2 } -> string_of_int v1 ^ ", " ^ string_of_int v2
 
 (* let level_tests = [] *)
-let update_test name (move : char) (state : p) (expected_output : p) =
-  name >:: fun _ -> assert_equal expected_output (update move state)
+let get_current_level_test name (state : p) expected_output =
+  name >:: fun _ ->
+  assert_equal expected_output (get_current_level state)
 
-let player_state_tests = []
+let get_current_pos_test name (state : p) expected_output =
+  name >:: fun _ ->
+  assert_equal expected_output (get_current_pos state)
+    ~printer:string_of_coords
+
+let get_coins name (state : p) expected_output =
+  name >:: fun _ ->
+  assert_equal expected_output (get_coins state) ~printer:string_of_int
+
+let player_state_tests =
+  [
+    get_current_level_test "basic initial level is 0" start_st 0;
+    get_current_pos_test "basic initial pos is (0,0)" start_st
+      { x = 0; y = 0 };
+    get_current_pos_test "basic pos to right is (1,0)" right_st
+      { x = 50; y = 0 };
+    get_coins "basic initial coins is 0" start_st 0;
+  ]
 
 let suite =
   "test suite for A2"

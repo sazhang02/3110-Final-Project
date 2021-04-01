@@ -34,6 +34,5 @@ val get_coins : p -> int
 val update : char -> p -> p
 
 (** The type representing the result of an attempted movement. *)
-type result =
-  | Legal of p
-  | Illegal
+
+(* type result = | Legal of p | Illegal *)

@@ -24,7 +24,7 @@ let update_player new_img old_img new_loc old_loc =
   draw_at_coords new_img new_loc
 
 let board_to_gui (board_coords : Board.coord) =
-  { x = board_coords.x + 50; y = board_coords.y + 50 }
+  { x = board_coords.x * 50; y = board_coords.y * 50 }
 
 let player_image_cm = load_png "images/player.png"
 

@@ -31,33 +31,35 @@ let update move p =
   | 'w' ->
       {
         current_pos =
-          { x = get_x p.current_pos; y = get_y p.current_pos + 1 };
+          board_to_gui
+            { x = get_x p.current_pos; y = get_y p.current_pos + 1 };
         current_level = p.current_level;
         coins = p.coins (* image = p.image; *);
       }
   | 's' ->
       {
         current_pos =
-          { x = get_x p.current_pos; y = get_y p.current_pos - 1 };
+          board_to_gui
+            { x = get_x p.current_pos; y = get_y p.current_pos - 1 };
         current_level = p.current_level;
         coins = p.coins (* image = p.image; *);
       }
   | 'a' ->
       {
         current_pos =
-          { x = get_x p.current_pos - 1; y = get_y p.current_pos };
+          board_to_gui
+            { x = get_x p.current_pos - 1; y = get_y p.current_pos };
         current_level = p.current_level;
         coins = p.coins (* image = p.image; *);
       }
   | 'd' ->
       {
         current_pos =
-          { x = get_x p.current_pos + 1; y = get_y p.current_pos };
+          board_to_gui
+            { x = get_x p.current_pos + 1; y = get_y p.current_pos };
         current_level = p.current_level;
         coins = p.coins (* image = p.image; *);
       }
   | _ -> failwith "Impossible"
 
-type result =
-  | Legal of p
-  | Illegal
+(* type result = | Legal of p | Illegal *)
