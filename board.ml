@@ -17,6 +17,7 @@ type tile = {
   is_obstacle : bool;
 }
 
+(*blah*)
 type t = tile array
 
 let blank = { tile_type = Empty; is_obstacle = false }
