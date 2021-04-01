@@ -1,1 +1,6 @@
+B _build
 PKG graphics
+PKG yojson
+PKG camlimages.graphics
+PKG camlimages.all_formats
+PKG ounit2
