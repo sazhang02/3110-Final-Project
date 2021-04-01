@@ -52,12 +52,12 @@ let replace_wall index t dimx =
       tile_type = Wall () (* wall *);
     }
 
-let add_tile tile dimx t = t.(index_of_coord dimx tile.coords) <- tile
+let set_tile tile dimx t = t.(index_of_coord dimx tile.coords) <- tile
 
 let get_tile index (t : t) = t.(index)
 
 let make_board dimx dimy entrance exit =
   let board = create_default dimx dimy in
-  add_tile entrance dimx board;
-  add_tile exit dimx board;
+  set_tile entrance dimx board;
+  set_tile exit dimx board;
   board

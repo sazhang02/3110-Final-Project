@@ -75,12 +75,6 @@ let tile_to_string tile =
       end
       ^ string_of_int c.x ^ ", " ^ string_of_int c.y ^ ")"
 
-let add_tile_test name tile dimx t expected =
-  name >:: fun _ -> assert_equal expected (add_tile tile dimx t)
-
-let index_of_coord_test name dimx coord expected =
-  name >:: fun _ -> assert_equal expected (index_of_coord dimx coord)
-
 let get_tile_test name index t expected =
   name >:: fun _ ->
   assert_equal expected (tile_to_string (get_tile index t))

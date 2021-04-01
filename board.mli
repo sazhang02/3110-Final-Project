@@ -36,8 +36,8 @@ type tile = {
 (** [get_tile i t] is the tile at index [i] of level [t]. *)
 val get_tile : int -> t -> tile
 
-(** [add_tile tile x t] adds [tile] in level [t] with dimx [x]. *)
-val add_tile : tile -> int -> t -> unit
+(** [set_tile tile x t] adds [tile] in level [t] with dimx [x]. *)
+val set_tile : tile -> int -> t -> unit
 
 (** [create_default x y] makes a level with dimensions x by y without
     any walls or pipes. *)
