@@ -1,13 +1,13 @@
 open OUnit2
 open Levels
-
-(* open Player_state *)
+open Board
+open Player_state
 
 (** TODO: add tile_type to printing*)
 let print_tile (tile : tile) =
   let pos =
     String.concat ","
-      [ string_of_int tile.pos.x; string_of_int tile.pos.y ]
+      [ string_of_int tile.coords.x; string_of_int tile.coords.y ]
   in
   String.concat "" [ "("; pos; ")" ]
 
@@ -33,13 +33,13 @@ let levels_tests =
     (*entrance/exit pipe tests*)
     entrance_pipe_test
       "entr pipe test: basic, level 0. entrance pos : (0, 0)" basic 0
-      { pos = { x = 0; y = 0 }; tile_type = () };
+      { coords = { x = 0; y = 0 }; tile_type = Entrance };
     exit_pipe_test "exit pipe test: basic, level 0. exit pos : (1, 1)"
       basic 0
-      { pos = { x = 1; y = 1 }; tile_type = () };
+      { coords = { x = 1; y = 1 }; tile_type = Exit };
     entrance_pipe_test
       "entr pipe test: basic, level 1. entrance pos : (3, 4)" basic 1
-      { pos = { x = 3; y = 4 }; tile_type = () };
+      { coords = { x = 3; y = 4 }; tile_type = Entrance };
     invalid_test
       "exit pipe test: basic, level 1. exit pos : (-1, -1) raises \
        InvalidTile"
@@ -61,6 +61,34 @@ let levels_tests =
       prev_level basic 0 (UnknownLevel (-1));
   ]
 
-let suite = "test suite for A2" >::: List.flatten [ levels_tests ]
+let add_tile_test name tile dimx t expected =
+  name >:: fun _ -> assert_equal expected (add_tile tile dimx t)
+
+let index_of_coord_test name dimx coord expected =
+  name >:: fun _ -> assert_equal expected (index_of_coord dimx coord)
+
+let get_tile_test name index t expected =
+  name >:: fun _ -> assert_equal expected (get_tile index t)
+
+let board_tests =
+  [
+    (let t = create_default 1 1 in
+     let entrance =
+       { coords = { x = 0; y = 0 }; tile_type = Entrance }
+     in
+     add_tile entrance 1 t);
+  ]
+
+let basic_st = init_state basic 0
+
+(* let level_tests = [] *)
+let update_test name (move : char) (state : p) (expected_output : p) =
+  name >:: fun _ -> assert_equal expected_output (update move state)
+
+let player_state_tests = []
+
+let suite =
+  "test suite for A2"
+  >::: List.flatten [ levels_tests; player_state_tests ]
 
 let _ = run_test_tt_main suite

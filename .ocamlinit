@@ -5,7 +5,7 @@
 #require "ounit2";;
 #load "graphics.cma";;
 #directory "_build";;
+#load "gui.cmo";;
 #load "levels.cmo";;
 #load "board.cmo";;
 #load "player_state.cmo";;
-#load "gui.cmo";;

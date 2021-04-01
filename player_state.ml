@@ -1,70 +1,60 @@
 open Levels
+open Gui
 
 type level_id = Levels.level_id
 
-type position = {
-  x : int;
-  y : int;
-}
-
-let get_x pos = pos.x
-
-let get_y pos = pos.y
-
 type coins = int
 
-exception UnknownPosition of position
-
 type p = {
-  current_pos : position;
+  current_pos : Gui.coords;
   current_level : level_id;
-  coins : coins;
+  coins : coins; (* image : Graphics.image; *)
 }
 
-(* Implement after levels.ml is updated *)
-let init_state lev lev_id = failwith "Unimplemented"
-
-(* { current_pos = (let pipe = entrance_pipe lev lev_id in pipe.pos);
-   current_level = 01; coins = 0; } *)
+let init_state (t : Levels.t) level_id =
+  {
+    current_pos = board_to_gui (get_pos (entrance_pipe t level_id));
+    current_level = level_id;
+    coins = 0 (* image = image; *);
+  }
 
 let get_current_level (ps : p) = ps.current_level
 
 let get_current_pos (ps : p) = ps.current_pos
 
-let update_pos (move : char) (p : p) =
-  match move with
-  | 'w' -> { x = p.current_pos.x; y = p.current_pos.y + 1 }
-  | 's' -> { x = p.current_pos.x; y = p.current_pos.y - 1 }
-  | 'a' -> { x = p.current_pos.x - 1; y = p.current_pos.y }
-  | 'd' -> { x = p.current_pos.x + 1; y = p.current_pos.y }
-  | _ -> failwith "Impossible"
+let get_coins (ps : p) = ps.coins
 
-(* Take char as input from gui.ml, return new state *)
+(* let get_image (ps : p) = ps.image *)
+
 let update move p =
   match move with
   | 'w' ->
       {
-        current_pos = update_pos 'w' p;
+        current_pos =
+          { x = get_x p.current_pos; y = get_y p.current_pos + 1 };
         current_level = p.current_level;
-        coins = p.coins;
+        coins = p.coins (* image = p.image; *);
       }
   | 's' ->
       {
-        current_pos = update_pos 'w' p;
+        current_pos =
+          { x = get_x p.current_pos; y = get_y p.current_pos - 1 };
         current_level = p.current_level;
-        coins = p.coins;
+        coins = p.coins (* image = p.image; *);
       }
   | 'a' ->
       {
-        current_pos = update_pos 'w' p;
+        current_pos =
+          { x = get_x p.current_pos - 1; y = get_y p.current_pos };
         current_level = p.current_level;
-        coins = p.coins;
+        coins = p.coins (* image = p.image; *);
       }
   | 'd' ->
       {
-        current_pos = update_pos 'w' p;
+        current_pos =
+          { x = get_x p.current_pos + 1; y = get_y p.current_pos };
         current_level = p.current_level;
-        coins = p.coins;
+        coins = p.coins (* image = p.image; *);
       }
   | _ -> failwith "Impossible"
 

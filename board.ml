@@ -10,25 +10,22 @@ type coord = {
 type tile_type =
   | Wall of wall
   | Pipe of pipe
+  | Entrance
+  | Exit
   | Empty
 
 type tile = {
   coords : coord;
   tile_type : tile_type;
-  is_obstacle : bool;
 }
 
 type t = tile array
 
-let blank =
-  { coords = { x = 0; y = 0 }; tile_type = Empty; is_obstacle = false }
+let blank = { coords = { x = 0; y = 0 }; tile_type = Empty }
 
 (** [create_default x y] makes a level layout with blank tiles*)
 let create_default dimx dimy = Array.make (dimx * dimy) blank
 
-(** [index_of_coord] is the index in the array with width [dimx] of a
-    coordinate [coord] Example: 10 11 12 13 14 5 6 7 8 9 0 1 2 3 4 (0,0)
-    is 0; (1,0) is 1; (0,1) is 5; (2,2) is 12; (4,2) is 14*)
 let index_of_coord dimx coord =
   match coord with { x; y } -> x + (dimx * y)
 
@@ -42,13 +39,24 @@ let coord_of_index dimx index = { x = index mod dimx; y = index / dimx }
 
 (** [replace i t] replaces the tile at index [i] in layout [t] with a
     wall. *)
-let replace index t dimx =
+let replace_wall index t dimx =
   t.(index) <-
     {
       coords = coord_of_index index dimx;
       tile_type = Wall () (* wall *);
-      is_obstacle = true;
     }
+
+let add_tile tile dimx t = t.(index_of_coord dimx tile.coords) <- tile
+
+let get_tile index (t : t) = t.(index)
+
+(* let tile_to_string tile = match tile with *)
+
+(** [make_board x en ex t] makes a level [t] with dimx [x], entrance
+    [en], exit [ex]*)
+let make_board dimx entrance exit t =
+  add_tile entrance dimx t;
+  add_tile exit dimx t
 
 (** [create_walls x y walls] creates a level of dimensions [x] by [y]
     with walls [walls]*)

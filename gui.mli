@@ -7,6 +7,12 @@ type coords = {
   y : int;
 }
 
+(** [get_x pos] is the x coordinate. *)
+val get_x : coords -> int
+
+(** [get_y pos] is the y coordinate. *)
+val get_y : coords -> int
+
 (** [window_size] is the dimensions of the window. Required: If the
     string is non-empty, it must start with a space and then follow the
     format widthxheight. *)
@@ -14,6 +20,22 @@ val window_size : string
 
 (** [window_title] is name of the window. *)
 val window_title : string
+
+val player_image_cm : Images.t
+
+val floor_image_cm : Images.t
+
+(** [player_image_gc ()] is the Images.t of a player's image as a
+    Graphics.image. *)
+val player_image_gc : unit -> Graphics.image
+
+(** [floor_image_gc ()] is the Images.t of a floor's image as a
+    Graphics.image. *)
+val floor_image_gc : unit -> Graphics.image
+
+val tile_width : int
+
+val tile_height : int
 
 (** [load_png png_name] is the Images.t equivalent of the png file with
     name [png_name]. Required: [png_name] is the name of the directory
@@ -35,3 +57,8 @@ val draw_at_coords : Graphics.image -> coords -> unit
     at [old_loc] with [old_img] and [new_loc] with [new_img]. *)
 val update_player :
   Graphics.image -> Graphics.image -> coords -> coords -> unit
+
+(** [board_to_gui] is the Gui.coords equivalent of Board.coord. *)
+val board_to_gui : Board.coord -> coords
+
+(* * [draw_board] draws the board. val draw_board : unit *)

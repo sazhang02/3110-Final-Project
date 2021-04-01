@@ -3,6 +3,10 @@ type coords = {
   y : int;
 }
 
+let get_x pos = pos.x
+
+let get_y pos = pos.y
+
 let window_size = " 1000x700"
 
 let window_title = "Stuck In The Desert"
@@ -18,3 +22,22 @@ let draw_at_coords img loc = Graphics.draw_image img loc.x loc.y
 let update_player new_img old_img new_loc old_loc =
   Graphics.draw_image old_img old_loc.x old_loc.y;
   draw_at_coords new_img new_loc
+
+let board_to_gui (board_coords : Board.coord) =
+  { x = board_coords.x + 50; y = board_coords.y + 50 }
+
+let player_image_cm = load_png "images/player.png"
+
+let floor_image_cm = load_png "images/Floor Tile.png"
+
+(** [player_image_gc ()] is the Images.t of a player's image as a
+    Graphics.image. *)
+let player_image_gc () = Graphic_image.of_image player_image_cm
+
+let floor_image_gc () = Graphic_image.of_image floor_image_cm
+
+let tile_width = fst (Images.size player_image_cm)
+
+let tile_height = snd (Images.size player_image_cm)
+
+(* let draw_board () = *)

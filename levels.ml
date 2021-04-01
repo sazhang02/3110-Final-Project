@@ -6,20 +6,22 @@ type level_id = int
 
 type pos = Board.coord
 
-type tile = {
-  pos : pos;
-  tile_type : unit;  (**TODO: change to pipe/wall type*)
-}
+(* type tile = { pos : pos; tile_type : unit; (**TODO: change to
+   pipe/wall type*) } *)
+
+type tile = Board.tile
 
 (**TODO: replace with Board type*)
 type board = unit
+
+(* { entrance_pos : pos; exit_pos : pos; exit_id : level_id; grid :
+   Board.t; } *)
 
 type level = {
   level_id : level_id;
   entrance_pos : pos;
   exit_pos : pos;
   exit_id : level_id;
-  (* objects : tile list; *)
   board : board;
 }
 
@@ -31,7 +33,7 @@ exception InvalidTile of pos
 
 open Yojson.Basic.Util
 
-let get_pos tile = tile.pos
+let get_pos tile = tile.coords
 
 let get_tile_type tile = tile.tile_type
 
@@ -60,22 +62,24 @@ let rec map_level id level_list f =
 
 let to_tile levels id f tile_type =
   let pos = map_level id levels.levels f in
-  { pos; tile_type }
+  { coords = pos; tile_type }
 
 let entrance_pos level = level.entrance_pos
 
 (**TODO: change tile_type to pipe *)
 let entrance_pipe (levels : t) (id : level_id) : tile =
-  to_tile levels id entrance_pos ()
+  to_tile levels id entrance_pos Entrance
 
 let exit_pos level = level.exit_pos
 
 (**TODO: change tile_type to pipe. *)
 let exit_pipe (levels : t) (id : level_id) : tile =
-  let exit_tile = to_tile levels id exit_pos () in
-  if exit_tile.pos.x = -1 || exit_tile.pos.y = -1 then
-    raise (InvalidTile exit_tile.pos)
+  let exit_tile = to_tile levels id exit_pos Exit in
+  if exit_tile.coords.x = -1 || exit_tile.coords.y = -1 then
+    raise (InvalidTile exit_tile.coords)
   else exit_tile
+
+(* let make_board entrance exit = Board.t *)
 
 let exit_id level = level.exit_id
 
@@ -89,3 +93,5 @@ let level_id level = level.level_id
 
 let prev_level (levels : t) (id : level_id) : level_id =
   map_level id levels.levels level_id - 1 |> check_level_validity
+
+(* let make_board levels id entr_tile exit_tile -> Board.t*)

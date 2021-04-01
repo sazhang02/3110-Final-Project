@@ -9,10 +9,11 @@ type pos = Board.coord
 
 (** The type representing a tile in a level. A tile has a position and a
     type (ie wall, pipe, etc). *)
-type tile = {
-  pos : pos;
-  tile_type : unit;  (**TODO: change when we implement walls/pipes*)
-}
+
+(* type tile = { pos : pos; tile_type : unit; (**TODO: change when we
+   implement walls/pipes*) } *)
+
+type tile = Board.tile
 
 (** TODO: replace with board from Board module *)
 type board = unit
@@ -22,7 +23,7 @@ type level_id = int
 
 val get_pos : tile -> pos
 
-val get_tile_type : tile -> unit
+val get_tile_type : Board.tile -> Board.tile_type
 
 (** Raised when an unknown level is met. *)
 exception UnknownLevel of level_id

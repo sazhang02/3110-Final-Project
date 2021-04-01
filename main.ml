@@ -2,20 +2,21 @@ open Graphics
 open Gui
 open Player_state
 
-let player_image_cm = Gui.load_png "images/player.png"
+(* let player_image_cm = Gui.load_png "images/player.png"
 
-(** [player_image_gc ()] is the Images.t of a player's image as a
-    Graphics.image. *)
-let player_image_gc () = Graphic_image.of_image player_image_cm
+   (** [player_image_gc ()] is the Images.t of a player's image as a
+   Graphics.image. *) let player_image_gc () = Graphic_image.of_image
+   player_image_cm
 
-let tile_width = fst (Images.size player_image_cm)
+   let tile_width = fst (Images.size player_image_cm)
 
-let tile_height = snd (Images.size player_image_cm)
+   let tile_height = snd (Images.size player_image_cm) *)
 
 let starting_loc = { x = 500; y = 500 }
 
 (** [get_image loc] is the image at [loc]. *)
-let get_image loc = get_image loc.x loc.y tile_width tile_height
+let get_image loc =
+  Graphics.get_image loc.x loc.y tile_width tile_height
 
 (** [get_input loc player_img prev_image] processes keyboard inputs
     where w a s d moves the player up left down right respectively.
@@ -51,6 +52,8 @@ let window () =
   open_graph window_size;
   set_window_title window_title;
   let starting_image = get_image starting_loc in
+  draw_image (floor_image_gc ()) (starting_loc.x - 200)
+    (starting_loc.y - 200);
   draw_image (player_image_gc ()) starting_loc.x starting_loc.y;
   get_input starting_loc (player_image_gc ()) starting_image
 

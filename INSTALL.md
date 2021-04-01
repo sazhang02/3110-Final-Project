@@ -4,13 +4,15 @@
 
 ## For Mac:
 
-### First, we need to install the [Graphics Library](https://github.com/ocaml/graphics).
+### 0. Install [Homebrew](https://brew.sh/) if it is not already installed using installiation instructions found on its website.
 
-1. Install XQuartz
+### 1. Install the [Graphics Library](https://github.com/ocaml/graphics).
+
+1. Install [XQuartz](https://www.xquartz.org/)
 2. `brew install pkg-config`
 3. `opam install graphics`
 
-### Now, we need to install an image processing library. We use [camlimages](https://www.google.com/url?q=https://gitlab.com/camlspotter/camlimages&sa=D&source=editors&ust=1617134969939000&usg=AOvVaw3al_S_FsgYZIQaoyCdh0Bz) to render images in OCaml. In order to install this, you must install libpng and libjpg first.
+### 2. Install an image processing library. We use [camlimages](https://www.google.com/url?q=https://gitlab.com/camlspotter/camlimages&sa=D&source=editors&ust=1617134969939000&usg=AOvVaw3al_S_FsgYZIQaoyCdh0Bz) to render images in OCaml. In order to install this, install libpng and libjpg first.
 
 1. `brew install libpng`
 2. `brew install libjpg`
@@ -19,13 +21,13 @@
 
 ## For Windows:
 
-### First, we need to install the [Graphics Library](https://github.com/ocaml/graphics).
+### 1. Install the [Graphics Library](https://github.com/ocaml/graphics).
 
-1. Install Xming
+1. Install [Xming](https://sourceforge.net/projects/xming/)
 2. `sudo apt install pkg-config`
 3. `opam install graphics`
 
-### Now, we need to install an image processing library. We use [camlimages](https://www.google.com/url?q=https://gitlab.com/camlspotter/camlimages&sa=D&source=editors&ust=1617134969939000&usg=AOvVaw3al_S_FsgYZIQaoyCdh0Bz) to render images in OCaml. In order to install this, you must install libpng and libjpg first.
+### 2. Install an image processing library. We use [camlimages](https://www.google.com/url?q=https://gitlab.com/camlspotter/camlimages&sa=D&source=editors&ust=1617134969939000&usg=AOvVaw3al_S_FsgYZIQaoyCdh0Bz) to render images in OCaml. In order to install this, install libpng and libjpg first.
  
 1. `sudo apt install libpng libjpeg`
 2. `opam install camlimages`
@@ -35,5 +37,5 @@
 
 1. Download the source code or clone our git repository
 2. Open your terminal and change directory (aka `cd`) to the repository
-3. If you are on Windows, you must open Xming (Mac should automatically open XQuartz)
+3. If you are on Windows, you must open Xming (Mac should automatically open XQuartz) and run `export DISPLAY=:0`
 4. Run `make play` to open the game
