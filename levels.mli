@@ -16,7 +16,7 @@ type pos = Board.coord
 type tile = Board.tile
 
 (** TODO: replace with board from Board module *)
-type board = unit
+type board = Board.t
 
 (** The type of level identifier. Each level's [level_id] is unique.*)
 type level_id = int
@@ -52,3 +52,7 @@ val next_level : t -> level_id -> level_id
     level [lev] enters. Raises [UnknownLevel] if [lev] is the starting
     level. *)
 val prev_level : t -> level_id -> level_id
+
+(** [make_board levels id] creates a 16x16 board of [Board.t] type with
+    the entrance and exit pipes associated with the [id] in [levels]. *)
+val make_board : t -> level_id -> Board.t

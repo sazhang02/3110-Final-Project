@@ -1,5 +1,4 @@
 (* The abstract type representing the level layout. *)
-type t
 
 type wall
 
@@ -33,6 +32,9 @@ type tile = {
   coords : coord;
   tile_type : tile_type;
 }
+
+type t = tile array
+
 (** [get_tile i t] is the tile at index [i] of level [t]. *)
 val get_tile : int -> t -> tile
 
@@ -43,7 +45,8 @@ val set_tile : tile -> int -> t -> unit
     any walls or pipes. *)
 val create_default : int -> int -> t
 
-(** [make_board x y en ex t] makes a level with dimensions [x] by [y] with entrance [en] and exit [ex]. *)
+(** [make_board x y en ex t] makes a level with dimensions [x] by [y]
+    with entrance [en] and exit [ex]. *)
 val make_board : int -> int -> tile -> tile -> t
 
 (* [create_walls] makes a level with walls *)

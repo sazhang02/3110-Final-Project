@@ -6,6 +6,6 @@
 #load "graphics.cma";;
 #directory "_build";;
 #load "gui.cmo";;
-#load "levels.cmo";;
 #load "board.cmo";;
+#load "levels.cmo";;
 #load "player_state.cmo";;

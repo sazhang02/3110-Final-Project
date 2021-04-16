@@ -2,10 +2,7 @@
 
 (** The type representing the position of a coordinates on the GUI
     window *)
-type coords = {
-  x : int;
-  y : int;
-}
+type coords
 
 (** [get_x pos] is the x coordinate. *)
 val get_x : coords -> int
@@ -25,7 +22,7 @@ val player_image_cm : Images.t
 
 val floor_image_cm : Images.t
 
-(** [player_image_gc ()] is the Images.t of a player's image as a
+(** [player_image_gc ()c] is the Images.t of a player's image as a
     Graphics.image. *)
 val player_image_gc : unit -> Graphics.image
 
@@ -56,9 +53,10 @@ val draw_at_coords : Graphics.image -> coords -> unit
 (** [update_player new_img old_img new_loc old_loc] replaces the image
     at [old_loc] with [old_img] and [new_loc] with [new_img]. *)
 val update_player :
-  Graphics.image -> Graphics.image -> coords -> coords -> unit
+  Graphics.image -> Player_state.p -> Graphics.image -> coords -> unit
 
 (** [board_to_gui] is the Gui.coords equivalent of Board.coord. *)
 val board_to_gui : Board.coord -> coords
 
 (* * [draw_board] draws the board. val draw_board : unit *)
+val draw_board : Board.tile array -> unit

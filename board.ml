@@ -21,6 +21,8 @@ type tile = {
 
 type t = tile array
 
+let get_tile_array t = t
+
 let blank = { coords = { x = 0; y = 0 }; tile_type = Empty }
 
 (** [create_default x y] makes a level layout with blank tiles*)
@@ -55,6 +57,8 @@ let replace_wall index t dimx =
 let set_tile tile dimx t = t.(index_of_coord dimx tile.coords) <- tile
 
 let get_tile index (t : t) = t.(index)
+
+(** [tiles_of_type t s] is a list of tiles *)
 
 let make_board dimx dimy entrance exit =
   let board = create_default dimx dimy in

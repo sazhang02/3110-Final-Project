@@ -2,27 +2,17 @@ open Board
 
 type level_id = int
 
-(* type pos = { x : int; y : int; } *)
-
 type pos = Board.coord
-
-(* type tile = { pos : pos; tile_type : unit; (**TODO: change to
-   pipe/wall type*) } *)
 
 type tile = Board.tile
 
-(**TODO: replace with Board type*)
-type board = unit
-
-(* { entrance_pos : pos; exit_pos : pos; exit_id : level_id; grid :
-   Board.t; } *)
+type board = Board.t
 
 type level = {
   level_id : level_id;
   entrance_pos : pos;
   exit_pos : pos;
   exit_id : level_id;
-  board : board;
 }
 
 type t = { levels : level list }
@@ -40,14 +30,12 @@ let get_tile_type tile = tile.tile_type
 let pos_of_json_tile j =
   { x = j |> member "x" |> to_int; y = j |> member "y" |> to_int }
 
-(**TODO: change board type*)
 let level_of_json j =
   {
     level_id = j |> member "id" |> to_int;
     entrance_pos = j |> member "entrance" |> pos_of_json_tile;
     exit_pos = j |> member "exit" |> pos_of_json_tile;
     exit_id = j |> member "exit_id" |> to_int;
-    board = ();
   }
 
 let from_json j =
@@ -94,4 +82,11 @@ let level_id level = level.level_id
 let prev_level (levels : t) (id : level_id) : level_id =
   map_level id levels.levels level_id - 1 |> check_level_validity
 
-(* let make_board levels id entr_tile exit_tile -> Board.t*)
+let dimx = 16
+
+let dimy = 16
+
+let make_board levels id =
+  let entr = entrance_pipe levels id in
+  let exit = exit_pipe levels id in
+  make_board dimx dimy entr exit
