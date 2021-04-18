@@ -33,10 +33,19 @@ type tile = {
   tile_type : tile_type;
 }
 
-type t = tile array
+type t
+
+(** [get_x pos] is the x coordinate. *)
+val get_x : coord -> int
+
+(** [get_y pos] is the y coordinate. *)
+val get_y : coord -> int
 
 (** [get_tile i t] is the tile at index [i] of level [t]. *)
 val get_tile : int -> t -> tile
+
+(** [get_size t] is the number of tiles in level [t]. *)
+val get_size : t -> int
 
 (** [set_tile tile x t] adds [tile] in level [t] with dimx [x]. *)
 val set_tile : tile -> int -> t -> unit

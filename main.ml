@@ -18,7 +18,7 @@ let current_level_id = 0
 
 let player = init_state level_info current_level_id
 
-let starting_loc = get_current_pos player
+let starting_loc = get_current_pos player |> board_to_gui
 
 (** [get_image loc] is the image at [loc]. *)
 let get_image (loc : Gui.coords) =
@@ -32,9 +32,9 @@ let rec get_input player player_img prev_image =
   let move_player key =
     let loc = get_current_pos player in
     let new_player_state = update key player in
-    let new_loc = get_current_pos new_player_state in
+    let new_loc = get_current_pos new_player_state |> board_to_gui in
     let current_pic = get_image new_loc in
-    update_player player_img prev_image new_loc loc;
+    update_player player_img prev_image new_loc (loc |> board_to_gui);
     get_input new_player_state player_img current_pic
   in
   match read_key () with
@@ -63,8 +63,3 @@ let window () =
 let () =
   try window ()
   with Graphic_failure "fatal I/O error" -> close_graph ()
-
-(* let main () = try window () with Graphic_failure "fatal I/O error" ->
-   close_graph () get_input player (player_image_gc ()) starting_image
-   (* Execute the game engine. *) let () = main () (* try window () with
-   Graphic_failure "fatal I/O error" -> close_graph () *) *)

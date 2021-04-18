@@ -21,7 +21,9 @@ type tile = {
 
 type t = tile array
 
-let get_tile_array t = t
+let get_x pos = pos.x
+
+let get_y pos = pos.y
 
 let blank = { coords = { x = 0; y = 0 }; tile_type = Empty }
 
@@ -58,7 +60,7 @@ let set_tile tile dimx t = t.(index_of_coord dimx tile.coords) <- tile
 
 let get_tile index (t : t) = t.(index)
 
-(** [tiles_of_type t s] is a list of tiles *)
+let get_size (t : t) = Array.length t
 
 let make_board dimx dimy entrance exit =
   let board = create_default dimx dimy in

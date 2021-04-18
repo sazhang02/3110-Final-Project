@@ -23,7 +23,7 @@ val get_current_level : p -> Levels.level_id
 
 (** [get current_pos p] is the position in which the character currently
     is located in state [p]. *)
-val get_current_pos : p -> Gui.coords
+val get_current_pos : p -> Board.coord
 
 val get_coins : p -> int
 

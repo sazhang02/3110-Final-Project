@@ -53,10 +53,10 @@ val draw_at_coords : Graphics.image -> coords -> unit
 (** [update_player new_img old_img new_loc old_loc] replaces the image
     at [old_loc] with [old_img] and [new_loc] with [new_img]. *)
 val update_player :
-  Graphics.image -> Player_state.p -> Graphics.image -> coords -> unit
+  Graphics.image -> Graphics.image -> coords -> coords -> unit
 
 (** [board_to_gui] is the Gui.coords equivalent of Board.coord. *)
 val board_to_gui : Board.coord -> coords
 
 (* * [draw_board] draws the board. val draw_board : unit *)
-val draw_board : Board.tile array -> unit
+val draw_board : Board.t -> unit
