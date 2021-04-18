@@ -31,7 +31,7 @@ val get_coins : p -> int
 
 (* val update_pos : char -> p -> Gui.coords *)
 
-val update : char -> p -> p
+val update : char -> p -> Levels.t -> p
 
 (** The type representing the result of an attempted movement. *)
 

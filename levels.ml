@@ -63,9 +63,9 @@ let exit_pos level = level.exit_pos
 (**TODO: change tile_type to pipe. *)
 let exit_pipe (levels : t) (id : level_id) : tile =
   let exit_tile = to_tile levels id exit_pos Exit in
-  if exit_tile.coords.x = -1 || exit_tile.coords.y = -1 then
-    raise (InvalidTile exit_tile.coords)
-  else exit_tile
+  (* if exit_tile.coords.x = -1 || exit_tile.coords.y = -1 then raise
+     (InvalidTile exit_tile.coords) else *)
+  exit_tile
 
 (* let make_board entrance exit = Board.t *)
 
@@ -89,4 +89,5 @@ let dimy = 16
 let make_board levels id =
   let entr = entrance_pipe levels id in
   let exit = exit_pipe levels id in
+  (*if exit is negative, make a board with no exit *)
   make_board dimx dimy entr exit

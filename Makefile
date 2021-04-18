@@ -1,4 +1,4 @@
-MODULES= board gui levels player_state main
+MODULES=gui levels board player_state main
 OBJECTS=$(MODULES:=.cmo)
 MLS=$(MODULES:=.ml)
 MLIS=$(MODULES:=.mli)

@@ -14,15 +14,22 @@ open Levels
    let tile_height = snd (Images.size player_image_cm) *)
 let level_info = Yojson.Basic.from_file "basic_levels.json" |> from_json
 
-let current_level_id = 0
+let current_level_id = ref 0
 
-let player = init_state level_info current_level_id
+let player = init_state level_info !current_level_id
 
-let starting_loc = get_current_pos player |> board_to_gui
+let starting_loc p = get_current_pos p |> board_to_gui
 
 (** [get_image loc] is the image at [loc]. *)
 let get_image (loc : Gui.coords) =
   Graphics.get_image (get_x loc) (get_y loc) tile_width tile_height
+
+let set_up_level level_id p loc =
+  draw_board (make_board level_info !current_level_id);
+  draw_image (player_image_gc ()) (get_x loc) (get_y loc)
+
+let level_changed player : bool =
+  get_current_level player <> !current_level_id
 
 (** [get_input loc player_img prev_image] processes keyboard inputs
     where w a s d moves the player up left down right respectively.
@@ -31,12 +38,20 @@ let get_image (loc : Gui.coords) =
 let rec get_input player player_img prev_image =
   let move_player key =
     let loc = get_current_pos player in
-    let new_player_state = update key player in
+    let new_player_state = update key player level_info in
     let new_loc = get_current_pos new_player_state |> board_to_gui in
     let current_pic = get_image new_loc in
-    update_player player_img prev_image new_loc (loc |> board_to_gui);
+    (*Check if player has reached an exit pipe*)
+    if level_changed new_player_state then (
+      current_level_id := get_current_level new_player_state;
+      set_up_level current_level_id player
+        (get_current_pos new_player_state |> board_to_gui);
+      failwith "do something" (*update the player*) )
+    else
+      update_player player_img prev_image new_loc (loc |> board_to_gui);
     get_input new_player_state player_img current_pic
   in
+
   match read_key () with
   | 'w' -> move_player 'w'
   | 's' -> move_player 's'
@@ -50,13 +65,10 @@ let rec get_input player player_img prev_image =
 let window () =
   open_graph window_size;
   set_window_title window_title;
-  draw_board (make_board level_info current_level_id);
-  let starting_image = get_image starting_loc in
-  draw_image (floor_image_gc ())
-    (get_x starting_loc - 200)
-    (get_y starting_loc - 200);
-  draw_image (player_image_gc ()) (get_x starting_loc)
-    (get_y starting_loc);
+  let loc = starting_loc player in
+  let starting_image = get_image loc in
+  set_up_level current_level_id player loc;
+
   get_input player (player_image_gc ()) starting_image
 
 (* Execute the game engine. *)
