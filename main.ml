@@ -3,15 +3,6 @@ open Gui
 open Player_state
 open Levels
 
-(* let player_image_cm = Gui.load_png "images/player.png"
-
-   (** [player_image_gc ()] is the Images.t of a player's image as a
-   Graphics.image. *) let player_image_gc () = Graphic_image.of_image
-   player_image_cm
-
-   let tile_width = fst (Images.size player_image_cm)
-
-   let tile_height = snd (Images.size player_image_cm) *)
 let level_info = Yojson.Basic.from_file "basic_levels.json" |> from_json
 
 let current_level_id = ref 0
@@ -42,16 +33,17 @@ let rec get_input player player_img prev_image =
     let new_loc = get_current_pos new_player_state |> board_to_gui in
     let current_pic = get_image new_loc in
     (*Check if player has reached an exit pipe*)
-    if level_changed new_player_state then (
+    if level_changed new_player_state then begin
       current_level_id := get_current_level new_player_state;
-      set_up_level current_level_id player
-        (get_current_pos new_player_state |> board_to_gui);
-      failwith "do something" (*update the player*) )
-    else
+      set_up_level current_level_id new_player_state new_loc;
       update_player player_img prev_image new_loc (loc |> board_to_gui);
-    get_input new_player_state player_img current_pic
+      get_input new_player_state player_img current_pic
+    end
+    else begin
+      update_player player_img prev_image new_loc (loc |> board_to_gui);
+      get_input new_player_state player_img current_pic
+    end
   in
-
   match read_key () with
   | 'w' -> move_player 'w'
   | 's' -> move_player 's'
