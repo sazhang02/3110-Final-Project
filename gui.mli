@@ -18,21 +18,12 @@ val window_size : string
 (** [window_title] is name of the window. *)
 val window_title : string
 
-val player_image_cm : Images.t
-
-val floor_image_cm : Images.t
-
-(** [player_image_gc ()c] is the Images.t of a player's image as a
-    Graphics.image. *)
-val player_image_gc : unit -> Graphics.image
-
-(** [floor_image_gc ()] is the Images.t of a floor's image as a
-    Graphics.image. *)
-val floor_image_gc : unit -> Graphics.image
-
 val tile_width : int
 
 val tile_height : int
+
+(** [player_image_gc ()] is [player_image_cm] as a Graphics.image. *)
+val player_image_gc : unit -> Graphics.image
 
 (** [load_png png_name] is the Images.t equivalent of the png file with
     name [png_name]. Required: [png_name] is the name of the directory

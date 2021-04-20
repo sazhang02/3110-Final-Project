@@ -10,7 +10,15 @@
         "x": 1,
         "y": 1
       },
-      "exit_id": 1
+      "exit_id": 1,
+      "rooms": [
+        {
+          "start_x": 1,
+          "start_y": 1,
+          "end_x": 15,
+          "end_y": 15
+        }
+      ]
     },
     {
       "id": 1,

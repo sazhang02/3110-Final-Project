@@ -8,11 +8,18 @@ type tile = Board.tile
 
 type board = Board.t
 
+(**TODO: replace meeee*)
+type room = {
+  bottom_left_start : coord;
+  top_right_end : coord;
+}
+
 type level = {
   level_id : level_id;
   entrance_pos : pos;
   exit_pos : pos;
   exit_id : level_id;
+  rooms : room list;
 }
 
 type t = { levels : level list }
@@ -36,6 +43,7 @@ let level_of_json j =
     entrance_pos = j |> member "entrance" |> pos_of_json_tile;
     exit_pos = j |> member "exit" |> pos_of_json_tile;
     exit_id = j |> member "exit_id" |> to_int;
+    rooms = [];
   }
 
 let from_json j =
@@ -82,12 +90,10 @@ let level_id level = level.level_id
 let prev_level (levels : t) (id : level_id) : level_id =
   map_level id levels.levels level_id - 1 |> check_level_validity
 
-let dimx = 16
-
-let dimy = 16
+(* let dimx = 16 let dimy = 16 *)
 
 let make_board levels id =
   let entr = entrance_pipe levels id in
   let exit = exit_pipe levels id in
   (*if exit is negative, make a board with no exit *)
-  make_board dimx dimy entr exit
+  make_board entr exit
