@@ -21,6 +21,8 @@ val init_state : Levels.t -> Levels.level_id -> p
     adventurer currently is located in state [ps]. *)
 val get_current_level : p -> Levels.level_id
 
+val get_current_tile : p -> Board.tile
+
 (** [get current_pos p] is the position in which the character currently
     is located in state [p]. *)
 val get_current_pos : p -> Board.coord
