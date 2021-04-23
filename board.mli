@@ -62,5 +62,6 @@ val set_tile : tile -> t -> unit
 
 val room_of_coords : coord -> coord -> room
 
-(** [make_board en ex t] makes a level with entrance [en] and exit [ex]. *)
+(** [make_board en ex lst t] makes a level with entrance [en], exit
+    [ex], and rooms [lst]. *)
 val make_board : tile -> tile -> room list -> t

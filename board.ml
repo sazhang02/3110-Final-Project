@@ -67,15 +67,6 @@ let make_room room t =
   done;
   t
 
-(** [create_default] is a level with dimensions x by y without any
-    floors or pipes. *)
-let default =
-  let board = Array.make (dimx * dimy) blank in
-  for i = 0 to Array.length board - 1 do
-    board.(i) <- { coords = coord_of_index dimx i; tile_type = Wall }
-  done;
-  board
-
 let rec make_rooms_board rooms board =
   match rooms with
   | [] -> board
@@ -91,9 +82,20 @@ let array_tester t =
     | Pipe _ -> ()
   done
 
+(* (* [create_default] is a level with dimensions x by y without any
+   floors or pipes. *) let default = let board = Array.make (dimx *
+   dimy) blank in for i = 0 to Array.length board - 1 do board.(i) <- {
+   coords = coord_of_index dimx i; tile_type = Wall } done; board *)
+
 let make_board entrance exit rooms =
-  let board = make_rooms_board rooms default in
+  let board =
+    make_rooms_board rooms
+      (let def = Array.make (dimx * dimy) blank in
+       for i = 0 to Array.length def - 1 do
+         def.(i) <- { coords = coord_of_index dimx i; tile_type = Wall }
+       done;
+       def)
+  in
   set_tile entrance board;
   set_tile exit board;
-  array_tester default;
   board

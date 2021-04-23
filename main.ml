@@ -7,7 +7,7 @@ open Levels
 let level_info = Yojson.Basic.from_file "basic_levels.json" |> from_json
 
 (** [current_level_id] is the current level the player is on. *)
-let current_level_id = ref 1
+let current_level_id = ref 0
 
 (** [player] is the initial state the of the player. *)
 let player = init_state level_info !current_level_id
@@ -32,8 +32,9 @@ let set_up_level level_id loc =
     and False otherwise. *)
 let level_changed p : bool = get_current_level p <> !current_level_id
 
-(* let check_movement old_loc new_loc : bool = old_loc = new_loc (*get_x
-   old_loc = get_x new_loc && get_y old_loc = get_y new_loc*)*)
+let check_movement old_loc new_loc : bool = old_loc = new_loc
+
+(*get_x old_loc = get_x new_loc && get_y old_loc = get_y new_loc*)
 
 (** [get_input loc player_img prev_image] processes keyboard inputs
     where w a s d moves the player up left down right respectively.
@@ -41,7 +42,7 @@ let level_changed p : bool = get_current_level p <> !current_level_id
     inputs. *)
 let rec get_input player player_img prev_image =
   let move_player key =
-    let loc = get_current_pos player in
+    let loc = get_current_pos player |> board_to_gui in
     let new_player_state = update key player level_info in
     let new_loc = get_current_pos new_player_state |> board_to_gui in
     let current_pic = get_image new_loc in
@@ -49,12 +50,13 @@ let rec get_input player player_img prev_image =
     if level_changed new_player_state then begin
       current_level_id := get_current_level new_player_state;
       set_up_level !current_level_id new_loc;
-      update_player player_img prev_image new_loc (loc |> board_to_gui);
+      update_player player_img prev_image new_loc loc;
       get_input new_player_state player_img current_pic
-      (*else if check_movement loc new_loc*)
     end
+    else if check_movement loc new_loc then
+      get_input new_player_state player_img prev_image
     else begin
-      update_player player_img prev_image new_loc (loc |> board_to_gui);
+      update_player player_img prev_image new_loc loc;
       get_input new_player_state player_img current_pic
     end
   in

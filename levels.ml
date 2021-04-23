@@ -68,7 +68,6 @@ let to_tile levels id f tile_type =
 
 let entrance_pos level = level.entrance_pos
 
-(**TODO: change tile_type to pipe *)
 let entrance_pipe (levels : t) (id : level_id) : tile =
   to_tile levels id entrance_pos Entrance
 
