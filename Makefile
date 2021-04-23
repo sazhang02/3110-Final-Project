@@ -21,3 +21,6 @@ play:
 
 zip:
 	zip desert.zip *.ml* *.json _tags images/*.png .merlin .ocamlformat .ocamlinit LICENSE Makefile *.md
+
+clean:
+	ocamlbuild -clean
