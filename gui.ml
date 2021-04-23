@@ -36,6 +36,9 @@ let pipeleft_image_cm = load_png "images/pipe_left.png"
 
 let piperight_image_cm = load_png "images/pipe_right.png"
 
+let player2 = load_png "images/player2.png"
+let player3 = load_png "images/player3.png"
+
 (** [player_image_gc ()] is [player_image_cm] as a Graphics.image. *)
 let player_image_gc () = Graphic_image.of_image player_image_cm
 
@@ -43,9 +46,9 @@ let player_image_gc () = Graphic_image.of_image player_image_cm
 let floor_image_gc () = Graphic_image.of_image floor_image_cm
 
 (** [wall_image_gc ()] is [wall_image_cm] as a Graphics.image. *)
+
 let wall_image_gc () = Graphic_image.of_image wall_image_cm
 
-(** [pipeup_image_gc ()] is [pipeup_image_cm] as a Graphics.image. *)
 let pipeup_image_gc () = Graphic_image.of_image pipeup_image_cm
 
 (** [pipedown_image_gc ()] is [pipedown_image_cm] as a Graphics.image. *)
@@ -57,6 +60,9 @@ let pipeleft_image_gc () = Graphic_image.of_image pipeleft_image_cm
 (** [piperight_image_gc ()] is [piperight_image_cm] as a Graphics.image. *)
 let piperight_image_gc () = Graphic_image.of_image piperight_image_cm
 
+let entrance_image_gc () = Graphic_image.of_image player2
+let exit_image_gc () = Graphic_image.of_image player3
+(** [pipeup_image_gc ()] is [pipeup_image_cm] as a Graphics.image. *)
 let tile_width = fst (Images.size player_image_cm)
 
 let tile_height = snd (Images.size player_image_cm)
@@ -73,9 +79,13 @@ let draw_board t =
     let tile = get_tile i t in
     let obj_coords = tile.coords |> board_to_gui in
     match tile.tile_type with
-    | Wall -> draw_at_coords (wall_image_gc ()) obj_coords
-    | Pipe _ -> draw_at_coords (pipeup_image_gc ()) obj_coords
-    | Entrance -> ()
-    | Exit -> ()
+    | Wall ->
+        (* draw_at_coords (floor_image_gc ()) obj_coords *)
+        draw_at_coords (wall_image_gc ()) obj_coords
+    | Pipe _ ->
+        (* draw_at_coords (floor_image_gc ()) obj_coords *)
+        draw_at_coords (pipeup_image_gc ()) obj_coords
+    | Entrance -> draw_at_coords (entrance_image_gc ()) obj_coords
+    | Exit -> draw_at_coords (exit_image_gc ()) obj_coords
     | Empty -> draw_at_coords (floor_image_gc ()) obj_coords
   done

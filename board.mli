@@ -57,5 +57,10 @@ val get_size : t -> int
 (** [set_tile tile x t] adds [tile] in level [t]. *)
 val set_tile : tile -> t -> unit
 
+(** [room_of_coords start_coord end_coord] makes a [room] type with
+    [start_coord] and [end_coord]. *)
+
+val room_of_coords : coord -> coord -> room
+
 (** [make_board en ex t] makes a level with entrance [en] and exit [ex]. *)
-val make_board : tile -> tile -> t
+val make_board : tile -> tile -> room list -> t

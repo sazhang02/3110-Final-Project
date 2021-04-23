@@ -49,11 +49,11 @@ val exit_pipe : t -> level_id -> tile
     level [lev] exits. Raises [UnkownLevel] if [lev] is the last level. *)
 val next_level : t -> level_id -> level_id
 
-(** [prev_level levels id] is the [level_id] of the level from which the
-    level [lev] enters. Raises [UnknownLevel] if [lev] is the starting
-    level. *)
+(** [prev_level levelsxit pipes associated with th id] is the [level_id]
+    of the level from which the level [lev] enters. Raises
+    [UnknownLevel] if [lev] is the starting level. *)
 val prev_level : t -> level_id -> level_id
 
 (** [make_board levels id] creates a 16x16 board of [Board.t] type with
-    the entrance and exit pipes associated with the [id] in [levels]. *)
+    the entrance and ee [id] in [levels]. *)
 val make_board : t -> level_id -> Board.t

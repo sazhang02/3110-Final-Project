@@ -40,10 +40,18 @@ let get_move move p =
 
 let player_next_level p t =
   let new_level = next_level t p.current_level in
-  (* init_state (t new_level) *)
   {
     current_tile = entrance_pipe t new_level;
     current_level = new_level;
+    coins = p.coins;
+  }
+
+let player_prev_level p t =
+  let old_level = prev_level t p.current_level in
+  (* init_state (t new_level) *)
+  {
+    current_tile = exit_pipe t old_level;
+    current_level = old_level;
     coins = p.coins;
   }
 
@@ -58,7 +66,7 @@ let check_tile tile p t =
   match get_tile_type tile with
   | Wall -> p
   | Pipe _ -> assert false
-  | Entrance -> assert false
+  | Entrance -> player_prev_level p t
   | Exit -> player_next_level p t
   | Empty -> player_next_tile tile p t
 
