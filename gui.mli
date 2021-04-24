@@ -25,6 +25,9 @@ val tile_height : int
 (** [player_image_gc ()] is [player_image_cm] as a Graphics.image. *)
 val player_image_gc : unit -> Graphics.image
 
+(** [floor_image_gc ()] is [floor_image_cm] as a Graphics.image. *)
+val floor_image_gc : unit -> Graphics.image
+
 (** [load_png png_name] is the Images.t equivalent of the png file with
     name [png_name]. Required: [png_name] is the name of the directory
     reference. For example, if png.png is in the same directory, a valid

@@ -1,6 +1,25 @@
 (* The abstract type representing the level layout. *)
+type coord = {
+  x : int;
+  y : int;
+}
 
-type pipe
+type color =
+  | Green
+  | Red
+  | Blue
+
+type orientation =
+  | Left
+  | Right
+  | Up
+  | Down
+
+type pipe = {
+  end_coords : coord;
+  orientation : orientation;
+  color : color;
+}
 
 type tile_type =
   | Wall
@@ -8,11 +27,6 @@ type tile_type =
   | Entrance
   | Exit
   | Empty
-
-type coord = {
-  x : int;
-  y : int;
-}
 
 type room (* { bottom_left_start : coord; top_right_end : coord; } *)
 
@@ -57,6 +71,18 @@ val get_size : t -> int
 (** [set_tile tile x t] adds [tile] in level [t]. *)
 val set_tile : tile -> t -> unit
 
+(** [get_pipe_end p] is the end coordinate pair of pipe [p]. *)
+val get_pipe_end : pipe -> coord
+
+(** [get_pipe_color p] is the color of pipe [p]. *)
+val get_pipe_color : pipe -> color
+
+(** [get_pipe_oreintation p] is the direction pipe [p] is facing. *)
+val get_pipe_orientation : pipe -> orientation
+
+(* val make_pipe *)
+val make_pipe_tile_pair : coord -> color -> orientation -> tile list
+
 (** [room_of_coords start_coord end_coord] makes a [room] type with
     [start_coord] and [end_coord]. *)
 
@@ -65,3 +91,5 @@ val room_of_coords : coord -> coord -> room
 (** [make_board en ex lst t] makes a level with entrance [en], exit
     [ex], and rooms [lst]. *)
 val make_board : tile -> tile -> room list -> t
+
+val alla_board : tile -> tile -> room list -> tile list -> t

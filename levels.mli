@@ -26,6 +26,11 @@ val get_pos : tile -> pos
 
 val get_tile_type : Board.tile -> Board.tile_type
 
+(*ADDED LEVEL TYPE and getter*)
+type level
+
+val get_levels : t -> level list
+
 (** Raised when an unknown level is met. *)
 exception UnknownLevel of level_id
 

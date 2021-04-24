@@ -1,23 +1,47 @@
 open OUnit2
 open Levels
 open Board
+
+(** [tile_to_string t] is the string representation of itle [t]. *)
 open Player_state
 
-(** TODO: add tile_type to printing*)
-let print_tile (tile : tile) =
-  let pos =
-    String.concat ","
-      [ string_of_int tile.coords.x; string_of_int tile.coords.y ]
-  in
-  String.concat "" [ "("; pos; ")" ]
+let coords_to_string c =
+  "(" ^ string_of_int c.x ^ ", " ^ string_of_int c.y ^ ")"
+
+let orientation_to_string o =
+  match o with
+  | Left -> "left"
+  | Right -> "right"
+  | Up -> "up"
+  | Down -> "down"
+
+let color_to_string c =
+  match c with Green -> "green" | Red -> "red" | Blue -> "blue"
+
+let tile_to_string tile =
+  match tile with
+  | { coords = c; tile_type = t } -> (
+      let coords = coords_to_string c in
+      match t with
+      | Wall -> "Wall @ " ^ coords
+      | Pipe pipe ->
+          "Pipe @ " ^ coords ^ ". End coords @ "
+          ^ coords_to_string (get_pipe_end pipe)
+          ^ ". Orientation "
+          ^ orientation_to_string (get_pipe_orientation pipe)
+          ^ ". Color "
+          ^ color_to_string (get_pipe_color pipe)
+      | Entrance -> "Entrance @ ("
+      | Exit -> "Exit @ ("
+      | Empty -> "Blank @ (" )
 
 let entrance_pipe_test name t id expected =
   name >:: fun _ ->
-  assert_equal expected (entrance_pipe t id) ~printer:print_tile
+  assert_equal expected (entrance_pipe t id) ~printer:tile_to_string
 
 let exit_pipe_test name t id expected =
   name >:: fun _ ->
-  assert_equal expected (exit_pipe t id) ~printer:print_tile
+  assert_equal expected (exit_pipe t id) ~printer:tile_to_string
 
 let invalid_test name f t id exn =
   name >:: fun _ -> assert_raises exn (fun () -> f t id)
@@ -72,30 +96,53 @@ let levels_tests =
       prev_level basic 0 (UnknownLevel (-1));
   ]
 
-(** [tile_to_string t] is the string representation of itle [t]. *)
-let tile_to_string tile =
-  match tile with
-  | { coords = c; tile_type = t } ->
-      begin
-        match t with
-        | Wall -> "Wall @ ("
-        | Pipe _ -> "Pipe @\n   ("
-        | Entrance -> "Entrance @ ("
-        | Exit -> "Exit @ ("
-        | Empty -> "Blank @ ("
-      end
-      ^ string_of_int c.x ^ ", " ^ string_of_int c.y ^ ")"
-
 let get_tile_test name index t expected =
   name >:: fun _ ->
   assert_equal expected (tile_to_string (get_tile index t))
 
-(* let board_tests = let entrance = { coords = { x = 0; y = 0 };
-   tile_type = Entrance } in let exit = { coords = { x = 1; y = 1 };
-   tile_type = Exit } in let t = make_board 2 2 entrance exit in [
-   get_tile_test "entrance 0,0" 0 t "Entrance @ (0, 0)"; get_tile_test
-   "blank 1,0" 1 t "Blank @ (1, 0)"; get_tile_test "blank 0,1" 2 t
-   "Blank @ (0, 1)"; get_tile_test "exit 1,1" 3 t "Exit @ (1, 1)"; ] *)
+let make_tile_pair_test name entrance color orientation expected =
+  name >:: fun _ ->
+  assert_equal expected
+    (make_pipe_tile_pair entrance color orientation)
+    ~printer:(pp_list tile_to_string)
+
+let board_tests =
+  let entrance = { coords = { x = 0; y = 0 }; tile_type = Entrance } in
+  let exit = { coords = { x = 1; y = 1 }; tile_type = Exit } in
+  let rooms = [] in
+  let t = make_board entrance exit rooms in
+  [
+    (* get_tile_test "entrance 0,0" 0 t "Entrance @ (0, 0)";
+       get_tile_test "blank 1,0" 1 t "Blank @ (1, 0)"; get_tile_test
+       "blank 0,1" 2 t "Blank @ (0, 1)"; get_tile_test "exit 1,1" 3 t
+       "Exit @ (1, 1)"; *)
+    make_tile_pair_test
+      "green pipe facing right at (0, 1),green pipe facing left at \
+       (15, 1)"
+      { x = 0; y = 1 } Green Right
+      [
+        {
+          coords = { x = 0; y = 1 };
+          tile_type =
+            Pipe
+              {
+                end_coords = { x = 14; y = 1 };
+                orientation = Right;
+                color = Green;
+              };
+        };
+        {
+          coords = { x = 15; y = 1 };
+          tile_type =
+            Pipe
+              {
+                end_coords = { x = 1; y = 1 };
+                orientation = Left;
+                color = Green;
+              };
+        };
+      ];
+  ]
 
 let start_st = init_state basic 0
 
@@ -127,6 +174,6 @@ let player_state_tests =
 
 let suite =
   "test suite for A2"
-  >::: List.flatten [ levels_tests; player_state_tests ]
+  >::: List.flatten [ levels_tests; board_tests; player_state_tests ]
 
 let _ = run_test_tt_main suite

@@ -13,6 +13,7 @@ type p = {
 
 let init_state (t : Levels.t) level_id =
   {
+    (* TODO: get tile next to entrance pipe*)
     current_tile = entrance_pipe t level_id;
     current_level = level_id;
     coins = 0 (* image = image; *);
@@ -65,16 +66,19 @@ let player_next_tile tile p t =
 let check_tile tile p t =
   match get_tile_type tile with
   | Wall -> p
-  | Pipe _ -> assert false
+  | Pipe pipe ->
+      {
+        current_tile = { coords = get_pipe_end pipe; tile_type = Empty };
+        current_level = p.current_level;
+        coins = p.coins;
+      }
   | Entrance -> player_prev_level p t
   | Exit -> player_next_level p t
   | Empty -> player_next_tile tile p t
 
-let update move p t =
+let update move p t b =
   let predicted_move = get_move move p in
-  let next_tile =
-    get_tile_c predicted_move (Levels.make_board t p.current_level)
-  in
+  let next_tile = get_tile_c predicted_move b in
   check_tile next_tile p t
 
 (* check_tile (get_tile_type p.current_tile) if predicted_move <>

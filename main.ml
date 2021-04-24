@@ -3,14 +3,23 @@ open Gui
 open Player_state
 open Levels
 
+(** [game_of_file] is the game information of all the levels of [file]. *)
+let game_of_file file = Yojson.Basic.from_file file |> from_json
+
 (** [level_info] is the game information of all the levels. *)
-let level_info = Yojson.Basic.from_file "basic_levels.json" |> from_json
+let game_info = game_of_file "basic_levels.json"
 
 (** [current_level_id] is the current level the player is on. *)
 let current_level_id = ref 0
 
+(** [board_info] is the current board info for the game. *)
+let board_info =
+  Array.make
+    (game_info |> Levels.get_levels |> List.length)
+    (make_board game_info !current_level_id)
+
 (** [player] is the initial state the of the player. *)
-let player = init_state level_info !current_level_id
+let player = init_state game_info !current_level_id
 
 (** [starting_loc p] is the coordinates at the beginning of a level for
     the player wi th state [p]. *)
@@ -24,8 +33,9 @@ let get_image (loc : Gui.coords) =
     [level_id]. The board for the level is drawn, and the player is
     drawn at the coordinates [loc]. *)
 let set_up_level level_id loc =
-  print_endline (string_of_int level_id);
-  draw_board (make_board level_info level_id);
+  (* print_endline (string_of_int level_id); *)
+  board_info.(level_id) <- make_board game_info level_id;
+  draw_board (make_board game_info level_id);
   draw_image (player_image_gc ()) (get_x loc) (get_y loc)
 
 (** [level_changed p] is True if player has moved onto the next level
@@ -43,7 +53,9 @@ let check_movement old_loc new_loc : bool = old_loc = new_loc
 let rec get_input player player_img prev_image =
   let move_player key =
     let loc = get_current_pos player |> board_to_gui in
-    let new_player_state = update key player level_info in
+    let new_player_state =
+      update key player game_info board_info.(!current_level_id)
+    in
     let new_loc = get_current_pos new_player_state |> board_to_gui in
     let current_pic = get_image new_loc in
     (*Check if player has reached an exit pipe*)
@@ -73,9 +85,9 @@ let window () =
   open_graph window_size;
   set_window_title window_title;
   let loc = starting_loc player in
-  let starting_image = get_image loc in
   set_up_level !current_level_id loc;
-  get_input player (player_image_gc ()) starting_image
+  (* let starting_image = get_image loc in *)
+  get_input player (player_image_gc ()) (floor_image_gc ())
 
 (* Execute the game engine. *)
 let () =

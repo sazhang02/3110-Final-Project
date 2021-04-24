@@ -32,6 +32,20 @@
             "y": 14
           }
         }
+      ],
+      "pipes": [
+        {
+          "x": 0,
+          "y": 2,
+          "color": "Green",
+          "orientation": "Right"
+        },
+        {
+          "x": 4,
+          "y": 0,
+          "color": "Green",
+          "orientation": "Up"
+        }
       ]
     },
     {
@@ -56,6 +70,20 @@
             "y": 14
           }
         }
+      ],
+      "pipes": [
+        {
+          "x": 2,
+          "y": 2,
+          "color": "Green",
+          "orientation": "Right"
+        },
+        {
+          "x": 4,
+          "y": 4,
+          "color": "Green",
+          "orientation": "Up"
+        }
       ]
     },
     {
@@ -79,6 +107,20 @@
             "x": 14,
             "y": 14
           }
+        }
+      ],
+      "pipes": [
+        {
+          "x": 0,
+          "y": 2,
+          "color": "Green",
+          "orientation": "Right"
+        },
+        {
+          "x": 4,
+          "y": 0,
+          "color": "Green",
+          "orientation": "Up"
         }
       ]
     }

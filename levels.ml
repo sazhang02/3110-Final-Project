@@ -8,8 +8,13 @@ type tile = Board.tile
 
 type board = Board.t
 
-(**TODO: replace meeee*)
 type room = Board.room
+
+type pipe_info = {
+  pos : pos;
+  color : Board.color;
+  orientation : Board.orientation;
+}
 
 (* { bottom_left_start : coord; top_right_end : coord; } *)
 
@@ -19,6 +24,7 @@ type level = {
   exit_pos : pos;
   exit_id : level_id;
   rooms : room list;
+  pipes : pipe_info list;
 }
 
 type t = { levels : level list }
@@ -33,15 +39,41 @@ let get_pos tile = tile.coords
 
 let get_tile_type tile = tile.tile_type
 
+let get_levels t = t.levels
+
 let pos_of_json_tile j =
   { x = j |> member "x" |> to_int; y = j |> member "y" |> to_int }
 
 let room_of_json j =
-  (* { bottom_left_start = j |> member "start" |> pos_of_json_tile;
-     top_right_end = j |> member "end" |> pos_of_json_tile; } *)
   let bot = j |> member "start" |> pos_of_json_tile in
   let top = j |> member "end" |> pos_of_json_tile in
   Board.room_of_coords bot top
+
+let color_of_string str =
+  match str with
+  | "Red" -> Red
+  | "Blue" -> Blue
+  | "Green" -> Green
+  | _ -> failwith "Invalid Color"
+
+let orient_of_string str =
+  match str with
+  | "Up" -> Up
+  | "Down" -> Down
+  | "Left" -> Left
+  | "Right" -> Right
+  | _ -> failwith "Invalid Orientation"
+
+let pipes_of_json j =
+  let pos =
+    { x = j |> member "x" |> to_int; y = j |> member "y" |> to_int }
+  in
+  {
+    pos;
+    color = j |> member "color" |> to_string |> color_of_string;
+    orientation =
+      j |> member "orientation" |> to_string |> orient_of_string;
+  }
 
 let level_of_json j =
   {
@@ -50,6 +82,7 @@ let level_of_json j =
     exit_pos = j |> member "exit" |> pos_of_json_tile;
     exit_id = j |> member "exit_id" |> to_int;
     rooms = j |> member "rooms" |> to_list |> List.map room_of_json;
+    pipes = j |> member "pipes" |> to_list |> List.map pipes_of_json;
   }
 
 let from_json j =
@@ -73,7 +106,6 @@ let entrance_pipe (levels : t) (id : level_id) : tile =
 
 let exit_pos level = level.exit_pos
 
-(**TODO: change tile_type to pipe. *)
 let exit_pipe (levels : t) (id : level_id) : tile =
   let exit_tile = to_tile levels id exit_pos Exit in
   (* if exit_tile.coords.x = -1 || exit_tile.coords.y = -1 then raise
@@ -97,11 +129,25 @@ let prev_level (levels : t) (id : level_id) : level_id =
 
 let rooms_list level = level.rooms
 
-(* let dimx = 16 let dimy = 16 *)
+let pipe_info_to_tile_pair (pipe_info : pipe_info) : tile list =
+  Board.make_pipe_tile_pair pipe_info.pos pipe_info.color
+    pipe_info.orientation
+
+let pipes_list (pipe_info_lst : pipe_info list) : Board.tile list =
+  let pipes =
+    List.map pipe_info_to_tile_pair pipe_info_lst |> List.flatten
+  in
+  print_endline (List.length pipes |> string_of_int);
+  pipes
+
+let pipes_info_list level = level.pipes
 
 let make_board levels id =
   let entr = entrance_pipe levels id in
   let exit = exit_pipe levels id in
   (*if exit is negative, make a board with no exit??? *)
   let rooms = map_level id levels.levels rooms_list in
-  make_board entr exit rooms
+  let pipes =
+    map_level id levels.levels pipes_info_list |> pipes_list
+  in
+  alla_board entr exit rooms pipes
