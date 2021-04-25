@@ -1,10 +1,9 @@
-(* The abstract type representing the level layout. *)
 type coord
 
 type color =
   | Green
   | Red
-  | Blue
+  | Gold
 
 type orientation =
   | Left
@@ -17,8 +16,8 @@ type pipe
 type tile_type =
   | Wall
   | Pipe of pipe
-  | Entrance
-  | Exit
+  | Entrance of orientation
+  | Exit of orientation
   | Empty
 
 type room
@@ -47,7 +46,7 @@ val make_coord : int -> int -> coord
 (** [get_tile i t] is the tile at index [i] of level [t]. *)
 val get_tile : int -> t -> tile
 
-(** [make_tile i tt] is a tile with coord [i] and tile_type [tt]*)
+(** [make_tile i tt] is a tile with coord at [i] and tile_type [tt]*)
 val make_tile : coord -> tile_type -> tile
 
 (** [get_tile_coords t] is the coordinates of tile [t]. *)
@@ -68,18 +67,26 @@ val set_tile : tile -> t -> unit
 (** [get_pipe_end p] is the end coordinate pair of pipe [p]. *)
 val get_pipe_end : pipe -> coord
 
+(** [get_pipe_end_of_tile t] is the end coordinate pair of pipe in tile
+    [t]. *)
+val get_pipe_end_of_tile : tile -> coord
+
 (** [get_pipe_color p] is the color of pipe [p]. *)
 val get_pipe_color : pipe -> color
 
-(** [get_pipe_oreintation p] is the direction pipe [p] is facing. *)
-val get_pipe_orientation : pipe -> orientation
+(* * [get_pipe_oreintation p] is the direction pipe [p] is facing. val
+   get_pipe_orientation : pipe -> orientation *)
 
-(* val make_pipe *)
+(**[get_tile_orientation t] is the orientation of the tile [t]. Only
+   [Entrance], [Exit], [Pipe] have orientations.*)
+val get_tile_orientation : tile -> orientation
+
+(** [make_pipe_tile e c o] is the tile at coordinate [e] and tile type
+    pipe with color [c] and orientation [o]. *)
 val make_pipe_tile_pair : coord -> color -> orientation -> tile list
 
-(** [room_of_coords start_coord end_coord] makes a [room] type with
-    [start_coord] and [end_coord]. *)
-
+(** [room_of_coords s e] makes a [room] whose bottom-left coordinate is
+    [s] and top-right coordinate is [e]. *)
 val room_of_coords : coord -> coord -> room
 
 (** [make_board en ex lst t] makes a level with entrance [en], exit

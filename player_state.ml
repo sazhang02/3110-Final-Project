@@ -5,19 +5,39 @@ type level_id = Levels.level_id
 
 type coins = int
 
+type move = {
+  pos : coord;
+  action : orientation;
+}
+
 type p = {
   current_tile : tile;
   current_level : level_id;
-  coins : coins; (* image : Graphics.image; *)
+  coins : coins;
 }
 
-let init_state (t : Levels.t) level_id =
+let offset_player (t : Levels.t) (bt : Board.t) f (level_id : level_id)
+    =
+  let pipe = f t level_id in
+  let pipe_coords = get_tile_coords pipe in
+  let e_x = get_x pipe_coords in
+  let e_y = get_y pipe_coords in
+  match get_tile_orientation pipe with
+  | Left -> make_coord (e_x - 1) e_y
+  | Right -> make_coord (e_x + 1) e_y
+  | Up -> make_coord e_x (e_y + 1)
+  | Down -> make_coord e_x (e_y - 1)
+
+let init_state (t : Levels.t) (bt : Board.t) =
   {
-    (* TODO: get tile next to entrance pipe*)
-    current_tile = entrance_pipe t level_id;
-    current_level = level_id;
-    coins = 0 (* image = image; *);
+    current_tile = get_tile_c (offset_player t bt entrance_pipe 0) bt;
+    current_level = 0;
+    coins = 0;
   }
+
+let new_level_state (t : Levels.t) (bt : Board.t) f level_id =
+  let current_tile = get_tile_c (offset_player t bt f level_id) bt in
+  { current_tile; current_level = level_id; coins = 0 }
 
 let get_current_level (ps : p) = ps.current_level
 
@@ -27,32 +47,42 @@ let get_current_pos (ps : p) = get_tile_coords ps.current_tile
 
 let get_coins (ps : p) = ps.coins
 
-(* let get_image (ps : p) = ps.image *)
-
-let get_move move p =
+(* Helper functions for update *)
+let get_move move_key p =
   let p_x = get_x (get_current_pos p) in
   let p_y = get_y (get_current_pos p) in
-  match move with
-  | 'w' -> make_coord p_x (p_y + 1) (* { x = p_x; y = p_y + 1 } *)
-  | 's' -> make_coord p_x (p_y - 1) (* { x = p_x; y = p_y - 1 } *)
-  | 'a' -> make_coord (p_x - 1) p_y (* { x = p_x - 1; y = p_y } *)
-  | 'd' -> make_coord (p_x + 1) p_y (* { x = p_x + 1; y = p_y } *)
+  match move_key with
+  | 'w' -> { pos = make_coord p_x (p_y + 1); action = Up }
+  | 's' -> { pos = make_coord p_x (p_y - 1); action = Down }
+  | 'a' -> { pos = make_coord (p_x - 1) p_y; action = Left }
+  | 'd' -> { pos = make_coord (p_x + 1) p_y; action = Right }
   | _ -> raise (Failure "Unreachable")
 
-let player_next_level p t =
-  let new_level = next_level t p.current_level in
-  {
-    current_tile = entrance_pipe t new_level;
-    current_level = new_level;
-    coins = p.coins;
-  }
+let check_orientation (tile : Board.tile) move (p : p) =
+  match get_tile_orientation tile with
+  | Left -> if move.action == Right then true else false
+  | Right -> if move.action == Left then true else false
+  | Up -> if move.action == Down then true else false
+  | Down -> if move.action == Up then true else false
 
-let player_prev_level p t =
+let player_prev_level p t b =
   let old_level = prev_level t p.current_level in
-  (* init_state (t new_level) *)
+  new_level_state t b exit_pipe old_level
+
+(* { current_tile = exit_pipe t old_level; current_level = old_level;
+   coins = p.coins; } *)
+
+let player_next_level p t b =
+  let new_level = next_level t p.current_level in
+  new_level_state t b entrance_pipe new_level
+
+(* { current_tile = offset_player ; current_level = new_level; coins =
+   p.coins; } *)
+
+let player_enter_pipe (pipe : Board.tile) move (p : p) =
   {
-    current_tile = exit_pipe t old_level;
-    current_level = old_level;
+    current_tile = make_tile (get_pipe_end_of_tile pipe) Empty;
+    current_level = p.current_level;
     coins = p.coins;
   }
 
@@ -63,80 +93,22 @@ let player_next_tile tile p t =
     coins = p.coins;
   }
 
-let check_tile tile p t =
+let check_tile tile p t b move =
   match get_tile_type tile with
   | Wall -> p
   | Pipe pipe ->
-      {
-        current_tile = make_tile (get_pipe_end pipe) Empty;
-        (* { coords = get_pipe_end pipe; tile_type = Empty }; *)
-        current_level = p.current_level;
-        coins = p.coins;
-      }
-  | Entrance -> player_prev_level p t
-  | Exit -> player_next_level p t
+      if check_orientation tile move p then
+        player_enter_pipe tile move p
+      else p
+  | Entrance _ ->
+      if check_orientation tile move p then player_prev_level p t b
+      else p
+  | Exit _ ->
+      if check_orientation tile move p then player_next_level p t b
+      else p
   | Empty -> player_next_tile tile p t
 
-let update move p t b =
-  let predicted_move = get_move move p in
-  let next_tile = get_tile_c predicted_move b in
-  check_tile next_tile p t
-
-(* check_tile (get_tile_type p.current_tile) if predicted_move <>
-   get_pos (exit_pipe t p.current_level) then { current_tile =
-   get_tile_c predicted_move (Levels.make_board t p.current_level);
-   current_level = p.current_level; coins = p.coins; } else
-   player_next_level p t *)
-
-(*type p = { current_pos : coord; current_level : level_id; coins :
-  coins; (* image : Graphics.image; *) }
-
-  let init_state (t : Levels.t) level_id = { current_pos = get_pos
-  (entrance_pipe t level_id); current_level = level_id; coins = 0 (*
-  image = image; *); }
-
-  let get_current_level (ps : p) = ps.current_level
-
-  let get_current_pos (ps : p) = getps.current_tile
-
-  let get_coins (ps : p) = ps.coins
-
-  (* let get_image (ps : p) = ps.image *)
-
-  let get_move move p = match move with | 'w' -> { x = get_x
-  p.current_pos; y = get_y p.current_pos + 1 } | 's' -> { x = get_x
-  p.current_pos; y = get_y p.current_pos - 1 } | 'a' -> { x = get_x
-  p.current_pos - 1; y = get_y p.current_pos } | 'd' -> { x = get_x
-  p.current_pos + 1; y = get_y p.current_pos } | _ -> raise (Failure
-  "Unreachable")
-
-  let check_tile (tile : tile_type) = match tile with | Wall _ -> assert
-  false | Pipe _ -> assert false | Entrance -> assert false | Exit ->
-  assert false | Empty -> assert false
-
-  let player_next_level p t = let new_level = next_level t
-  p.current_level in { current_pos = get_pos (entrance_pipe t
-  new_level); current_level = new_level; coins = p.coins; }
-
-  let update move p t = let predicted_move = get_move move p in (* if
-  check_tile (get_tile_type (get_tile p.current_pos t) *) if
-  predicted_move <> get_pos (exit_pipe t p.current_level) then {
-  current_pos = predicted_move; current_level = p.current_level; coins =
-  p.coins; } else player_next_level p t *)
-
-(* | 'w' -> let predicted_move = { x = get_x p.current_pos; y = get_y
-   p.current_pos + 1 } in if predicted_move <> get_pos (exit_pipe t
-   p.current_level) then { current_pos = predicted_move; current_level =
-   p.current_level; coins = p.coins (* image = p.image; *); } else
-   player_next_level p t | 's' -> let predicted_move = { x = get_x
-   p.current_pos; y = get_y p.current_pos + 1 } in if predicted_move <>
-   get_pos (exit_pipe t p.current_level) then { current_pos =
-   predicted_move; current_level = p.current_level; coins = p.coins (*
-   image = p.image; *); } else player_next_level p t | 'a' -> {
-   current_pos = { x = get_x p.current_pos - 1; y = get_y p.current_pos
-   }; current_level = update_level p t; coins = p.coins (* image =
-   p.image; *); } | 'd' -> { current_pos = { x = get_x p.current_pos +
-   1; y = get_y p.current_pos }; current_level = update_level p t; coins
-   = p.coins (* image = p.image; *); } | _ -> failwith "Impossible" *)
-
-(* type result = | Legal of p | Illegal *)
+let update (move_key : char) p t b =
+  let predicted_move = get_move move_key p in
+  let next_tile = get_tile_c predicted_move.pos b in
+  check_tile next_tile p t b predicted_move

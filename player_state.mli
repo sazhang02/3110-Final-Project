@@ -4,6 +4,9 @@ type p
 (* The type of the level identifier. Each level's [level_id] is unique. *)
 type level_id = int
 
+(* The abstract type representing player's intended move *)
+type move
+
 (* The abstract type of player's position: with x and y coordinates in
    the GUI grid *)
 (* type position *)
@@ -15,7 +18,7 @@ type level_id = int
 (** [init_state a] is the initial state of the game when playing in each
     level. In that state the character is currently located in the
     starting position, and they have visited only that level. *)
-val init_state : Levels.t -> Levels.level_id -> p
+val init_state : Levels.t -> Board.t -> p
 
 (** [get_current_level p] is the identifier of the level in which the
     adventurer currently is located in state [ps]. *)

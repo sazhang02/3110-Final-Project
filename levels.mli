@@ -7,10 +7,6 @@ type t
 (**The type representing the position of a tile*)
 type pos = Board.coord
 
-(** TODO: replace with board from Board module *)
-
-(* type board = Board.t *)
-
 (** The type of level identifier. Each level's [level_id] is unique.*)
 type level_id = int
 
@@ -34,7 +30,7 @@ exception InvalidTile of pos
     [j] is a valid json representation.*)
 val from_json : Yojson.Basic.t -> t
 
-(** [entrance_pipe levels lev] a [tile] with position [pos] of the
+(** [entrance_pipe levels lev] a [pipe] with position [pos] of the
     entrance pipe of the level [lev] in levels [levels]. *)
 val entrance_pipe : t -> level_id -> tile
 

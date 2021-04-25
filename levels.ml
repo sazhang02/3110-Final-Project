@@ -4,11 +4,10 @@ type level_id = int
 
 type pos = Board.coord
 
-(* type tile = Board.tile *)
-
-(* type board = Board.t *)
-
-(* type room = Board.room *)
+type entr_ex_info = {
+  pos : Board.coord;
+  orientation : Board.orientation;
+}
 
 type pipe_info = {
   pos : Board.coord;
@@ -18,8 +17,8 @@ type pipe_info = {
 
 type level = {
   level_id : level_id;
-  entrance_pos : Board.coord;
-  exit_pos : Board.coord;
+  entrance_pos : entr_ex_info;
+  exit_pos : entr_ex_info;
   exit_id : level_id;
   rooms : room list;
   pipes : pipe_info list;
@@ -44,8 +43,6 @@ let pos_of_json_tile j =
   let y = j |> member "y" |> to_int in
   make_coord x y
 
-(* { x = j |> member "x" |> to_int; y = j |> member "y" |> to_int } *)
-
 let room_of_json j =
   let bot = j |> member "start" |> pos_of_json_tile in
   let top = j |> member "end" |> pos_of_json_tile in
@@ -54,7 +51,7 @@ let room_of_json j =
 let color_of_string str =
   match str with
   | "Red" -> Red
-  | "Blue" -> Blue
+  | "Gold" -> Gold
   | "Green" -> Green
   | _ -> failwith "Invalid Color"
 
@@ -66,6 +63,9 @@ let orient_of_string str =
   | "Right" -> Right
   | _ -> failwith "Invalid Orientation"
 
+let orientation_of_json j =
+  j |> member "orientation" |> to_string |> orient_of_string
+
 let pipes_of_json j =
   let x = j |> member "x" |> to_int in
   let y = j |> member "y" |> to_int in
@@ -73,15 +73,20 @@ let pipes_of_json j =
   {
     pos;
     color = j |> member "color" |> to_string |> color_of_string;
-    orientation =
-      j |> member "orientation" |> to_string |> orient_of_string;
+    orientation = orientation_of_json j;
   }
+
+let entr_ex_of_json j =
+  let x = j |> member "x" |> to_int in
+  let y = j |> member "y" |> to_int in
+  let pos = make_coord x y in
+  { pos; orientation = orientation_of_json j }
 
 let level_of_json j =
   {
     level_id = j |> member "id" |> to_int;
-    entrance_pos = j |> member "entrance" |> pos_of_json_tile;
-    exit_pos = j |> member "exit" |> pos_of_json_tile;
+    entrance_pos = j |> member "entrance" |> entr_ex_of_json;
+    exit_pos = j |> member "exit" |> entr_ex_of_json;
     exit_id = j |> member "exit_id" |> to_int;
     rooms = j |> member "rooms" |> to_list |> List.map room_of_json;
     pipes = j |> member "pipes" |> to_list |> List.map pipes_of_json;
@@ -97,21 +102,27 @@ let rec map_level id level_list f =
   | [] -> raise (UnknownLevel id)
   | h :: t -> if h.level_id = id then f h else map_level id t f
 
+let to_orientation levels id f = map_level id levels.levels f
+
 let to_tile levels id f tile_type =
   let pos = map_level id levels.levels f in
   make_tile pos tile_type
 
-(* { coords = pos; tile_type } *)
+let entrance_pos level = level.entrance_pos.pos
 
-let entrance_pos level = level.entrance_pos
+let entrance_orientation level = level.entrance_pos.orientation
 
 let entrance_pipe (levels : t) (id : level_id) : tile =
-  to_tile levels id entrance_pos Entrance
+  let o = to_orientation levels id entrance_orientation in
+  to_tile levels id entrance_pos (Entrance o)
 
-let exit_pos level = level.exit_pos
+let exit_pos level = level.exit_pos.pos
+
+let exit_orientation level = level.exit_pos.orientation
 
 let exit_pipe (levels : t) (id : level_id) : tile =
-  let exit_tile = to_tile levels id exit_pos Exit in
+  let o = to_orientation levels id exit_orientation in
+  let exit_tile = to_tile levels id exit_pos (Exit o) in
   (* if exit_tile.coords.x = -1 || exit_tile.coords.y = -1 then raise
      (InvalidTile exit_tile.coords) else *)
   exit_tile
@@ -119,7 +130,9 @@ let exit_pipe (levels : t) (id : level_id) : tile =
 let exit_id level = level.exit_id
 
 let check_level_validity id =
-  if id = -1 then raise (UnknownLevel id) else id
+  if id < 0 then raise (UnknownLevel id) else id
+
+(* id *)
 
 let next_level (levels : t) (id : level_id) : level_id =
   map_level id levels.levels exit_id |> check_level_validity
