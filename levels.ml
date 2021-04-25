@@ -4,24 +4,22 @@ type level_id = int
 
 type pos = Board.coord
 
-type tile = Board.tile
+(* type tile = Board.tile *)
 
-type board = Board.t
+(* type board = Board.t *)
 
-type room = Board.room
+(* type room = Board.room *)
 
 type pipe_info = {
-  pos : pos;
+  pos : Board.coord;
   color : Board.color;
   orientation : Board.orientation;
 }
 
-(* { bottom_left_start : coord; top_right_end : coord; } *)
-
 type level = {
   level_id : level_id;
-  entrance_pos : pos;
-  exit_pos : pos;
+  entrance_pos : Board.coord;
+  exit_pos : Board.coord;
   exit_id : level_id;
   rooms : room list;
   pipes : pipe_info list;
@@ -35,19 +33,23 @@ exception InvalidTile of pos
 
 open Yojson.Basic.Util
 
-let get_pos tile = tile.coords
+let get_pos tile = get_tile_coords tile
 
-let get_tile_type tile = tile.tile_type
+let get_tile_type tile = get_tile_type tile
 
 let get_levels t = t.levels
 
 let pos_of_json_tile j =
-  { x = j |> member "x" |> to_int; y = j |> member "y" |> to_int }
+  let x = j |> member "x" |> to_int in
+  let y = j |> member "y" |> to_int in
+  make_coord x y
+
+(* { x = j |> member "x" |> to_int; y = j |> member "y" |> to_int } *)
 
 let room_of_json j =
   let bot = j |> member "start" |> pos_of_json_tile in
   let top = j |> member "end" |> pos_of_json_tile in
-  Board.room_of_coords bot top
+  room_of_coords bot top
 
 let color_of_string str =
   match str with
@@ -65,9 +67,9 @@ let orient_of_string str =
   | _ -> failwith "Invalid Orientation"
 
 let pipes_of_json j =
-  let pos =
-    { x = j |> member "x" |> to_int; y = j |> member "y" |> to_int }
-  in
+  let x = j |> member "x" |> to_int in
+  let y = j |> member "y" |> to_int in
+  let pos = make_coord x y in
   {
     pos;
     color = j |> member "color" |> to_string |> color_of_string;
@@ -97,7 +99,9 @@ let rec map_level id level_list f =
 
 let to_tile levels id f tile_type =
   let pos = map_level id levels.levels f in
-  { coords = pos; tile_type }
+  make_tile pos tile_type
+
+(* { coords = pos; tile_type } *)
 
 let entrance_pos level = level.entrance_pos
 
@@ -111,8 +115,6 @@ let exit_pipe (levels : t) (id : level_id) : tile =
   (* if exit_tile.coords.x = -1 || exit_tile.coords.y = -1 then raise
      (InvalidTile exit_tile.coords) else *)
   exit_tile
-
-(* let make_board entrance exit = Board.t *)
 
 let exit_id level = level.exit_id
 
@@ -130,7 +132,7 @@ let prev_level (levels : t) (id : level_id) : level_id =
 let rooms_list level = level.rooms
 
 let pipe_info_to_tile_pair (pipe_info : pipe_info) : tile list =
-  Board.make_pipe_tile_pair pipe_info.pos pipe_info.color
+  make_pipe_tile_pair pipe_info.pos pipe_info.color
     pipe_info.orientation
 
 let pipes_list (pipe_info_lst : pipe_info list) : Board.tile list =

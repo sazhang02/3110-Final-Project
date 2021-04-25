@@ -1,8 +1,5 @@
 (* The abstract type representing the level layout. *)
-type coord = {
-  x : int;
-  y : int;
-}
+type coord
 
 type color =
   | Green
@@ -15,11 +12,7 @@ type orientation =
   | Up
   | Down
 
-type pipe = {
-  end_coords : coord;
-  orientation : orientation;
-  color : color;
-}
+type pipe
 
 type tile_type =
   | Wall
@@ -28,26 +21,18 @@ type tile_type =
   | Exit
   | Empty
 
-type room (* { bottom_left_start : coord; top_right_end : coord; } *)
+type room
 
 (** [index_of_coord] is the index in the array with width [dimx] of a
     coordinate [coord]. Example: In a 5x3 level, (0,0) is 0; (1,0) is 1;
     (0,1) is 5; (2,2) is 12; (4,2) is 14*)
 val index_of_coord : int -> coord -> int
 
-(** [coord_of_index] is the coordinate of the index in the array with
-    width [dimx] of a coordinate [coord] Example: In a 5x3 level, (0,0)
-    is 0; (1,0) is 1; (0,1) is 5; (2,2) is 12; (4,2) is 14*)
-val index_of_coord : int -> coord -> int
-
 (** The type representing a tile in a level. A tile has a position and a
     type (ie wall, pipe, etc). *)
-type tile = {
-  coords : coord;
-  tile_type : tile_type;
-}
+type tile
 
-(** The type representing a level. *)
+(** The type representing a board. *)
 type t
 
 (** [get_x pos] is the x coordinate. *)
@@ -56,11 +41,20 @@ val get_x : coord -> int
 (** [get_y pos] is the y coordinate. *)
 val get_y : coord -> int
 
+(**[make_coord x y] is a [coord] at [(x, y)].*)
+val make_coord : int -> int -> coord
+
 (** [get_tile i t] is the tile at index [i] of level [t]. *)
 val get_tile : int -> t -> tile
 
+(** [make_tile i tt] is a tile with coord [i] and tile_type [tt]*)
+val make_tile : coord -> tile_type -> tile
+
 (** [get_tile_coords t] is the coordinates of tile [t]. *)
 val get_tile_coords : tile -> coord
+
+(** [get_tile_type t] is the tile_type of tile [t]*)
+val get_tile_type : tile -> tile_type
 
 (** [get_tile_c c t] is the tile at coordinates [c] of level [t]. *)
 val get_tile_c : coord -> t -> tile

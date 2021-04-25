@@ -6,7 +6,7 @@ open Board
 open Player_state
 
 let coords_to_string c =
-  "(" ^ string_of_int c.x ^ ", " ^ string_of_int c.y ^ ")"
+  "(" ^ string_of_int (get_x c) ^ ", " ^ string_of_int (get_y c) ^ ")"
 
 let orientation_to_string o =
   match o with
@@ -19,21 +19,20 @@ let color_to_string c =
   match c with Green -> "green" | Red -> "red" | Blue -> "blue"
 
 let tile_to_string tile =
-  match tile with
-  | { coords = c; tile_type = t } -> (
-      let coords = coords_to_string c in
-      match t with
-      | Wall -> "Wall @ " ^ coords
-      | Pipe pipe ->
-          "Pipe @ " ^ coords ^ ". End coords @ "
-          ^ coords_to_string (get_pipe_end pipe)
-          ^ ". Orientation "
-          ^ orientation_to_string (get_pipe_orientation pipe)
-          ^ ". Color "
-          ^ color_to_string (get_pipe_color pipe)
-      | Entrance -> "Entrance @ ("
-      | Exit -> "Exit @ ("
-      | Empty -> "Blank @ (" )
+  let coords = get_tile_coords tile |> coords_to_string in
+  let tile_type = get_tile_type tile in
+  match tile_type with
+  | Wall -> "Wall @ " ^ coords
+  | Pipe pipe ->
+      "Pipe @ " ^ coords ^ ". End coords @ "
+      ^ coords_to_string (get_pipe_end pipe)
+      ^ ". Orientation "
+      ^ orientation_to_string (get_pipe_orientation pipe)
+      ^ ". Color "
+      ^ color_to_string (get_pipe_color pipe)
+  | Entrance -> "Entrance @ ("
+  | Exit -> "Exit @ ("
+  | Empty -> "Blank @ ("
 
 let entrance_pipe_test name t id expected =
   name >:: fun _ ->
@@ -70,13 +69,15 @@ let levels_tests =
     (*entrance/exit pipe tests*)
     entrance_pipe_test
       "entr pipe test: basic, level 0. entrance pos : (0, 1)" basic 0
-      { coords = { x = 0; y = 1 }; tile_type = Entrance };
+      (make_tile (make_coord 0 1) Entrance);
+    (* { coords = { x = 0; y = 1 }; tile_type = Entrance }; *)
     exit_pipe_test "exit pipe test: basic, level 0. exit pos : (1, 0)"
       basic 0
-      { coords = { x = 1; y = 0 }; tile_type = Exit };
+      (make_tile (make_coord 1 0) Exit);
     entrance_pipe_test
       "entr pipe test: basic, level 1. entrance pos : (3, 4)" basic 1
-      { coords = { x = 3; y = 4 }; tile_type = Entrance };
+      (make_tile (make_coord 3 4) Entrance);
+    (* { coords = { x = 3; y = 4 }; tile_type = Entrance }; *)
     (* invalid_test "exit pipe test: basic, level 1. exit pos : (-1, -1)
        raises \ InvalidTile" exit_pipe basic 1 (InvalidTile { x = -1; y
        = -1 }); *)
@@ -107,50 +108,23 @@ let make_tile_pair_test name entrance color orientation expected =
     ~printer:(pp_list tile_to_string)
 
 let board_tests =
-  let entrance = { coords = { x = 0; y = 0 }; tile_type = Entrance } in
-  let exit = { coords = { x = 1; y = 1 }; tile_type = Exit } in
-  let rooms = [] in
-  let t = make_board entrance exit rooms in
-  [
-    (* get_tile_test "entrance 0,0" 0 t "Entrance @ (0, 0)";
+  (* let entrance = { coords = { x = 0; y = 0 }; tile_type = Entrance }
+     in let exit = { coords = { x = 1; y = 1 }; tile_type = Exit } in
+     let rooms = [] in let t = make_board entrance exit rooms in *)
+  [ (* get_tile_test "entrance 0,0" 0 t "Entrance @ (0, 0)";
        get_tile_test "blank 1,0" 1 t "Blank @ (1, 0)"; get_tile_test
        "blank 0,1" 2 t "Blank @ (0, 1)"; get_tile_test "exit 1,1" 3 t
        "Exit @ (1, 1)"; *)
-    make_tile_pair_test
-      "green pipe facing right at (0, 1),green pipe facing left at \
-       (15, 1)"
-      { x = 0; y = 1 } Green Right
-      [
-        {
-          coords = { x = 0; y = 1 };
-          tile_type =
-            Pipe
-              {
-                end_coords = { x = 14; y = 1 };
-                orientation = Right;
-                color = Green;
-              };
-        };
-        {
-          coords = { x = 15; y = 1 };
-          tile_type =
-            Pipe
-              {
-                end_coords = { x = 1; y = 1 };
-                orientation = Left;
-                color = Green;
-              };
-        };
-      ];
-  ]
+    (* make_tile_pair_test "green pipe facing right at (0, 1),green pipe
+       facing left at \ (15, 1)" { x = 0; y = 1 } Green Right [ { coords
+       = { x = 0; y = 1 }; tile_type = Pipe { end_coords = { x = 14; y =
+       1 }; orientation = Right; color = Green; }; }; { coords = { x =
+       15; y = 1 }; tile_type = Pipe { end_coords = { x = 1; y = 1 };
+       orientation = Left; color = Green; }; }; ]; *) ]
 
 let start_st = init_state basic 0
 
 let right_st = update 'd' start_st
-
-let string_of_coords coords =
-  match coords with
-  | { x = v1; y = v2 } -> string_of_int v1 ^ ", " ^ string_of_int v2
 
 let get_current_level_test name (state : p) expected_output =
   name >:: fun _ ->
@@ -159,7 +133,7 @@ let get_current_level_test name (state : p) expected_output =
 let get_current_pos_test name (state : p) expected_output =
   name >:: fun _ ->
   assert_equal expected_output (get_current_pos state)
-    ~printer:string_of_coords
+    ~printer:coords_to_string
 
 let get_coins name (state : p) expected_output =
   name >:: fun _ ->

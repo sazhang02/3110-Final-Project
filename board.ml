@@ -44,11 +44,15 @@ let get_x pos = pos.x
 
 let get_y pos = pos.y
 
+let make_coord x y = { x; y }
+
 let dimx = 16
 
 let dimy = 16
 
 let get_tile_coords tile = tile.coords
+
+let get_tile_type tile = tile.tile_type
 
 let blank = { coords = { x = 0; y = 0 }; tile_type = Wall }
 
@@ -61,6 +65,8 @@ let coord_of_index dimx index = { x = index mod dimx; y = index / dimx }
     with an empty tile. *)
 let replace_empty index t =
   t.(index) <- { coords = coord_of_index dimx index; tile_type = Empty }
+
+let make_tile coords tile_type = { coords; tile_type }
 
 let set_tile tile t = t.(index_of_coord dimx tile.coords) <- tile
 
@@ -175,7 +181,7 @@ let rec make_pipes_board (pipes : tile list) board =
           let i = index_of_coord dimx h.coords in
           board.(i) <- h;
           make_pipes_board t board
-      | _ -> failwith "" )
+      | _ -> failwith "")
 
 let make_board entrance exit rooms =
   let board =

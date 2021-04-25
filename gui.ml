@@ -73,7 +73,12 @@ let tile_width = fst (Images.size player_image_cm)
 let tile_height = snd (Images.size player_image_cm)
 
 let board_to_gui (board_coords : Board.coord) =
-  { x = board_coords.x * tile_width; y = board_coords.y * tile_height }
+  {
+    x = Board.get_x board_coords * tile_width;
+    y = Board.get_y board_coords * tile_height;
+  }
+
+(* { x = board_coords.x * tile_width; y = board_coords.y * tile_height } *)
 
 let draw_at_coords img loc = Graphics.draw_image img loc.x loc.y
 
@@ -91,8 +96,8 @@ let choose_pipe_img p =
 let draw_board t =
   for i = 0 to get_size t - 1 do
     let tile = get_tile i t in
-    let obj_coords = tile.coords |> board_to_gui in
-    match tile.tile_type with
+    let obj_coords = Board.get_tile_coords tile |> board_to_gui in
+    match Board.get_tile_type tile with
     | Wall -> draw_at_coords (wall_image_gc ()) obj_coords
     | Pipe p -> draw_at_coords (choose_pipe_img p) obj_coords
     | Entrance -> draw_at_coords (entrance_image_gc ()) obj_coords

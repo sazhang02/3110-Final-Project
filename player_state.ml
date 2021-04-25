@@ -33,10 +33,10 @@ let get_move move p =
   let p_x = get_x (get_current_pos p) in
   let p_y = get_y (get_current_pos p) in
   match move with
-  | 'w' -> { x = p_x; y = p_y + 1 }
-  | 's' -> { x = p_x; y = p_y - 1 }
-  | 'a' -> { x = p_x - 1; y = p_y }
-  | 'd' -> { x = p_x + 1; y = p_y }
+  | 'w' -> make_coord p_x (p_y + 1) (* { x = p_x; y = p_y + 1 } *)
+  | 's' -> make_coord p_x (p_y - 1) (* { x = p_x; y = p_y - 1 } *)
+  | 'a' -> make_coord (p_x - 1) p_y (* { x = p_x - 1; y = p_y } *)
+  | 'd' -> make_coord (p_x + 1) p_y (* { x = p_x + 1; y = p_y } *)
   | _ -> raise (Failure "Unreachable")
 
 let player_next_level p t =
@@ -68,7 +68,8 @@ let check_tile tile p t =
   | Wall -> p
   | Pipe pipe ->
       {
-        current_tile = { coords = get_pipe_end pipe; tile_type = Empty };
+        current_tile = make_tile (get_pipe_end pipe) Empty;
+        (* { coords = get_pipe_end pipe; tile_type = Empty }; *)
         current_level = p.current_level;
         coins = p.coins;
       }
