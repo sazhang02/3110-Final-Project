@@ -33,17 +33,17 @@ let init_state (t : Levels.t) (bt : Board.t) =
     coins = 0;
   }
 
-let new_level_state (t : Levels.t) (bt : Board.t) f level_id =
+let new_level_state p (t : Levels.t) (bt : Board.t) f level_id =
   let current_tile = get_tile_c (offset_player t bt f level_id) bt in
-  { current_tile; current_level = level_id; coins = 0 }
+  { current_tile; current_level = level_id; coins = p.coins }
 
-let get_current_level (ps : p) = ps.current_level
+let get_current_level (p : p) = p.current_level
 
-let get_current_tile (ps : p) = ps.current_tile
+let get_current_tile (p : p) = p.current_tile
 
-let get_current_pos (ps : p) = get_tile_coords ps.current_tile
+let get_current_pos (p : p) = get_tile_coords p.current_tile
 
-let get_coins (ps : p) = ps.coins
+let get_coins (p : p) = p.coins
 
 (* Helper functions for update *)
 let get_move move_key p =
@@ -65,24 +65,31 @@ let check_orientation (tile : Board.tile) move (p : p) =
 
 let player_prev_level p t b =
   let old_level = prev_level t p.current_level in
-  new_level_state t b exit_pipe old_level
+  new_level_state p t b exit_pipe old_level
 
 let player_next_level p t b =
   let new_level = next_level t p.current_level in
-  new_level_state t b entrance_pipe new_level
+  new_level_state p t b entrance_pipe new_level
 
 let player_enter_pipe (pipe : Board.tile) move (p : p) =
   {
-    current_tile = make_tile (get_pipe_end_of_tile pipe) Empty;
+    current_tile = make_tile Empty (get_pipe_end_of_tile pipe);
     current_level = p.current_level;
     coins = p.coins;
   }
 
-let check_coin (tile : tile) collected p t =
-  let coins = if not collected then p.coins + 1 else p.coins in
-  let current_tile = make_tile (get_tile_coords tile) (Coin true) in
+let check_coin (tile : tile) p t =
+  let coins =
+    if get_tile_type tile = Coin then p.coins + 1 else p.coins
+  in
+  let current_tile = make_tile Empty (get_tile_coords tile) in
   print_endline ("Coins: " ^ string_of_int coins);
   { current_tile; current_level = p.current_level; coins }
+
+(* let coins = if not collected then p.coins + 1 else p.coins in let
+   current_tile = make_tile (Coin true) (get_tile_coords tile) in
+   print_endline ("Coins: " ^ string_of_int coins); { current_tile;
+   current_level = p.current_level; coins } *)
 
 let player_next_tile tile p t =
   {
@@ -104,7 +111,8 @@ let check_tile tile p t b move =
   | Exit _ ->
       if check_orientation tile move p then player_next_level p t b
       else p
-  | Coin collected -> check_coin tile collected p t
+  | Coin -> check_coin tile p t
+  (* | Coin collected -> check_coin tile collected p t *)
   | Empty -> player_next_tile tile p t
 
 let update (move_key : char) p t b =
@@ -113,5 +121,5 @@ let update (move_key : char) p t b =
   check_tile next_tile p t b predicted_move
 
 let make_player_state x y tile_type level coins =
-  let tile = make_tile (make_coord x y) tile_type in
+  let tile = make_tile tile_type (make_coord x y) in
   { current_tile = tile; current_level = level; coins }

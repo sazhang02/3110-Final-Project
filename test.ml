@@ -78,14 +78,14 @@ let levels_tests =
     (*entrance/exit pipe tests*)
     entrance_pipe_test
       "entr pipe test: basic, level 0. entrance pos : (0, 1)" basic 0
-      (make_tile (make_coord 0 1) (Entrance Right));
+      (make_tile (Entrance Right) (make_coord 0 1));
     (* { coords = { x = 0; y = 1 }; tile_type = Entrance }; *)
     exit_pipe_test "exit pipe test: basic, level 0. exit pos : (1, 0)"
       basic 0
-      (make_tile (make_coord 1 0) (Exit Up));
+      (make_tile (Exit Up) (make_coord 1 0));
     entrance_pipe_test
       "entr pipe test: basic, level 1. entrance pos : (3, 4)" basic 1
-      (make_tile (make_coord 3 4) (Entrance Up));
+      (make_tile (Entrance Up) (make_coord 3 4));
     (* { coords = { x = 3; y = 4 }; tile_type = Entrance }; *)
     (* invalid_test "exit pipe test: basic, level 1. exit pos : (-1, -1)
        raises \ InvalidTile" exit_pipe basic 1 (InvalidTile { x = -1; y
@@ -176,8 +176,8 @@ let board_tests =
     get_end_coord_test "Blue Down"
       (make_pipe_tile (make_coord 4 14) Blue Down)
       (make_coord 13 11);
-    (* (let board = Levels.make_board basic 3 in board_to_string_test
-       "board" board ""); *)
+    (let board = Levels.make_board basic 4 in
+     board_to_string_test "board" board "");
     (* let coord = make_coord 0 0 in let entrance = make_tile coord
        Entrance in let exit = { coords = { x = 1; y = 1 }; tile_type =
        Exit } in let rooms = [] in let t = make_board entrance exit
@@ -242,10 +242,10 @@ let player_state_tests =
     (* current_tile tests *)
     get_current_tile_test
       "current tile test: basic initial tile is entrance" start_st
-      (make_tile (make_coord 1 1) Empty);
+      (make_tile Empty (make_coord 1 1));
     get_current_tile_test
       "current tile test: middle initial tile is empty" middle_st
-      (make_tile (make_coord 2 2) Empty);
+      (make_tile Empty (make_coord 2 2));
     (* current_position tests *)
     get_current_pos_test
       "current position test: basic initial position is (1, 1)" start_st
@@ -272,7 +272,6 @@ let player_state_tests =
 
 let suite =
   "test suite for A2"
-  >::: List.flatten
-         [ (*levels_tests; board_tests; *) player_state_tests ]
+  >::: List.flatten [ levels_tests; board_tests; player_state_tests ]
 
 let _ = run_test_tt_main suite

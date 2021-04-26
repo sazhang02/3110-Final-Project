@@ -34,7 +34,7 @@ type tile_type =
   | Entrance of orientation
   | Exit of orientation
   | Empty
-  | Coin of bool
+  | Coin
 
 type tile = {
   coords : coord;
@@ -69,7 +69,7 @@ let coord_of_index dimx index = { x = index mod dimx; y = index / dimx }
 let replace_empty index t =
   t.(index) <- { coords = coord_of_index dimx index; tile_type = Empty }
 
-let make_tile coords tile_type = { coords; tile_type }
+let make_tile tile_type coords = { coords; tile_type }
 
 let set_tile tile t = t.(index_of_coord dimx tile.coords) <- tile
 
@@ -152,8 +152,9 @@ let pipe_end start color orientation =
 let make_pipe_tile entrance color orientation =
   let end_coords = pipe_end entrance color orientation in
   let pipe = { end_coords; orientation; color } in
-  { coords = entrance; tile_type = Pipe pipe }
+  make_tile (Pipe pipe) entrance
 
+(** [make_room room t] adds [room] to board [t]. *)
 let make_room room t =
   for i = room.bl_start.x to room.tr_end.x do
     for j = room.bl_start.y to room.tr_end.y do
@@ -163,19 +164,15 @@ let make_room room t =
   done;
   t
 
+(* [make_rooms_board rooms t] adds rooms in [rooms] to board [t]. *)
 let rec make_rooms_board rooms board =
   match rooms with
   | [] -> board
   | h :: t -> make_rooms_board t (make_room h board)
 
-(* let array_tester t = for i = 0 to Array.length t - 1 do match
-   t.(i).tile_type with | Entrance _ -> print_endline "entrance" | Exit
-   _ -> print_endline "exit" | Empty _ -> () | Wall -> () | Pipe {
-   end_coords; orientation; color } -> () done *)
-
-(** [make_pipes_board pipes t] adds pipe tiles [pipes] in board [t].
-    Requires: the elements of pipes are tiles with tile_type pipe. *)
-let rec make_pipes_board (pipes : tile list) board =
+(** [add_tiles lst t] adds pipe tiles [pipes] in board [t]. Requires:
+    the elements of [lst] are Pipe or Coin tiles. *)
+let rec add_tiles (pipes : tile list) board =
   match pipes with
   | [] -> board
   | h :: t -> (
@@ -183,8 +180,12 @@ let rec make_pipes_board (pipes : tile list) board =
       | Pipe pipe ->
           let i = index_of_coord dimx h.coords in
           board.(i) <- h;
-          make_pipes_board t board
-      | _ -> failwith "")
+          add_tiles t board
+      | Coin ->
+          let i = index_of_coord dimx h.coords in
+          board.(i) <- h;
+          add_tiles t board
+      | _ -> failwith "" )
 
 (** [make_board en ex r] makes a board with entrance [en], exit [ex],
     and rooms [r]. *)
@@ -201,10 +202,12 @@ let make_board entrance exit rooms =
   set_tile exit board;
   board
 
-let alla_board entrance exit rooms pipes =
+let alla_board entrance exit rooms pipes coins =
   let board = make_board entrance exit rooms in
-  make_pipes_board pipes board
+  let board = add_tiles pipes board in
+  add_tiles coins board
 
+(** [tile_to_string tile] is the string representation of a tile. *)
 let tile_to_string tile =
   match tile.tile_type with
   | Wall -> "W"
@@ -213,11 +216,11 @@ let tile_to_string tile =
       | Right -> ">"
       | Left -> "<"
       | Up -> "^"
-      | Down -> "v")
+      | Down -> "v" )
   | Entrance _ -> "I"
   | Exit _ -> "O"
   | Empty -> " "
-  | Coin _ -> "C"
+  | Coin -> "c"
 
 let board_to_string (board : t) =
   let str = ref "\n" in

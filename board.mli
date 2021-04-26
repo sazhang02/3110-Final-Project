@@ -21,7 +21,7 @@ type tile_type =
   | Entrance of orientation
   | Exit of orientation
   | Empty
-  | Coin of bool
+  | Coin
 
 type room
 
@@ -50,7 +50,7 @@ val make_coord : int -> int -> coord
 val get_tile : int -> t -> tile
 
 (** [make_tile i tt] is a tile with coord at [i] and tile_type [tt]*)
-val make_tile : coord -> tile_type -> tile
+val make_tile : tile_type -> coord -> tile
 
 (** [get_tile_coords t] is the coordinates of tile [t]. *)
 val get_tile_coords : tile -> coord
@@ -58,13 +58,13 @@ val get_tile_coords : tile -> coord
 (** [get_tile_type t] is the tile_type of tile [t]*)
 val get_tile_type : tile -> tile_type
 
-(** [get_tile_c c t] is the tile at coordinates [c] of level [t]. *)
+(** [get_tile_c c t] is the tile at coordinates [c] of board [t]. *)
 val get_tile_c : coord -> t -> tile
 
 (** [get_size t] is the number of tiles in level [t]. *)
 val get_size : t -> int
 
-(** [set_tile tile x t] adds [tile] in level [t]. *)
+(** [set_tile tile x t] replaces the existing tile is [t] with [tile]. *)
 val set_tile : tile -> t -> unit
 
 (** [get_pipe_end_of_tile t] is the end coordinate pair of pipe in tile
@@ -74,11 +74,11 @@ val get_pipe_end_of_tile : tile -> coord
 (** [get_pipe_color p] is the color of pipe [p]. *)
 val get_pipe_color : pipe -> color
 
-(* * [get_pipe_oreintation p] is the direction pipe [p] is facing. val
-   get_pipe_orientation : pipe -> orientation *)
+(** [get_pipe_oreintation p] is the direction pipe [p] is facing. val
+    get_pipe_orientation : pipe -> orientation *)
 
-(**[get_tile_orientation t] is the orientation of the tile [t]. Only
-   [Entrance], [Exit], [Pipe] have orientations.*)
+(** [get_tile_orientation t] is the orientation of the tile [t].
+    Requires: tile has tile_type [Entrance], [Exit], or [Pipe]. *)
 val get_tile_orientation : tile -> orientation
 
 (** [make_pipe_tile e c o] is the tile at coordinate [e] and tile type
@@ -89,10 +89,10 @@ val make_pipe_tile : coord -> color -> orientation -> tile
     [s] and top-right coordinate is [e]. *)
 val room_of_coords : coord -> coord -> room
 
-(** [alla_board en ex rooms pipes] makes a level with "alla" the
-    properties: entrance [en], exit [ex], rooms [rooms], and pipes
-    [pipes]. *)
-val alla_board : tile -> tile -> room list -> tile list -> t
+(** [alla_board en ex rooms pipes coins] makes a level with "alla" the
+    properties: entrance [en], exit [ex], [rooms], [pipes], and [coins]. *)
+val alla_board :
+  tile -> tile -> room list -> tile list -> tile list -> t
 
 (** [board_to_string t] is the string representation of board [t]. *)
 val board_to_string : t -> string

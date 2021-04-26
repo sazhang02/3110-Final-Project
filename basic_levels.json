@@ -181,8 +181,8 @@
       ],
       "coins": [
         {
-          "x": 10,
-          "y": 10
+          "x": 9,
+          "y": 9
         },
         {
           "x": 13,
@@ -923,12 +923,6 @@
           "y": 12,
           "color": "Green",
           "orientation": "Right"
-        },
-        {
-          "x": 15,
-          "y": 12,
-          "color": "Black",
-          "orientation": "Left"
         },
         {
           "x": 3,
