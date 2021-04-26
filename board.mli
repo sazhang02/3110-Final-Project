@@ -64,9 +64,6 @@ val get_size : t -> int
 (** [set_tile tile x t] adds [tile] in level [t]. *)
 val set_tile : tile -> t -> unit
 
-(** [get_pipe_end p] is the end coordinate pair of pipe [p]. *)
-val get_pipe_end : pipe -> coord
-
 (** [get_pipe_end_of_tile t] is the end coordinate pair of pipe in tile
     [t]. *)
 val get_pipe_end_of_tile : tile -> coord
@@ -83,7 +80,7 @@ val get_tile_orientation : tile -> orientation
 
 (** [make_pipe_tile e c o] is the tile at coordinate [e] and tile type
     pipe with color [c] and orientation [o]. *)
-val make_pipe_tile_pair : coord -> color -> orientation -> tile list
+val make_pipe_tile : coord -> color -> orientation -> tile
 
 (** [room_of_coords s e] makes a [room] whose bottom-left coordinate is
     [s] and top-right coordinate is [e]. *)
@@ -93,4 +90,9 @@ val room_of_coords : coord -> coord -> room
     [ex], and rooms [lst]. *)
 val make_board : tile -> tile -> room list -> t
 
+(** [alla_board en ex rooms pipes] makes a level with entrance [en],
+    exit [ex], rooms [rooms], and pipes [pipes]. *)
 val alla_board : tile -> tile -> room list -> tile list -> t
+
+(** [board_to_string t] is the string representation of board [t]. *)
+val board_to_string : t -> string

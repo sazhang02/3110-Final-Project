@@ -144,14 +144,11 @@ let prev_level (levels : t) (id : level_id) : level_id =
 
 let rooms_list level = level.rooms
 
-let pipe_info_to_tile_pair (pipe_info : pipe_info) : tile list =
-  make_pipe_tile_pair pipe_info.pos pipe_info.color
-    pipe_info.orientation
+let pipe_info_to_tile (pipe_info : pipe_info) : tile =
+  make_pipe_tile pipe_info.pos pipe_info.color pipe_info.orientation
 
 let pipes_list (pipe_info_lst : pipe_info list) : Board.tile list =
-  let pipes =
-    List.map pipe_info_to_tile_pair pipe_info_lst |> List.flatten
-  in
+  let pipes = List.map pipe_info_to_tile pipe_info_lst in
   print_endline (List.length pipes |> string_of_int);
   pipes
 

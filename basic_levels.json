@@ -43,10 +43,22 @@
           "orientation": "Right"
         },
         {
+          "x": 15,
+          "y": 2,
+          "color": "Green",
+          "orientation": "Left"
+        },
+        {
           "x": 4,
           "y": 0,
           "color": "Gold",
           "orientation": "Up"
+        },
+        {
+          "x": 11,
+          "y": 15,
+          "color": "Gold",
+          "orientation": "Down"
         }
       ]
     },
@@ -77,16 +89,22 @@
       ],
       "pipes": [
         {
-          "x": 2,
-          "y": 2,
-          "color": "Green",
-          "orientation": "Right"
+          "x": 6,
+          "y": 0,
+          "color": "Red",
+          "orientation": "Up"
         },
         {
-          "x": 4,
-          "y": 4,
-          "color": "Green",
+          "x": 9,
+          "y": 0,
+          "color": "Gold",
           "orientation": "Up"
+        },
+        {
+          "x": 6,
+          "y": 15,
+          "color": "Green",
+          "orientation": "Down"
         }
       ]
     },

@@ -24,13 +24,17 @@ let tile_to_string tile =
   | Wall -> "Wall @ " ^ coords
   | Pipe pipe ->
       "Pipe @ " ^ coords ^ ". End coords @ "
-      ^ coords_to_string (get_pipe_end pipe)
+      ^ coords_to_string (get_pipe_end_of_tile tile)
       ^ ". Orientation "
       ^ orientation_to_string (get_tile_orientation tile)
       ^ ". Color "
       ^ color_to_string (get_pipe_color pipe)
-  | Entrance _ -> "Entrance @ " ^ coords
-  | Exit _ -> "Exit @ " ^ coords
+  | Entrance _ ->
+      "Entrance @ " ^ coords ^ ". Orientation "
+      ^ orientation_to_string (get_tile_orientation tile)
+  | Exit _ ->
+      "Exit @ " ^ coords ^ ". Orientation "
+      ^ orientation_to_string (get_tile_orientation tile)
   | Empty -> "Blank @ " ^ coords
 
 let entrance_pipe_test name t id expected =
@@ -75,7 +79,7 @@ let levels_tests =
       (make_tile (make_coord 1 0) (Exit Up));
     entrance_pipe_test
       "entr pipe test: basic, level 1. entrance pos : (3, 4)" basic 1
-      (make_tile (make_coord 3 4) (Entrance Right));
+      (make_tile (make_coord 3 4) (Entrance Up));
     (* { coords = { x = 3; y = 4 }; tile_type = Entrance }; *)
     (* invalid_test "exit pipe test: basic, level 1. exit pos : (-1, -1)
        raises \ InvalidTile" exit_pipe basic 1 (InvalidTile { x = -1; y
@@ -98,16 +102,31 @@ let levels_tests =
 
 let get_tile_test name index t expected =
   name >:: fun _ ->
-  assert_equal expected (tile_to_string (get_tile index t))
+  assert_equal expected (get_tile index t) ~printer:tile_to_string
 
-let make_tile_pair_test name entrance color orientation expected =
+let get_end_coord_test name tile expected =
   name >:: fun _ ->
   assert_equal expected
-    (make_pipe_tile_pair entrance color orientation)
-    ~printer:(pp_list tile_to_string)
+    (get_pipe_end_of_tile tile)
+    ~printer:coords_to_string
+
+let board_to_string_test name board expected =
+  name >:: fun _ ->
+  assert_equal expected (board_to_string board) ~printer:Fun.id
 
 let board_tests =
-  [ (* let coord = make_coord 0 0 in let entrance = make_tile coord
+  [
+    get_end_coord_test
+      "Green Right pipe at (0, 2) has end coord (15, 2)"
+      (make_pipe_tile (make_coord 0 2) Green Right)
+      (make_coord 14 2);
+    get_end_coord_test "Gold Up pipe at (4, 0) has end coord (11, 15)"
+      (make_pipe_tile (make_coord 4 0) Gold Up)
+      (make_coord 11 14);
+    get_end_coord_test "Red Up pipe at (6, 0) has end coord (9, 1)"
+      (make_pipe_tile (make_coord 6 0) Red Up)
+      (make_coord 9 1);
+    (* let coord = make_coord 0 0 in let entrance = make_tile coord
        Entrance in let exit = { coords = { x = 1; y = 1 }; tile_type =
        Exit } in let rooms = [] in let t = make_board entrance exit
        rooms in *)
@@ -124,7 +143,8 @@ let board_tests =
        1) ; tile_type = Pipe { end_coords = { x = 14; y = 1 };
        orientation = Right; color = Green; }; }; { coords = { x = 15; y
        = 1 }; tile_type = Pipe { end_coords = { x = 1; y = 1 };
-       orientation = Left; color = Green; }; }; ]; *) ]
+       orientation = Left; color = Green; }; }; ]; *)
+  ]
 
 (* let example_board = Levels.make_board basic 0 *)
 
@@ -160,6 +180,6 @@ let player_state_tests =
 
 let suite =
   "test suite for A2"
-  >::: List.flatten [ levels_tests; player_state_tests ]
+  >::: List.flatten [ levels_tests; player_state_tests; board_tests ]
 
 let _ = run_test_tt_main suite
