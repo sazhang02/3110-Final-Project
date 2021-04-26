@@ -15,6 +15,8 @@ type pipe_info = {
   orientation : Board.orientation;
 }
 
+(* type coin = { pos : Board.coord } *)
+
 type level = {
   level_id : level_id;
   entrance_pos : entr_ex_info;
@@ -22,6 +24,7 @@ type level = {
   exit_id : level_id;
   rooms : room list;
   pipes : pipe_info list;
+  coins : pos list;
 }
 
 type t = { levels : level list }
@@ -38,14 +41,14 @@ let get_tile_type tile = get_tile_type tile
 
 let get_levels t = t.levels
 
-let pos_of_json_tile j =
+let pos_of_json j =
   let x = j |> member "x" |> to_int in
   let y = j |> member "y" |> to_int in
   make_coord x y
 
 let room_of_json j =
-  let bot = j |> member "start" |> pos_of_json_tile in
-  let top = j |> member "end" |> pos_of_json_tile in
+  let bot = j |> member "start" |> pos_of_json in
+  let top = j |> member "end" |> pos_of_json in
   room_of_coords bot top
 
 let color_of_string str =
@@ -53,6 +56,7 @@ let color_of_string str =
   | "Red" -> Red
   | "Gold" -> Gold
   | "Green" -> Green
+  | "Blue" -> Blue
   | _ -> failwith "Invalid Color"
 
 let orient_of_string str =
@@ -90,6 +94,7 @@ let level_of_json j =
     exit_id = j |> member "exit_id" |> to_int;
     rooms = j |> member "rooms" |> to_list |> List.map room_of_json;
     pipes = j |> member "pipes" |> to_list |> List.map pipes_of_json;
+    coins = j |> member "coins" |> to_list |> List.map pos_of_json;
   }
 
 let from_json j =
@@ -132,8 +137,6 @@ let exit_id level = level.exit_id
 let check_level_validity id =
   if id < 0 then raise (UnknownLevel id) else id
 
-(* id *)
-
 let next_level (levels : t) (id : level_id) : level_id =
   map_level id levels.levels exit_id |> check_level_validity
 
@@ -154,6 +157,8 @@ let pipes_list (pipe_info_lst : pipe_info list) : Board.tile list =
 
 let pipes_info_list level = level.pipes
 
+let coins_list level = level.coins
+
 let make_board levels id =
   let entr = entrance_pipe levels id in
   let exit = exit_pipe levels id in
@@ -162,4 +167,5 @@ let make_board levels id =
   let pipes =
     map_level id levels.levels pipes_info_list |> pipes_list
   in
+  (* let coins = map_level id levels.levels coins_list in *)
   alla_board entr exit rooms pipes

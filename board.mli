@@ -4,6 +4,7 @@ type color =
   | Green
   | Red
   | Gold
+  | Blue
 
 type orientation =
   | Left
@@ -19,6 +20,7 @@ type tile_type =
   | Entrance of orientation
   | Exit of orientation
   | Empty
+  | Coin of bool
 
 type room
 
@@ -86,12 +88,9 @@ val make_pipe_tile : coord -> color -> orientation -> tile
     [s] and top-right coordinate is [e]. *)
 val room_of_coords : coord -> coord -> room
 
-(** [make_board en ex lst t] makes a level with entrance [en], exit
-    [ex], and rooms [lst]. *)
-val make_board : tile -> tile -> room list -> t
-
-(** [alla_board en ex rooms pipes] makes a level with entrance [en],
-    exit [ex], rooms [rooms], and pipes [pipes]. *)
+(** [alla_board en ex rooms pipes] makes a level with "alla" the
+    properties: entrance [en], exit [ex], rooms [rooms], and pipes
+    [pipes]. *)
 val alla_board : tile -> tile -> room list -> tile list -> t
 
 (** [board_to_string t] is the string representation of board [t]. *)

@@ -125,11 +125,9 @@ let rec get_input player player_img prev_image =
   | 'd' -> move_player 'd'
   | 'q' -> close_graph ()
   | 'p' ->
-      print_endline "INCREASE";
       let resized_player = increase_zoom player player_img in
       get_input player resized_player prev_image
   | 'm' ->
-      print_endline "DECREASE";
       let resized_player = decrease_zoom player player_img in
       get_input player resized_player prev_image
   | _ -> get_input player player_img prev_image

@@ -31,10 +31,12 @@ val tile_width : scaling -> int
 
 val tile_height : scaling -> int
 
-(** [player_image_gc ()] is [player_image_cm] as a Graphics.image. *)
+(** [player_image_gc scaling] is [player_image_cm] as a Graphics.image
+    with size scaling. *)
 val player_image_gc : scaling -> Graphics.image
 
-(** [floor_image_gc ()] is [floor_image_cm] as a Graphics.image. *)
+(** [floor_image_gc scaling] is [floor_image_cm] as a Graphics.image
+    with size scaling. *)
 val floor_image_gc : scaling -> Graphics.image
 
 (** [load_png png_name] is the Images.t equivalent of the png file with

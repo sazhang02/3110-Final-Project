@@ -38,6 +38,5 @@ val get_coins : p -> int
 
 val update : char -> p -> Levels.t -> Board.t -> p
 
-(** The type representing the result of an attempted movement. *)
-
-(* type result = | Legal of p | Illegal *)
+val make_player_state :
+  int -> int -> Board.tile_type -> level_id -> int -> p

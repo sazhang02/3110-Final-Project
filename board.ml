@@ -13,6 +13,7 @@ type color =
   | Green
   | Red
   | Gold
+  | Blue
 
 type room = {
   bl_start : coord;
@@ -32,6 +33,7 @@ type tile_type =
   | Entrance of orientation
   | Exit of orientation
   | Empty
+  | Coin of bool
 
 type tile = {
   coords : coord;
@@ -76,8 +78,8 @@ let get_tile_c (coord : coord) (t : t) = t.(index_of_coord dimx coord)
 
 let get_size (t : t) = Array.length t
 
-let get_tile_orientation e =
-  match e.tile_type with
+let get_tile_orientation tile =
+  match tile.tile_type with
   | Entrance o -> o
   | Exit o -> o
   | Pipe pipe -> pipe.orientation
@@ -92,15 +94,6 @@ let get_pipe_end_of_tile tile =
   | _ -> failwith "Not a pipe"
 
 let get_pipe_color pipe = pipe.color
-
-(* let get_pipe_orientation pipe = pipe.orientation *)
-
-(** [true_reflect orientation start] is the [coord] of the exit pipe
-    itself. *)
-let true_reflect orientation start : coord =
-  match orientation with
-  | Right | Left -> { x = dimx - start.x - 1; y = start.y }
-  | Up | Down -> { x = start.x; y = dimy - start.y - 1 }
 
 (** [reflect_green orientation start] is the [coord] in front of the
     exit of a green pipe at [start] facing [orientation]. *)
@@ -123,24 +116,34 @@ let reflect_red orientation start : coord =
 (** [reflect_gold o start] is the [coord] in front of the exit of a gold
     pipe at [start] facing [o]. *)
 let reflect_gold orientation start =
-  true_reflect orientation (reflect_red orientation start)
+  match orientation with
+  | Right -> { x = dimx - start.x - 2; y = dimy - start.y - 1 }
+  | Left -> { x = dimx - start.x; y = dimy - start.y - 1 }
+  | Up -> { x = dimx - start.x - 1; y = dimy - start.y - 2 }
+  | Down -> { x = dimx - start.x - 1; y = dimy - start.y }
 
-let rotate_blue orientation start = failwith ""
+(** [rotate_blue o start] is the [coord] in front of the exit of a blue
+    pipe at [start] facing [o]. *)
+let rotate_blue orientation start =
+  match orientation with
+  | Right -> { x = start.y; y = dimx - start.x - 2 }
+  | Left -> { x = start.y; y = dimx - start.x }
+  | Up -> { x = start.y + 1; y = dimx - start.x - 1 }
+  | Down -> { x = start.y - 1; y = dimx - start.x - 1 }
+
+(** [pipe_end s c o] is the [coord] that a pipe at coords [s] facing [o]
+    with color [c] leads to. *)
+let pipe_end start color orientation =
+  match color with
+  | Green -> reflect_green orientation start
+  | Red -> reflect_red orientation start
+  | Gold -> reflect_gold orientation start
+  | Blue -> rotate_blue orientation start
 
 let make_pipe_tile entrance color orientation =
-  match color with
-  | Green ->
-      let end_coords = reflect_green orientation entrance in
-      let pipe = { end_coords; orientation; color = Green } in
-      { coords = entrance; tile_type = Pipe pipe }
-  | Red ->
-      let end_coords = reflect_red orientation entrance in
-      let pipe = { end_coords; orientation; color = Red } in
-      { coords = entrance; tile_type = Pipe pipe }
-  | Gold ->
-      let end_coords = reflect_gold orientation entrance in
-      let pipe = { end_coords; orientation; color = Gold } in
-      { coords = entrance; tile_type = Pipe pipe }
+  let end_coords = pipe_end entrance color orientation in
+  let pipe = { end_coords; orientation; color } in
+  { coords = entrance; tile_type = Pipe pipe }
 
 let make_room room t =
   for i = room.bl_start.x to room.tr_end.x do
@@ -156,15 +159,10 @@ let rec make_rooms_board rooms board =
   | [] -> board
   | h :: t -> make_rooms_board t (make_room h board)
 
-let array_tester t =
-  for i = 0 to Array.length t - 1 do
-    match t.(i).tile_type with
-    | Entrance _ -> print_endline "entrance"
-    | Exit _ -> print_endline "exit"
-    | Empty -> ()
-    | Wall -> ()
-    | Pipe { end_coords; orientation; color } -> ()
-  done
+(* let array_tester t = for i = 0 to Array.length t - 1 do match
+   t.(i).tile_type with | Entrance _ -> print_endline "entrance" | Exit
+   _ -> print_endline "exit" | Empty _ -> () | Wall -> () | Pipe {
+   end_coords; orientation; color } -> () done *)
 
 (** [make_pipes_board pipes t] adds pipe tiles [pipes] in board [t].
     Requires: the elements of pipes are tiles with tile_type pipe. *)
@@ -177,8 +175,10 @@ let rec make_pipes_board (pipes : tile list) board =
           let i = index_of_coord dimx h.coords in
           board.(i) <- h;
           make_pipes_board t board
-      | _ -> failwith "")
+      | _ -> failwith "" )
 
+(** [make_board en ex r] makes a board with entrance [en], exit [ex],
+    and rooms [r]. *)
 let make_board entrance exit rooms =
   let board =
     make_rooms_board rooms
@@ -204,43 +204,20 @@ let tile_to_string tile =
       | Right -> ">"
       | Left -> "<"
       | Up -> "^"
-      | Down -> "v")
+      | Down -> "v" )
   | Entrance _ -> "I"
   | Exit _ -> "O"
   | Empty -> " "
+  | Coin _ -> "C"
 
 let board_to_string (board : t) =
-  let str = ref "" in
-  for i = dimy - 1 to 0 do
+  let str = ref "\n" in
+  for i = 0 to dimy - 1 do
     for j = 0 to dimx - 1 do
       str :=
-        !str ^ "|" ^ tile_to_string (get_tile_c { x = j; y = i } board)
+        !str ^ "|"
+        ^ tile_to_string (get_tile_c { x = j; y = dimy - 1 - i } board)
     done;
     str := !str ^ "|\n"
   done;
   !str
-
-(* let flip_orientation o = match o with Right -> Left | Left -> Right |
-   Up -> Down | Down -> Up *)
-
-(* let red_pipe_pair entrance orientation : tile list = let pipe1 =
-   make_pipe_tile entrance Red orientation in let pipe2 = let en = match
-   orientation with | Right | Left -> true_reflect Up entrance | Up |
-   Down -> true_reflect Right entrance in make_pipe_tile en Red
-   orientation in [ pipe1; pipe2 ]
-
-   let green_pipe_pair entrance orientation : tile list = let pipe1 =
-   make_pipe_tile entrance Green orientation in let pipe2 =
-   make_pipe_tile (true_reflect orientation entrance) Green
-   (flip_orientation orientation) in [ pipe1; pipe2 ]
-
-   let gold_pipe_pair entrance orientation = let pipe1 = make_pipe_tile
-   entrance Gold orientation in let pipe2 = make_pipe_tile
-   (reflect_green (flip_orientation orientation) (reflect_red
-   orientation entrance)) Gold (flip_orientation orientation) in [
-   pipe1; pipe2 ] *)
-
-(* let make_pipe_tile_pair entrance color orientation : tile list =
-   match color with | Green -> green_pipe_pair entrance orientation |
-   Red -> red_pipe_pair entrance orientation | Gold -> gold_pipe_pair
-   entrance orientation *)

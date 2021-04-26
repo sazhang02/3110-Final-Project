@@ -60,6 +60,16 @@
           "color": "Gold",
           "orientation": "Down"
         }
+      ],
+      "coins": [
+        {
+          "x": 10,
+          "y": 10
+        },
+        {
+          "x": 13,
+          "y": 3
+        }
       ]
     },
     {
@@ -106,6 +116,16 @@
           "color": "Green",
           "orientation": "Down"
         }
+      ],
+      "coins": [
+        {
+          "x": 10,
+          "y": 10
+        },
+        {
+          "x": 13,
+          "y": 3
+        }
       ]
     },
     {
@@ -120,7 +140,7 @@
         "y": 1,
         "orientation": "Right"
       },
-      "exit_id": -2,
+      "exit_id": 3,
       "rooms": [
         {
           "start": {
@@ -145,6 +165,362 @@
           "y": 0,
           "color": "Green",
           "orientation": "Up"
+        },
+        {
+          "x": 15,
+          "y": 2,
+          "color": "Green",
+          "orientation": "Left"
+        },
+        {
+          "x": 4,
+          "y": 15,
+          "color": "Green",
+          "orientation": "Down"
+        }
+      ],
+      "coins": [
+        {
+          "x": 10,
+          "y": 10
+        },
+        {
+          "x": 13,
+          "y": 3
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "entrance": {
+        "x": 1,
+        "y": 3,
+        "orientation": "Right"
+      },
+      "exit": {
+        "x": 5,
+        "y": 9,
+        "orientation": "Left"
+      },
+      "exit_id": -2,
+      "rooms": [
+        {
+          "start": {
+            "x": 2,
+            "y": 2
+          },
+          "end": {
+            "x": 4,
+            "y": 4
+          }
+        },
+        {
+          "start": {
+            "x": 6,
+            "y": 2
+          },
+          "end": {
+            "x": 11,
+            "y": 4
+          }
+        },
+        {
+          "start": {
+            "x": 8,
+            "y": 6
+          },
+          "end": {
+            "x": 13,
+            "y": 6
+          }
+        },
+        {
+          "start": {
+            "x": 13,
+            "y": 2
+          },
+          "end": {
+            "x": 13,
+            "y": 6
+          }
+        },
+        {
+          "start": {
+            "x": 2,
+            "y": 6
+          },
+          "end": {
+            "x": 5,
+            "y": 9
+          }
+        },
+        {
+          "start": {
+            "x": 6,
+            "y": 6
+          },
+          "end": {
+            "x": 6,
+            "y": 6
+          }
+        },
+        {
+          "start": {
+            "x": 8,
+            "y": 8
+          },
+          "end": {
+            "x": 9,
+            "y": 9
+          }
+        },
+        {
+          "start": {
+            "x": 12,
+            "y": 8
+          },
+          "end": {
+            "x": 13,
+            "y": 11
+          }
+        },
+        {
+          "start": {
+            "x": 2,
+            "y": 11
+          },
+          "end": {
+            "x": 2,
+            "y": 13
+          }
+        },
+        {
+          "start": {
+            "x": 4,
+            "y": 11
+          },
+          "end": {
+            "x": 6,
+            "y": 13
+          }
+        },
+        {
+          "start": {
+            "x": 7,
+            "y": 12
+          },
+          "end": {
+            "x": 9,
+            "y": 13
+          }
+        },
+        {
+          "start": {
+            "x": 11,
+            "y": 13
+          },
+          "end": {
+            "x": 13,
+            "y": 13
+          }
+        }
+      ],
+      "pipes": [
+        {
+          "x": 2,
+          "y": 1,
+          "color": "Blue",
+          "orientation": "Up"
+        },
+        {
+          "x": 4,
+          "y": 1,
+          "color": "Blue",
+          "orientation": "Up"
+        },
+        {
+          "x": 6,
+          "y": 1,
+          "color": "Blue",
+          "orientation": "Up"
+        },
+        {
+          "x": 9,
+          "y": 1,
+          "color": "Blue",
+          "orientation": "Up"
+        },
+        {
+          "x": 11,
+          "y": 1,
+          "color": "Blue",
+          "orientation": "Up"
+        },
+        {
+          "x": 13,
+          "y": 1,
+          "color": "Blue",
+          "orientation": "Up"
+        },
+        {
+          "x": 14,
+          "y": 2,
+          "color": "Blue",
+          "orientation": "Left"
+        },
+        {
+          "x": 14,
+          "y": 4,
+          "color": "Blue",
+          "orientation": "Left"
+        },
+        {
+          "x": 14,
+          "y": 6,
+          "color": "Blue",
+          "orientation": "Left"
+        },
+        {
+          "x": 14,
+          "y": 9,
+          "color": "Blue",
+          "orientation": "Left"
+        },
+        {
+          "x": 14,
+          "y": 11,
+          "color": "Blue",
+          "orientation": "Left"
+        },
+        {
+          "x": 14,
+          "y": 13,
+          "color": "Blue",
+          "orientation": "Left"
+        },
+        {
+          "x": 2,
+          "y": 14,
+          "color": "Blue",
+          "orientation": "Down"
+        },
+        {
+          "x": 4,
+          "y": 14,
+          "color": "Blue",
+          "orientation": "Down"
+        },
+        {
+          "x": 6,
+          "y": 14,
+          "color": "Blue",
+          "orientation": "Down"
+        },
+        {
+          "x": 9,
+          "y": 14,
+          "color": "Blue",
+          "orientation": "Down"
+        },
+        {
+          "x": 11,
+          "y": 14,
+          "color": "Blue",
+          "orientation": "Down"
+        },
+        {
+          "x": 13,
+          "y": 14,
+          "color": "Blue",
+          "orientation": "Down"
+        },
+        {
+          "x": 1,
+          "y": 2,
+          "color": "Blue",
+          "orientation": "Right"
+        },
+        {
+          "x": 1,
+          "y": 4,
+          "color": "Blue",
+          "orientation": "Right"
+        },
+        {
+          "x": 1,
+          "y": 6,
+          "color": "Blue",
+          "orientation": "Right"
+        },
+        {
+          "x": 1,
+          "y": 9,
+          "color": "Blue",
+          "orientation": "Right"
+        },
+        {
+          "x": 1,
+          "y": 11,
+          "color": "Blue",
+          "orientation": "Right"
+        },
+        {
+          "x": 1,
+          "y": 13,
+          "color": "Blue",
+          "orientation": "Right"
+        },
+        {
+          "x": 7,
+          "y": 11,
+          "color": "Blue",
+          "orientation": "Up"
+        },
+        {
+          "x": 11,
+          "y": 8,
+          "color": "Blue",
+          "orientation": "Right"
+        },
+        {
+          "x": 8,
+          "y": 6,
+          "color": "Blue",
+          "orientation": "Right"
+        },
+        {
+          "x": 6,
+          "y": 7,
+          "color": "Gold",
+          "orientation": "Down"
+        },
+        {
+          "x": 9,
+          "y": 8,
+          "color": "Gold",
+          "orientation": "Up"
+        },
+        {
+          "x": 7,
+          "y": 4,
+          "color": "Green",
+          "orientation": "Down"
+        },
+        {
+          "x": 8,
+          "y": 4,
+          "color": "Red",
+          "orientation": "Down"
+        }
+      ],
+      "coins": [
+        {
+          "x": 10,
+          "y": 10
+        },
+        {
+          "x": 13,
+          "y": 3
         }
       ]
     }

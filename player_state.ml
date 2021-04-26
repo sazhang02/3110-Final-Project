@@ -3,8 +3,6 @@ open Board
 
 type level_id = Levels.level_id
 
-type coins = int
-
 type move = {
   pos : coord;
   action : orientation;
@@ -13,7 +11,7 @@ type move = {
 type p = {
   current_tile : tile;
   current_level : level_id;
-  coins : coins;
+  coins : int;
 }
 
 let offset_player (t : Levels.t) (bt : Board.t) f (level_id : level_id)
@@ -69,15 +67,9 @@ let player_prev_level p t b =
   let old_level = prev_level t p.current_level in
   new_level_state t b exit_pipe old_level
 
-(* { current_tile = exit_pipe t old_level; current_level = old_level;
-   coins = p.coins; } *)
-
 let player_next_level p t b =
   let new_level = next_level t p.current_level in
   new_level_state t b entrance_pipe new_level
-
-(* { current_tile = offset_player ; current_level = new_level; coins =
-   p.coins; } *)
 
 let player_enter_pipe (pipe : Board.tile) move (p : p) =
   {
@@ -85,6 +77,12 @@ let player_enter_pipe (pipe : Board.tile) move (p : p) =
     current_level = p.current_level;
     coins = p.coins;
   }
+
+let check_coin (tile : tile) collected p t =
+  let coins = if not collected then p.coins + 1 else p.coins in
+  let current_tile = make_tile (get_tile_coords tile) (Coin true) in
+  print_endline ("Coins: " ^ string_of_int coins);
+  { current_tile; current_level = p.current_level; coins }
 
 let player_next_tile tile p t =
   {
@@ -106,9 +104,14 @@ let check_tile tile p t b move =
   | Exit _ ->
       if check_orientation tile move p then player_next_level p t b
       else p
+  | Coin collected -> check_coin tile collected p t
   | Empty -> player_next_tile tile p t
 
 let update (move_key : char) p t b =
   let predicted_move = get_move move_key p in
   let next_tile = get_tile_c predicted_move.pos b in
   check_tile next_tile p t b predicted_move
+
+let make_player_state x y tile_type level coins =
+  let tile = make_tile (make_coord x y) tile_type in
+  { current_tile = tile; current_level = level; coins }
