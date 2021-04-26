@@ -206,7 +206,7 @@ let draw_board t scale_factor =
     | Exit _ ->
         draw_at_coords (choose_exit_img tile scale_factor) obj_coords
     | Empty -> draw_at_coords (floor_image_gc scale_factor) obj_coords
-    | Coin exists ->
-        if exists then failwith "add coin pic"
-        else draw_at_coords (floor_image_gc scale_factor) obj_coords
+    | Coin ->
+        (* exists -> if exists then failwith "add coin pic" else *)
+        draw_at_coords (player_image_gc scale_factor) obj_coords
   done

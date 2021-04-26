@@ -51,3 +51,5 @@ val prev_level : t -> level_id -> level_id
 (** [make_board levels id] creates a 16x16 board of [Board.t] type with
     the entrance and ee [id] in [levels]. *)
 val make_board : t -> level_id -> Board.t
+
+val make_all_boards : t -> Board.t array

@@ -112,7 +112,7 @@ let to_orientation levels id f = map_level id levels.levels f
 
 let to_tile levels id f tile_type =
   let pos = map_level id levels.levels f in
-  make_tile pos tile_type
+  make_tile tile_type pos
 
 let entrance_pos level = level.entrance_pos.pos
 
@@ -158,7 +158,14 @@ let pipes_list (pipe_info_lst : pipe_info list) : Board.tile list =
 
 let pipes_info_list level = level.pipes
 
+let coins_array level : pos array = Array.of_list level.coins
+
 let coins_list level = level.coins
+
+let all_coins levels : (level_id * pos array) list = failwith ""
+
+let init_coins levels id =
+  map_level id levels.levels coins_list |> List.map (make_tile Coin)
 
 let make_board levels id =
   let entr = entrance_pipe levels id in
@@ -168,5 +175,18 @@ let make_board levels id =
   let pipes =
     map_level id levels.levels pipes_info_list |> pipes_list
   in
-  (* let coins = map_level id levels.levels coins_list in *)
-  alla_board entr exit rooms pipes
+  alla_board entr exit rooms pipes (init_coins levels id)
+
+let last_level_id levels = List.length levels.levels - 1
+
+(* try update key player game_info board_info.(!current_level_id) with |
+   Levels.UnknownLevel -1 -> print_endline "This pipe is locked"; player
+   | Levels.UnknownLevel -2 -> print_endline "BOSS BATTLEEEE"; player *)
+let make_all_boards levels : Board.t array =
+  let rec loop_levels (lst : Board.t list) id =
+    match id with
+    | -1 -> lst
+    | i -> loop_levels (make_board levels i :: lst) (i - 1)
+  in
+
+  loop_levels [] (last_level_id levels) |> Array.of_list
