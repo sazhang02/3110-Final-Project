@@ -20,6 +20,7 @@ let color_to_string c =
   | Red -> "red"
   | Gold -> "gold"
   | Blue -> "blue"
+  | Black -> "black"
 
 let tile_to_string tile =
   let coords = get_tile_coords tile |> coords_to_string in
@@ -187,7 +188,16 @@ let board_tests =
       "Exit @ (1, 1)"; *)
   ]
 
-(* let right_st = update 'd' start_st *)
+(* Player_state tests *)
+
+let player_state_to_string (p : p) =
+  "[Current tile: "
+  ^ tile_to_string (get_current_tile p)
+  ^ "; Current_level: "
+  ^ string_of_int (get_current_level p)
+  ^ "; Coins: "
+  ^ string_of_int (get_coins p)
+  ^ "]"
 
 let get_current_level_test name (state : p) expected_output =
   name >:: fun _ ->
@@ -209,43 +219,60 @@ let get_coins_test name (state : p) expected_output =
   assert_equal expected_output (get_coins state) ~printer:string_of_int
 
 let update_test name move_key p t b expected_output =
-  name >:: fun _ -> assert_equal expected_output (update move_key p t b)
+  name >:: fun _ ->
+  assert_equal expected_output (update move_key p t b)
+    ~printer:player_state_to_string
 
 let example_board = Levels.make_board basic 0
 
+(* State at position (1, 1) *)
 let start_st = init_state basic example_board
 
-(* let middle_st = update 'w' start_st basic example_board in update 'd'
-   start_st basic example_board *)
+(* State at position (1, 2) *)
+let up_st = update 'w' start_st basic example_board
+
+(* State at position (2, 2)*)
+let middle_st = update 'd' up_st basic example_board
 
 let player_state_tests =
   [
+    (* current_level tests *)
     get_current_level_test
       "current level test: basic initial level is 0" start_st 0;
+    (* current_tile tests *)
     get_current_tile_test
       "current tile test: basic initial tile is entrance" start_st
       (make_tile (make_coord 1 1) Empty);
+    get_current_tile_test
+      "current tile test: middle initial tile is empty" middle_st
+      (make_tile (make_coord 2 2) Empty);
+    (* current_position tests *)
     get_current_pos_test
-      "current position test: basic initial position is (0, 1)" start_st
+      "current position test: basic initial position is (1, 1)" start_st
       (make_coord 1 1);
+    get_current_pos_test
+      "current position test: middle initial position is (2, 2)"
+      middle_st (make_coord 2 2);
+    (* coins test *)
     get_coins_test "coin test: basic initial coin count is 0" start_st 0;
-    (let p = make_player_state 2 1 Empty 0 0 in
-     update_test "update test: move right to empty tile" 'w' start_st
+    (* update tests *)
+    (let p = make_player_state 2 3 Empty 0 0 in
+     update_test "update test: move up to empty tile" 'w' middle_st
+       basic example_board p);
+    (let p = make_player_state 1 2 Empty 0 0 in
+     update_test "update test: move left to empty tile" 'a' middle_st
        basic example_board p);
     (let p = make_player_state 2 1 Empty 0 0 in
-     update_test "update test: move right to empty tile" 'a' start_st
+     update_test "update test: move down to empty tile" 's' middle_st
        basic example_board p);
-    (let p = make_player_state 2 1 Empty 0 0 in
-     update_test "update test: move right to empty tile" 'd' start_st
-       basic example_board p);
-    (let p = make_player_state 2 1 Empty 0 0 in
-     update_test "update test: move right to empty tile" 'd' start_st
+    (let p = make_player_state 3 2 Empty 0 0 in
+     update_test "update test: move right to empty tile" 'd' middle_st
        basic example_board p);
   ]
 
 let suite =
   "test suite for A2"
   >::: List.flatten
-         [ levels_tests; board_tests (* ; player_state_tests *) ]
+         [ (*levels_tests; board_tests; *) player_state_tests ]
 
 let _ = run_test_tt_main suite
