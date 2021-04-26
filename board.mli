@@ -5,6 +5,7 @@ type color =
   | Red
   | Gold
   | Blue
+  | Black
 
 type orientation =
   | Left

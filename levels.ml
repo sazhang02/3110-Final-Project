@@ -57,6 +57,7 @@ let color_of_string str =
   | "Gold" -> Gold
   | "Green" -> Green
   | "Blue" -> Blue
+  | "Black" -> Black
   | _ -> failwith "Invalid Color"
 
 let orient_of_string str =

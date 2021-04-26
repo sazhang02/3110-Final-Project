@@ -14,6 +14,7 @@ type color =
   | Red
   | Gold
   | Blue
+  | Black
 
 type room = {
   bl_start : coord;
@@ -131,6 +132,13 @@ let rotate_blue orientation start =
   | Up -> { x = start.y + 1; y = dimx - start.x - 1 }
   | Down -> { x = start.y - 1; y = dimx - start.x - 1 }
 
+let black_end orientation start =
+  match orientation with
+  | Right -> { x = start.x + 1; y = start.y }
+  | Left -> { x = start.x - 1; y = start.y }
+  | Up -> { x = start.x; y = start.y + 1 }
+  | Down -> { x = start.x; y = start.y - 1 }
+
 (** [pipe_end s c o] is the [coord] that a pipe at coords [s] facing [o]
     with color [c] leads to. *)
 let pipe_end start color orientation =
@@ -139,6 +147,7 @@ let pipe_end start color orientation =
   | Red -> reflect_red orientation start
   | Gold -> reflect_gold orientation start
   | Blue -> rotate_blue orientation start
+  | Black -> black_end orientation start
 
 let make_pipe_tile entrance color orientation =
   let end_coords = pipe_end entrance color orientation in
@@ -175,7 +184,7 @@ let rec make_pipes_board (pipes : tile list) board =
           let i = index_of_coord dimx h.coords in
           board.(i) <- h;
           make_pipes_board t board
-      | _ -> failwith "" )
+      | _ -> failwith "")
 
 (** [make_board en ex r] makes a board with entrance [en], exit [ex],
     and rooms [r]. *)
@@ -204,7 +213,7 @@ let tile_to_string tile =
       | Right -> ">"
       | Left -> "<"
       | Up -> "^"
-      | Down -> "v" )
+      | Down -> "v")
   | Entrance _ -> "I"
   | Exit _ -> "O"
   | Empty -> " "

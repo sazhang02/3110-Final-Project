@@ -169,13 +169,6 @@ let choose_colored_img cp t scale =
   | Up -> cp.up scale
   | Down -> cp.down scale
 
-let choose_pipe_img p t scale =
-  match get_pipe_color p with
-  | Green -> choose_colored_img green_imgs t scale
-  | Red -> choose_colored_img red_imgs t scale
-  | Gold -> choose_colored_img gold_imgs t scale
-  | Blue -> choose_colored_img blue_imgs t scale
-
 let choose_entr_img t scale =
   match get_tile_orientation t with
   | Left -> entr_left_image_gc scale
@@ -189,6 +182,14 @@ let choose_exit_img t scale =
   | Right -> exit_right_image_gc scale
   | Up -> exit_up_image_gc scale
   | Down -> exit_down_image_gc scale
+
+let choose_pipe_img p t scale =
+  match get_pipe_color p with
+  | Green -> choose_colored_img green_imgs t scale
+  | Red -> choose_colored_img red_imgs t scale
+  | Gold -> choose_colored_img gold_imgs t scale
+  | Blue -> choose_colored_img blue_imgs t scale
+  | Black -> choose_entr_img t scale
 
 let draw_board t scale_factor =
   for i = 0 to get_size t - 1 do

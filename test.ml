@@ -96,7 +96,7 @@ let levels_tests =
     invalid_test
       "next_level test: basic, level 3. next_level id: -2. Raises \
        UnknownLevel"
-      next_level basic 3 (UnknownLevel (-2));
+      next_level basic 4 (UnknownLevel (-2));
     next_or_prev_level_test
       "prev level test: basic, level 1. prev_level id: 0" prev_level
       basic 1 0;
