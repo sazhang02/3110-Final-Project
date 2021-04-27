@@ -20,7 +20,7 @@ play:
 	$(OCAMLBUILD) -tag 'debug' $(MAIN) && OCAMLRUNPARAM=b ./$(MAIN)
 
 zip:
-	zip desert.zip *.ml* *.json _tags images/*.png .merlin .ocamlformat .ocamlinit LICENSE Makefile *.md
+	zip desert.zip *.ml* *.json _tags images/*.png images/30/*.png images/40/*.png images/50/*.png .merlin .ocamlformat .ocamlinit LICENSE Makefile *.md
 
 clean:
 	ocamlbuild -clean
