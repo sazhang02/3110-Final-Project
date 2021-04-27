@@ -12,14 +12,26 @@ let game_info = game_of_file "basic_levels.json"
 (** [current_level_id] is the current level the player is on. *)
 let current_level_id = ref 0
 
+(** [board_info] is the current board info for the game. *)
+let board_info : Board.t array = Levels.make_all_boards game_info
+
 let zoom = ref Large
+
+let display_coins p : unit =
+  let loc = get_window_size !zoom in
+  let x = fst loc - 250 in
+  let y = snd loc - 50 in
+  moveto x y;
+  draw_at_coords (bckg_image_gc !zoom) (make_gui_coord x y);
+  draw_string ("Coin count: " ^ string_of_int (get_coins p))
 
 let resize_window_frame player : Graphics.image =
   let window_info = get_window_size !zoom in
   let width = fst window_info in
   let height = snd window_info in
   resize_window width height;
-  draw_board (make_board game_info !current_level_id) !zoom;
+  draw_board board_info.(!current_level_id) !zoom;
+  display_coins player;
   let loc = get_current_pos player |> board_to_gui !zoom in
   let resized_player = player_image_gc !zoom in
   draw_image resized_player (get_x loc) (get_y loc);
@@ -45,9 +57,6 @@ let increase_zoom player current_image : Graphics.image =
       zoom := Medium;
       resize_window_frame player
 
-(** [board_info] is the current board info for the game. *)
-let board_info : Board.t array = Levels.make_all_boards game_info
-
 (** [starting_loc p] is the coordinates at the beginning of a level for
     the player wi th state [p]. *)
 let starting_loc p = get_current_pos p |> board_to_gui !zoom
@@ -63,6 +72,7 @@ let get_image (loc : Gui.coords) =
 let set_up_level level_id player =
   let loc = starting_loc player in
   draw_board board_info.(level_id) !zoom;
+  display_coins player;
   draw_image (player_image_gc !zoom) (get_x loc) (get_y loc)
 
 (** [level_changed p] is True if player has moved onto the next level
@@ -85,11 +95,13 @@ let new_player_state key player =
       print_endline "BOSS BATTLEEEE";
       player
 
-let replace_coin_tile t p =
-  if check_tile_type t then
+let get_current_img t p new_loc : Graphics.image =
+  if check_tile_type t then (
     let board = board_info.(!current_level_id) in
-    Board.set_tile (get_current_tile p) board
-  else ()
+    Board.set_tile (get_current_tile p) board;
+    display_coins p;
+    floor_image_gc !zoom )
+  else get_image new_loc
 
 let rec check_scenarios new_p p_img prev_img new_loc loc curr_pic =
   if level_changed new_p then begin
@@ -108,13 +120,12 @@ and move_player key player player_img prev_image =
   let loc = get_current_pos player |> board_to_gui !zoom in
   let new_player = new_player_state key player in
   let new_loc = get_current_pos new_player |> board_to_gui !zoom in
-  let curr_pic = get_image new_loc in
   let tile_in_board =
     Board.get_tile_c
       (get_current_pos new_player)
       board_info.(!current_level_id)
   in
-  replace_coin_tile tile_in_board new_player;
+  let curr_pic = get_current_img tile_in_board new_player new_loc in
   check_scenarios new_player player_img prev_image new_loc loc curr_pic
 
 (** [get_input loc player_img prev_image] processes keyboard inputs

@@ -15,6 +15,10 @@ val get_x : coords -> int
 (** [get_y pos] is the y coordinate. *)
 val get_y : coords -> int
 
+(** [make_gui_coord x y] is a gui coord with x-coord [x] and y-coord
+    [y]. *)
+val make_gui_coord : int -> int -> coords
+
 (** [get_window_size scale_factor] is width and height of the window.
     Ex: (1000, 800) for a window of width 1000 and height 800. *)
 val get_window_size : scaling -> int * int
@@ -31,13 +35,21 @@ val tile_width : scaling -> int
 
 val tile_height : scaling -> int
 
-(** [player_image_gc scaling] is [player_image_cm] as a Graphics.image
-    with size scaling. *)
+(** [player_image_gc scaling] is player.png as a Graphics.image with
+    size [scaling]. *)
 val player_image_gc : scaling -> Graphics.image
 
-(** [floor_image_gc scaling] is [floor_image_cm] as a Graphics.image
-    with size scaling. *)
+(** [floor_image_gc scaling] is floor.png as a Graphics.image with size
+    [scaling]. *)
 val floor_image_gc : scaling -> Graphics.image
+
+(** [coin_image_gc scaling] is coin.png as a Graphics.image with size
+    [scaling]. *)
+val coin_image_gc : scaling -> Graphics.image
+
+(** [bckg_image_gc scaling] is background.png as a Graphics.image with
+    size [scaling]. *)
+val bckg_image_gc : scaling -> Graphics.image
 
 (** [load_png png_name] is the Images.t equivalent of the png file with
     name [png_name]. Required: [png_name] is the name of the directory

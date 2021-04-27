@@ -21,6 +21,8 @@ let get_x pos = pos.x
 
 let get_y pos = pos.y
 
+let make_gui_coord x y = { x; y }
+
 let window_size = " 1100x800"
 
 let window_title = "Stuck In The Desert"
@@ -46,6 +48,10 @@ let player_image_gc scale = cm_to_gc scale "camel"
 let floor_image_gc scale = cm_to_gc scale "floor"
 
 let wall_image_gc scale = cm_to_gc scale "wall"
+
+let coin_image_gc scale = cm_to_gc scale "coin"
+
+let bckg_image_gc scale = cm_to_gc scale "background"
 
 (* ENTRANCE IMAGES *)
 
@@ -206,7 +212,5 @@ let draw_board t scale_factor =
     | Exit _ ->
         draw_at_coords (choose_exit_img tile scale_factor) obj_coords
     | Empty -> draw_at_coords (floor_image_gc scale_factor) obj_coords
-    | Coin ->
-        (* exists -> if exists then failwith "add coin pic" else *)
-        draw_at_coords (player_image_gc scale_factor) obj_coords
+    | Coin -> draw_at_coords (coin_image_gc scale_factor) obj_coords
   done
