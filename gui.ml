@@ -53,6 +53,8 @@ let coin_image_gc scale = cm_to_gc scale "coin"
 
 let bckg_image_gc scale = cm_to_gc scale "background"
 
+let boss_image_gc scale = cm_to_gc scale "boss"
+
 (* ENTRANCE IMAGES *)
 
 let entr_up_image_gc scale = cm_to_gc scale "entr_up"

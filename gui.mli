@@ -51,6 +51,10 @@ val coin_image_gc : scaling -> Graphics.image
     size [scaling]. *)
 val bckg_image_gc : scaling -> Graphics.image
 
+(** [boss_image_gc scaling] is boss.png as a Graphics.image with size
+    [scaling]. *)
+val boss_image_gc : scaling -> Graphics.image
+
 (** [load_png png_name] is the Images.t equivalent of the png file with
     name [png_name]. Required: [png_name] is the name of the directory
     reference. For example, if png.png is in the same directory, a valid

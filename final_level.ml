@@ -20,9 +20,20 @@ let rec get_input player player_img b : unit =
       get_input player resized_player b
   | _ -> get_input player player_img b
 
+(* and move_player key player player_img prev_image b = let loc =
+   get_current_pos player |> board_to_gui !zoom in let new_player =
+   new_player_state key player in let new_loc = get_current_pos
+   new_player |> board_to_gui !zoom in let tile_in_board =
+   Board.get_tile_c (get_current_pos new_player)
+   board_info.(!current_level_id) in let curr_pic = get_current_img
+   tile_in_board new_player new_loc in failwith "" *)
+
 let final_level (b : Board.t) (z : Gui.scaling) (p : Player_state.p) =
   print_endline "at final level";
   zoom := z;
-  draw_board b !zoom;
+  set_up_level p b z;
+  let boss = Boss_state.init_state b in
+  draw_at_coords (boss_image_gc !zoom)
+    (Boss_state.get_current_pos boss |> board_to_gui !zoom);
   set_window_title "Boss Battle!";
   get_input p (player_image_gc !zoom) b

@@ -398,9 +398,28 @@ let player_state_tests =
        basic example_board p);
   ]
 
+let b = Boss_state.init_state example_board
+
+let init_pos = b |> Boss_state.get_current_pos
+
+let move_boss_test name p_pos b board expected_output =
+  name >:: fun _ ->
+  assert_equal expected_output
+    (Boss_state.move_boss p_pos b board |> Boss_state.get_current_pos)
+    ~printer:coords_to_string
+
+let boss_state_tests =
+  [ (* move_boss_test "move boss from init_pos to " ((make_coord 0 0) b
+       example_board) (make_coord 0 0); *) ]
+
 let suite =
   "test suite for A2"
   >::: List.flatten
-         [ (* board_tests; *) levels_tests; player_state_tests ]
+         [
+           (* board_tests; *)
+           levels_tests;
+           player_state_tests;
+           boss_state_tests;
+         ]
 
 let _ = run_test_tt_main suite

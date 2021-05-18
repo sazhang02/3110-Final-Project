@@ -1,5 +1,6 @@
 open Levels
 open Board
+open Boss_state
 
 type level_id = Levels.level_id
 
@@ -130,6 +131,21 @@ let update (move_key : char) p t b =
   let predicted_move = get_move move_key p in
   let next_tile = get_tile_c predicted_move.pos b in
   check_tile next_tile p t b predicted_move
+
+let final_level_update
+    (move_key : char)
+    p
+    (t : Levels.t)
+    (bt : Board.t)
+    (b_state : Boss_state.b) =
+  let predicted_move = get_move move_key p in
+  let next_tile = get_tile_c predicted_move.pos bt in
+  let p' = check_tile next_tile p t bt predicted_move in
+  let boss_move = p = p' in
+  if boss_move then
+    let b_state' = move_boss (get_pos p.current_tile) b_state bt in
+    (p', b_state')
+  else (p, b_state)
 
 let make_player_state x y tile_type level coins =
   let tile = make_tile tile_type (make_coord x y) in
