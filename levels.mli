@@ -43,13 +43,25 @@ val exit_pipe : t -> level_id -> tile
     level [lev] exits. Raises [UnkownLevel] if [lev] is the last level. *)
 val next_level : t -> level_id -> level_id
 
-(** [prev_level levelsxit pipes associated with th id] is the [level_id]
-    of the level from which the level [lev] enters. Raises
-    [UnknownLevel] if [lev] is the starting level. *)
+(** [prev_level levels] is the [level_id] level [lev] enters. Raises
+    [UnknownLevel] of [level_id] if [lev] is not a level in [levels]. *)
 val prev_level : t -> level_id -> level_id
 
-(** [make_board levels id] creates a 16x16 board of [Board.t] type with
-    the entrance and ee [id] in [levels]. *)
+(**[total_coin_count levels id] is the sum of the number of coins on
+   level number [id] and of the coin counts o n previous levels in
+   [levels]*)
+val coin_count : t -> level_id -> int
+
+(**[is_final levels level_id] is true if [level_id] is the id of the
+   last level in [levels], else false*)
+val is_final_level : t -> level_id -> bool
+
+(**[final_level_id levels] is the id of the last level in [levels]*)
+val final_level_id : t -> level_id
+
+(** [make_board levels id] is a 16x16 board of [Board.t] type with
+    information from level number [id] in [levels]. *)
 val make_board : t -> level_id -> Board.t
 
+(**[make_all_boards levels] is a set of boards representing [levels] *)
 val make_all_boards : t -> Board.t array

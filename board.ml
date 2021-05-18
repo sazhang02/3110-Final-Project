@@ -172,20 +172,45 @@ let rec make_rooms_board rooms board =
 
 (** [add_tiles lst t] adds pipe tiles [pipes] in board [t]. Requires:
     the elements of [lst] are Pipe or Coin tiles. *)
-let rec add_tiles (pipes : tile list) board =
-  match pipes with
+let rec add_tiles (tiles : tile list) board =
+  match tiles with
   | [] -> board
   | h :: t -> (
       match h.tile_type with
-      | Pipe pipe ->
-          let i = index_of_coord dimx h.coords in
-          board.(i) <- h;
-          add_tiles t board
-      | Coin ->
+      | Pipe _ | Coin ->
           let i = index_of_coord dimx h.coords in
           board.(i) <- h;
           add_tiles t board
       | _ -> failwith "" )
+
+(** [tile_to_string tile] is the string representation of a tile. *)
+let tile_to_string tile =
+  match tile.tile_type with
+  | Wall -> "W"
+  | Pipe p -> (
+      match p.orientation with
+      | Right -> ">"
+      | Left -> "<"
+      | Up -> "^"
+      | Down -> "v" )
+  | Entrance _ -> "I"
+  | Exit _ -> "O"
+  | Empty -> " "
+  | Coin -> "c"
+
+let rec random_item (board : t) =
+  let rand_x = Random.int dimx in
+  let rand_y = Random.int dimy in
+  let coords = { x = rand_x; y = rand_y } in
+  print_endline (string_of_int rand_x ^ ", " ^ string_of_int rand_y);
+  let tile = get_tile_c coords board in
+  print_endline (tile_to_string tile);
+  match get_tile_type tile with
+  | Empty ->
+      let new_tile = { coords; tile_type = Wall (*placeholder*) } in
+      set_tile new_tile board;
+      board
+  | _ -> random_item board
 
 (** [make_board en ex r] makes a board with entrance [en], exit [ex],
     and rooms [r]. *)
@@ -206,21 +231,6 @@ let alla_board entrance exit rooms pipes coins =
   let board = make_board entrance exit rooms in
   let board = add_tiles pipes board in
   add_tiles coins board
-
-(** [tile_to_string tile] is the string representation of a tile. *)
-let tile_to_string tile =
-  match tile.tile_type with
-  | Wall -> "W"
-  | Pipe p -> (
-      match p.orientation with
-      | Right -> ">"
-      | Left -> "<"
-      | Up -> "^"
-      | Down -> "v" )
-  | Entrance _ -> "I"
-  | Exit _ -> "O"
-  | Empty -> " "
-  | Coin -> "c"
 
 let board_to_string (board : t) =
   let str = ref "\n" in

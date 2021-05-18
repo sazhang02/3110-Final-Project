@@ -7,10 +7,15 @@ type level_id = int
 (* The abstract type representing player's intended move *)
 type move
 
-(** [init_state t bt] is the initial state of the game when playing in
-    each level. In that state the character is currently located in the
-    starting position, and they have visited only that level. *)
+(** [init_state t bt] is the initial state of the game. In that state
+    the character is currently located in the starting position, and
+    they have visited only that level. *)
 val init_state : Levels.t -> Board.t -> p
+
+(** [final_state t bt] is the initial state of the final level in the
+    game. In that state the character is currently located in the
+    starting position of the last level in the game. *)
+val final_state : Levels.t -> Board.t -> p
 
 (** [get_current_level p] is the identifier of the level in which the
     player currently is located in state [p]. *)

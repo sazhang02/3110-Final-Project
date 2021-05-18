@@ -33,6 +33,15 @@ let init_state (t : Levels.t) (bt : Board.t) =
     coins = 0;
   }
 
+let final_state (t : Levels.t) (bt : Board.t) =
+  let final_level_id = Levels.final_level_id t in
+  {
+    current_tile =
+      get_tile_c (offset_player t bt entrance_pipe final_level_id) bt;
+    current_level = final_level_id;
+    coins = coin_count t (final_level_id - 1);
+  }
+
 let new_level_state p (t : Levels.t) (bt : Board.t) f level_id =
   let current_tile = get_tile_c (offset_player t bt f level_id) bt in
   { current_tile; current_level = level_id; coins = p.coins }
@@ -106,10 +115,12 @@ let check_tile tile p t b move =
         player_enter_pipe tile move p
       else p
   | Entrance _ ->
-      if check_orientation tile move p then player_prev_level p t b
+      if is_final_level t p.current_level then p
+      else if check_orientation tile move p then player_prev_level p t b
       else p
   | Exit _ ->
-      if check_orientation tile move p then player_next_level p t b
+      if p.coins < coin_count t p.current_level then p
+      else if check_orientation tile move p then player_next_level p t b
       else p
   | Coin -> check_coin tile p t
   (* | Coin collected -> check_coin tile collected p t *)

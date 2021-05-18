@@ -214,3 +214,49 @@ let draw_board t scale_factor =
     | Empty -> draw_at_coords (floor_image_gc scale_factor) obj_coords
     | Coin -> draw_at_coords (coin_image_gc scale_factor) obj_coords
   done
+
+let display_coins p zoom : unit =
+  let loc = get_window_size zoom in
+  let x = fst loc - 250 in
+  let y = snd loc - 50 in
+  Graphics.moveto x y;
+  draw_at_coords (bckg_image_gc zoom) (make_gui_coord x y);
+  Graphics.draw_string
+    ("Coin count: " ^ string_of_int (Player_state.get_coins p))
+
+let resize_window_frame player zoom board : Graphics.image =
+  let window_info = get_window_size zoom in
+  let width = fst window_info in
+  let height = snd window_info in
+  Graphics.resize_window width height;
+  draw_board board zoom;
+  display_coins player zoom;
+  let loc = Player_state.get_current_pos player |> board_to_gui zoom in
+  let resized_player = player_image_gc zoom in
+  Graphics.draw_image resized_player (get_x loc) (get_y loc);
+  resized_player
+
+let decrease_zoom player current_image zoom board :
+    scaling * Graphics.image =
+  match zoom with
+  | Large -> (Medium, resize_window_frame player Medium board)
+  | Medium -> (Small, resize_window_frame player Small board)
+  | Small -> (Small, current_image)
+
+let increase_zoom player current_image zoom board :
+    scaling * Graphics.image =
+  match zoom with
+  | Large -> (Large, current_image)
+  | Medium -> (Large, resize_window_frame player Large board)
+  | Small -> (Medium, resize_window_frame player Medium board)
+
+(** [starting_loc p zoom] is the coordinates at the beginning of a level
+    for the player with state [p]. *)
+let starting_loc p zoom =
+  Player_state.get_current_pos p |> board_to_gui zoom
+
+let set_up_level p board zoom =
+  let loc = starting_loc p zoom in
+  draw_board board zoom;
+  display_coins p zoom;
+  Graphics.draw_image (player_image_gc zoom) (get_x loc) (get_y loc)

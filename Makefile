@@ -1,4 +1,4 @@
-MODULES=gui levels board player_state main
+MODULES=gui levels board player_state boss_state main final_level
 OBJECTS=$(MODULES:=.cmo)
 MLS=$(MODULES:=.ml)
 MLIS=$(MODULES:=.mli)
@@ -24,3 +24,4 @@ zip:
 
 clean:
 	ocamlbuild -clean
+		rm -rf desert.zip test.byte main.byte

@@ -162,7 +162,20 @@ let coins_array level : pos array = Array.of_list level.coins
 
 let coins_list level = level.coins
 
-let all_coins levels : (level_id * pos array) list = failwith ""
+let coin_count_on_level levels id =
+  map_level id levels.levels coins_list |> List.length
+
+let coin_count levels id =
+  let rec sum_coins levels level_id coin_num =
+    match level_id with
+    | -1 -> coin_num
+    | id ->
+        sum_coins levels (level_id - 1)
+          (coin_num + coin_count_on_level levels level_id)
+  in
+  sum_coins levels id 0
+
+let is_final_level levels id = id = List.length levels.levels - 1
 
 let init_coins levels id =
   map_level id levels.levels coins_list |> List.map (make_tile Coin)
@@ -175,9 +188,12 @@ let make_board levels id =
   let pipes =
     map_level id levels.levels pipes_info_list |> pipes_list
   in
-  alla_board entr exit rooms pipes (init_coins levels id)
+  if is_final_level levels id then
+    let wall = make_tile Wall (get_pos exit) in
+    alla_board entr wall rooms pipes (init_coins levels id)
+  else alla_board entr exit rooms pipes (init_coins levels id)
 
-let last_level_id levels = List.length levels.levels - 1
+let final_level_id levels = List.length levels.levels - 1
 
 (* try update key player game_info board_info.(!current_level_id) with |
    Levels.UnknownLevel -1 -> print_endline "This pipe is locked"; player
@@ -189,4 +205,4 @@ let make_all_boards levels : Board.t array =
     | i -> loop_levels (make_board levels i :: lst) (i - 1)
   in
 
-  loop_levels [] (last_level_id levels) |> Array.of_list
+  loop_levels [] (final_level_id levels) |> Array.of_list

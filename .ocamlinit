@@ -9,4 +9,5 @@
 #load "gui.cmo";;
 #load "levels.cmo";;
 #load "player_state.cmo";;
+#load "boss_state.cmo";;
 

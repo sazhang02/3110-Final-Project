@@ -77,3 +77,29 @@ val board_to_gui : scaling -> Board.coord -> coords
 
 (* * [draw_board] draws the board. val draw_board : unit *)
 val draw_board : Board.t -> scaling -> unit
+
+(* * [display_coins p zoom] displays the coin count. *)
+val display_coins : Player_state.p -> scaling -> unit
+
+(* * [decrease_zoom player current_image zoom board] decreases the zoom
+   size of the window. *)
+val decrease_zoom :
+  Player_state.p ->
+  Graphics.image ->
+  scaling ->
+  Board.t ->
+  scaling * Graphics.image
+
+(* * [increase_zoom player current_image zoom board] increases the zoom
+   size of the window. *)
+val increase_zoom :
+  Player_state.p ->
+  Graphics.image ->
+  scaling ->
+  Board.t ->
+  scaling * Graphics.image
+
+(** [set_up_level p board zoom] sets up the level with its corresponding
+    [board]. The board for the level is drawn and the player is drawn
+    according to the information in [p]. *)
+val set_up_level : Player_state.p -> Board.t -> scaling -> unit

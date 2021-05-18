@@ -46,7 +46,7 @@ val get_y : coord -> int
 (**[make_coord x y] is a [coord] at [(x, y)].*)
 val make_coord : int -> int -> coord
 
-(** [get_tile i t] is the tile at index [i] of level [t]. *)
+(** [get_tile i t] is the tile at index [i] of board [t]. *)
 val get_tile : int -> t -> tile
 
 (** [make_tile i tt] is a tile with coord at [i] and tile_type [tt]*)
@@ -88,6 +88,9 @@ val make_pipe_tile : coord -> color -> orientation -> tile
 (** [room_of_coords s e] makes a [room] whose bottom-left coordinate is
     [s] and top-right coordinate is [e]. *)
 val room_of_coords : coord -> coord -> room
+
+(** [random_item t] is the board [t] with a randomly placed [Wall] tile. *)
+val random_item : t -> t
 
 (** [alla_board en ex rooms pipes coins] makes a level with "alla" the
     properties: entrance [en], exit [ex], [rooms], [pipes], and [coins]. *)
