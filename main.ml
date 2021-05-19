@@ -21,19 +21,10 @@ let board_info : Board.t array = Levels.make_all_boards game_info
 
 let zoom = ref Large
 
-(** [get_image loc] is the image at [loc]. *)
-let get_image (loc : Gui.coords) =
-  Graphics.get_image (get_x loc) (get_y loc) (tile_width !zoom)
-    (tile_height !zoom)
-
 (** [level_changed p] is True if player has moved onto the next level
     and False otherwise. *)
 let level_changed player : bool =
   get_current_level player <> !current_level_id
-
-(** [check_movement old_loc new_loc] is True if [old_loc] is equal to
-    [new_loc], otherwise it is False. *)
-let check_movement old_loc new_loc : bool = old_loc = new_loc
 
 let check_tile_type t = Board.get_tile_type t = Board.Coin
 
@@ -52,7 +43,7 @@ let get_current_img t p new_loc : Graphics.image =
     Board.set_tile (get_current_tile p) board;
     display_coins p !zoom;
     floor_image_gc !zoom )
-  else get_image new_loc
+  else get_image new_loc !zoom
 
 let rec check_scenarios new_p p_img prev_img new_loc loc curr_pic =
   if level_changed new_p then begin
@@ -96,19 +87,19 @@ and get_input player player_img prev_image : unit =
   | 'q' -> close_graph ()
   | 'p' ->
       let resized_info =
-        increase_zoom player player_img !zoom
+        increase_zoom (player, None) (player_img, None) !zoom
           board_info.(!current_level_id)
       in
-      let resized_player = snd resized_info in
+      let resized_player = fst (snd resized_info) in
       let new_zoom_size = fst resized_info in
       zoom := new_zoom_size;
       get_input player resized_player prev_image
   | 'm' ->
       let resized_info =
-        decrease_zoom player player_img !zoom
+        decrease_zoom (player, None) (player_img, None) !zoom
           board_info.(!current_level_id)
       in
-      let resized_player = snd resized_info in
+      let resized_player = fst (snd resized_info) in
       let new_zoom_size = fst resized_info in
       zoom := new_zoom_size;
       get_input player resized_player prev_image
@@ -118,6 +109,7 @@ and get_input player player_img prev_image : unit =
 let window () =
   open_graph window_size;
   set_window_title window_title;
+  let g = Homescreen.homescreen () in
   (*homescreen here let game_info = something from home screen depending
     on difficulty mode *)
   let player = init_state game_info board_info.(!current_level_id) in
@@ -134,3 +126,4 @@ let () =
       let last_board = board_info.(last_board_index) in
       let player_final_state = final_state game_info last_board in
       Final_level.final_level last_board !zoom player_final_state
+        game_info

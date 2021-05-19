@@ -71,6 +71,10 @@ val img_height : Images.t -> int
 (** [draw_at_coords img loc] draws [img] at [loc] on the GUI window. *)
 val draw_at_coords : Graphics.image -> coords -> unit
 
+(** [check_movement old_loc new_loc] is True if [old_loc] is equal to
+    [new_loc], otherwise it is False. *)
+val check_movement : coords -> coords -> bool
+
 (** [update_player new_img old_img new_loc old_loc] replaces the image
     at [old_loc] with [old_img] and [new_loc] with [new_img]. *)
 val update_player :
@@ -88,22 +92,38 @@ val display_coins : Player_state.p -> scaling -> unit
 (* * [decrease_zoom player current_image zoom board] decreases the zoom
    size of the window. *)
 val decrease_zoom :
-  Player_state.p ->
-  Graphics.image ->
+  Player_state.p * Boss_state.b option ->
+  Graphics.image * Graphics.image option ->
   scaling ->
   Board.t ->
-  scaling * Graphics.image
+  scaling * (Graphics.image * Graphics.image option)
 
 (* * [increase_zoom player current_image zoom board] increases the zoom
    size of the window. *)
 val increase_zoom :
-  Player_state.p ->
-  Graphics.image ->
+  Player_state.p * Boss_state.b option ->
+  Graphics.image * Graphics.image option ->
   scaling ->
   Board.t ->
-  scaling * Graphics.image
+  scaling * (Graphics.image * Graphics.image option)
 
 (** [set_up_level p board zoom] sets up the level with its corresponding
     [board]. The board for the level is drawn and the player is drawn
     according to the information in [p]. *)
 val set_up_level : Player_state.p -> Board.t -> scaling -> unit
+
+(** [get_image loc zoom] is the image at [loc] with size determined by
+    [zoom]. *)
+val get_image : coords -> scaling -> Graphics.image
+
+(** [update_player_boss new_imgs old_imgs new_locs old_locs] replaces
+    the image at [old_loc] with [old_img] and [new_loc] with [new_img]
+    for the player and boss respectively. Note that the tuples are
+    stored with player related information first then boss related
+    information second. *)
+val update_player_boss :
+  Graphics.image * Graphics.image ->
+  Graphics.image * Graphics.image ->
+  coords * coords ->
+  coords * coords ->
+  unit

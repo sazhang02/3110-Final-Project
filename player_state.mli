@@ -33,8 +33,14 @@ val get_current_pos : p -> Board.coord
     currently has in state [p]. *)
 val get_coins : p -> int
 
-(** [update m p t bt] is a state where the . *)
+(** [update m p t bt] is a state after the player has moved and
+    interacted with a tile in the levels before the final level. *)
 val update : char -> p -> Levels.t -> Board.t -> p
+
+(** [final_level_update m p t bt b_state] is a state after the player
+    has moved and interacted with a tile in the final level. *)
+val final_level_update :
+  char -> p -> Levels.t -> Board.t -> Boss_state.b -> p * Boss_state.b
 
 (** [make_player_state x y tile id coins] is the player state with
     [tile] at coordinate [(x, y)], level at [id], and [coin] number of

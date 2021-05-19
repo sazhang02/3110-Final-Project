@@ -125,11 +125,40 @@ let board_to_gui scale_factor (board_coords : Board.coord) =
     y = Board.get_y board_coords * tile_height scale_factor;
   }
 
+let get_image (loc : coords) zoom =
+  Graphics.get_image (get_x loc) (get_y loc) (tile_width zoom)
+    (tile_height zoom)
+
 let draw_at_coords img loc = Graphics.draw_image img loc.x loc.y
 
 let update_player new_img old_img new_loc old_loc =
   draw_at_coords old_img old_loc;
   draw_at_coords new_img new_loc
+
+let check_movement old_loc new_loc : bool = old_loc = new_loc
+
+let update_player_boss new_imgs old_imgs new_locs old_locs =
+  let old_player_loc = fst old_locs in
+  let old_boss_loc = snd old_locs in
+  let new_player_loc = fst new_locs in
+  let new_boss_loc = snd new_locs in
+  let old_player_img = fst old_imgs in
+  let new_player_img = fst new_imgs in
+  let old_boss_img = snd old_imgs in
+  let new_boss_img = snd new_imgs in
+  (* print_endline ( "current player loc: (" ^ string_of_int (get_x
+     old_player_loc) ^ ", " ^ string_of_int (get_y old_player_loc) );
+     print_endline ( "current boss loc: (" ^ string_of_int (get_x
+     old_boss_loc) ^ ", " ^ string_of_int (get_y old_boss_loc) );
+     print_endline ( "new player loc: (" ^ string_of_int (get_x
+     new_player_loc) ^ ", " ^ string_of_int (get_y new_player_loc) );
+     print_endline ( "new boss loc: (" ^ string_of_int (get_x
+     new_boss_loc) ^ ", " ^ string_of_int (get_y new_boss_loc) );
+     print_endline ""; *)
+  draw_at_coords old_player_img old_player_loc;
+  draw_at_coords old_boss_img old_boss_loc;
+  draw_at_coords new_player_img new_player_loc;
+  draw_at_coords new_boss_img new_boss_loc
 
 type colored_pipes = {
   left : scaling -> Graphics.image;
@@ -215,6 +244,8 @@ let draw_board t scale_factor =
         draw_at_coords (choose_exit_img tile scale_factor) obj_coords
     | Empty -> draw_at_coords (floor_image_gc scale_factor) obj_coords
     | Coin -> draw_at_coords (coin_image_gc scale_factor) obj_coords
+    (* TODO: draw item not coin*)
+    | Item _ -> draw_at_coords (coin_image_gc scale_factor) obj_coords
   done
 
 let display_coins p zoom : unit =
@@ -226,31 +257,48 @@ let display_coins p zoom : unit =
   Graphics.draw_string
     ("Coin count: " ^ string_of_int (Player_state.get_coins p))
 
-let resize_window_frame player zoom board : Graphics.image =
+let redraw_window pb zoom board : unit =
   let window_info = get_window_size zoom in
   let width = fst window_info in
   let height = snd window_info in
   Graphics.resize_window width height;
   draw_board board zoom;
-  display_coins player zoom;
-  let loc = Player_state.get_current_pos player |> board_to_gui zoom in
+  display_coins (fst pb) zoom
+
+let resize_window_frame
+    (pb : Player_state.p * Boss_state.b option)
+    zoom
+    board : Graphics.image * Graphics.image option =
+  redraw_window pb zoom board;
+  let player_loc =
+    Player_state.get_current_pos (fst pb) |> board_to_gui zoom
+  in
   let resized_player = player_image_gc zoom in
-  Graphics.draw_image resized_player (get_x loc) (get_y loc);
-  resized_player
+  Graphics.draw_image resized_player (get_x player_loc)
+    (get_y player_loc);
+  match pb with
+  | p, Some b ->
+      let boss_loc =
+        Boss_state.get_current_pos b |> board_to_gui zoom
+      in
+      let resized_boss = boss_image_gc zoom in
+      Graphics.draw_image resized_boss (get_x boss_loc) (get_y boss_loc);
+      (resized_player, Some resized_boss)
+  | p, None -> (resized_player, None)
 
-let decrease_zoom player current_image zoom board :
-    scaling * Graphics.image =
+let decrease_zoom pb current_images zoom board :
+    scaling * (Graphics.image * Graphics.image option) =
   match zoom with
-  | Large -> (Medium, resize_window_frame player Medium board)
-  | Medium -> (Small, resize_window_frame player Small board)
-  | Small -> (Small, current_image)
+  | Large -> (Medium, resize_window_frame pb Medium board)
+  | Medium -> (Small, resize_window_frame pb Small board)
+  | Small -> (Small, current_images)
 
-let increase_zoom player current_image zoom board :
-    scaling * Graphics.image =
+let increase_zoom pb current_images zoom board :
+    scaling * (Graphics.image * Graphics.image option) =
   match zoom with
-  | Large -> (Large, current_image)
-  | Medium -> (Large, resize_window_frame player Large board)
-  | Small -> (Medium, resize_window_frame player Medium board)
+  | Large -> (Large, current_images)
+  | Medium -> (Large, resize_window_frame pb Large board)
+  | Small -> (Medium, resize_window_frame pb Medium board)
 
 (** [starting_loc p zoom] is the coordinates at the beginning of a level
     for the player with state [p]. *)

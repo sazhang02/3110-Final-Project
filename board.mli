@@ -15,6 +15,10 @@ type orientation =
 
 type pipe
 
+type item =
+  | Damage
+  | Bomb
+
 type tile_type =
   | Wall
   | Pipe of pipe
@@ -22,6 +26,7 @@ type tile_type =
   | Exit of orientation
   | Empty
   | Coin
+  | Item of item
 
 type room
 
@@ -89,8 +94,13 @@ val make_pipe_tile : coord -> color -> orientation -> tile
     [s] and top-right coordinate is [e]. *)
 val room_of_coords : coord -> coord -> room
 
-(** [random_item t] is the board [t] with a randomly placed [Wall] tile. *)
-val random_item : t -> t
+(** [random_int lower curr upper] is a random int [x] from lower
+    (inclusive) to upper (exclusive) such that [x] is outside of the
+    range [curr - range] to [curr + range]. *)
+val random_int : int -> int -> int -> int -> int
+
+(** [random_item t] is a randomly placed [Item] tile. *)
+val random_item_tile : int -> int -> t -> tile
 
 (** [alla_board en ex rooms pipes coins] makes a level with "alla" the
     properties: entrance [en], exit [ex], [rooms], [pipes], and [coins]. *)

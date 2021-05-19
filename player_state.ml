@@ -9,11 +9,23 @@ type move = {
   action : orientation;
 }
 
+let get_move_pos move = move.pos
+
+let get_move_action move = move.action
+
 type p = {
   current_tile : tile;
   current_level : level_id;
   coins : int;
 }
+
+let get_current_level (p : p) = p.current_level
+
+let get_current_tile (p : p) = p.current_tile
+
+let get_current_pos (p : p) = get_tile_coords p.current_tile
+
+let get_coins (p : p) = p.coins
 
 let offset_player (t : Levels.t) (bt : Board.t) f (level_id : level_id)
     =
@@ -46,14 +58,6 @@ let final_state (t : Levels.t) (bt : Board.t) =
 let new_level_state p (t : Levels.t) (bt : Board.t) f level_id =
   let current_tile = get_tile_c (offset_player t bt f level_id) bt in
   { current_tile; current_level = level_id; coins = p.coins }
-
-let get_current_level (p : p) = p.current_level
-
-let get_current_tile (p : p) = p.current_tile
-
-let get_current_pos (p : p) = get_tile_coords p.current_tile
-
-let get_coins (p : p) = p.coins
 
 (* Helper functions for update *)
 let get_move move_key p =
@@ -126,8 +130,58 @@ let check_tile tile p t b move =
   | Coin -> check_coin tile p t
   (* | Coin collected -> check_coin tile collected p t *)
   | Empty -> player_next_tile tile p t
+  | Item _ ->
+      failwith "Cannot get items in levels other than final level."
 
-let update (move_key : char) p t b =
+let check_item
+    (item : item)
+    (tile : tile)
+    (p : p)
+    (t : Board.t)
+    (b_state : Boss_state.b) =
+  let amt_damage = match item with Damage -> 25 | Bomb -> 50 in
+  let b_state' = decrease_health b_state amt_damage in
+  let current_tile = make_tile Empty (get_tile_coords tile) in
+  let p' =
+    { current_tile; current_level = p.current_level; coins = p.coins }
+  in
+  (p', b_state')
+
+let check_collision move (b_state : Boss_state.b) =
+  let p_pos = get_move_pos move in
+  let b_pos = Boss_state.get_current_pos b_state in
+  if get_x p_pos = get_x b_pos && get_y p_pos = get_y b_pos then true
+  else false
+
+let check_final_level_tile tile p t bt b_state b_state' move =
+  (* let b_state' = move_boss move.pos b_state bt in if check_collision
+     move b_state || check_collision move b_state' then (final_state t
+     bt, Boss_state.init_state bt) else *)
+  match get_tile_type tile with
+  | Wall -> (p, b_state)
+  | Pipe pipe ->
+      if check_orientation tile move p then
+        (player_enter_pipe tile move p, b_state')
+      else (p, b_state)
+  | Entrance _ ->
+      if is_final_level t p.current_level then (p, b_state)
+      else if check_orientation tile move p then
+        (player_prev_level p t bt, b_state')
+      else (p, b_state)
+  | Exit _ ->
+      if p.coins < coin_count t p.current_level then (p, b_state)
+      else if check_orientation tile move p then
+        (player_next_level p t bt, b_state')
+      else (p, b_state)
+  | Coin ->
+      let p' = check_coin tile p t in
+      (p', b_state')
+  | Empty ->
+      let p = player_next_tile tile p t in
+      (p, b_state')
+  | Item item -> check_item item tile p bt b_state'
+
+let update (move_key : char) p (t : Levels.t) (b : Board.t) =
   let predicted_move = get_move move_key p in
   let next_tile = get_tile_c predicted_move.pos b in
   check_tile next_tile p t b predicted_move
@@ -140,12 +194,20 @@ let final_level_update
     (b_state : Boss_state.b) =
   let predicted_move = get_move move_key p in
   let next_tile = get_tile_c predicted_move.pos bt in
-  let p' = check_tile next_tile p t bt predicted_move in
-  let boss_move = p = p' in
-  if boss_move then
-    let b_state' = move_boss (get_pos p.current_tile) b_state bt in
-    (p', b_state')
-  else (p, b_state)
+  let b_state' = move_boss predicted_move.pos b_state bt in
+  if
+    check_collision predicted_move b_state
+    || check_collision predicted_move b_state'
+  then
+    let entrance_pos = get_current_pos (final_state t bt) in
+    (final_state t bt, Boss_state.init_state entrance_pos bt)
+  else
+    check_final_level_tile next_tile p t bt b_state b_state'
+      predicted_move
+
+(* let boss_move = p = p' in if boss_move then let b_state' = move_boss
+   (get_pos p.current_tile) b_state bt in (p', b_state') *)
+(* else (p, b_state) *)
 
 let make_player_state x y tile_type level coins =
   let tile = make_tile tile_type (make_coord x y) in

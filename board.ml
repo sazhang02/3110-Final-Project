@@ -28,6 +28,10 @@ type pipe = {
   color : color;
 }
 
+type item =
+  | Damage
+  | Bomb
+
 type tile_type =
   | Wall
   | Pipe of pipe
@@ -35,6 +39,9 @@ type tile_type =
   | Exit of orientation
   | Empty
   | Coin
+  | Item of item
+
+(* * coord*)
 
 type tile = {
   coords : coord;
@@ -56,8 +63,6 @@ let dimy = 16
 let get_tile_coords tile = tile.coords
 
 let get_tile_type tile = tile.tile_type
-
-let blank = { coords = { x = 0; y = 0 }; tile_type = Wall }
 
 let index_of_coord dimx coord =
   match coord with { x; y } -> x + (dimx * y)
@@ -197,27 +202,47 @@ let tile_to_string tile =
   | Exit _ -> "O"
   | Empty -> " "
   | Coin -> "c"
+  | _ -> "@"
 
-let rec random_item (board : t) =
-  let rand_x = Random.int dimx in
-  let rand_y = Random.int dimy in
+(** [random_int_range x y] is a random int from x (inclusive) to y
+    (exclusive). *)
+let random_int_range lower upper =
+  Random.self_init ();
+  lower + Random.int (upper - lower)
+
+let random_int lower curr upper range =
+  Random.self_init ();
+  let random_range =
+    [|
+      ( if curr > lower + range then Random.int (curr - range)
+      else random_int_range (curr + range + 1) upper );
+      ( if curr < upper - range - 1 then
+        random_int_range (curr + range + 1) upper
+      else Random.int (curr - range) );
+    |]
+  in
+  random_range.(Random.int 2)
+
+let rec random_item_tile curr_x curr_y (board : t) =
+  Random.self_init ();
+  let rand_x = random_int 0 curr_x dimx 2 in
+  let rand_y = random_int 0 curr_y dimy 2 in
   let coords = { x = rand_x; y = rand_y } in
-  print_endline (string_of_int rand_x ^ ", " ^ string_of_int rand_y);
   let tile = get_tile_c coords board in
-  print_endline (tile_to_string tile);
   match get_tile_type tile with
   | Empty ->
-      let new_tile = { coords; tile_type = Wall (*placeholder*) } in
-      set_tile new_tile board;
-      board
-  | _ -> random_item board
+      let item = if Random.int 4 = 3 then Bomb else Damage in
+      { coords; tile_type = Item item }
+  | _ -> random_item_tile curr_x curr_y board
+
+let placeholder = { coords = { x = 0; y = 0 }; tile_type = Wall }
 
 (** [make_board en ex r] makes a board with entrance [en], exit [ex],
     and rooms [r]. *)
 let make_board entrance exit rooms =
   let board =
     make_rooms_board rooms
-      (let def = Array.make (dimx * dimy) blank in
+      (let def = Array.make (dimx * dimy) placeholder in
        for i = 0 to Array.length def - 1 do
          def.(i) <- { coords = coord_of_index dimx i; tile_type = Wall }
        done;
