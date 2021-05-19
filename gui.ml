@@ -146,15 +146,6 @@ let update_player_boss new_imgs old_imgs new_locs old_locs =
   let new_player_img = fst new_imgs in
   let old_boss_img = snd old_imgs in
   let new_boss_img = snd new_imgs in
-  (* print_endline ( "current player loc: (" ^ string_of_int (get_x
-     old_player_loc) ^ ", " ^ string_of_int (get_y old_player_loc) );
-     print_endline ( "current boss loc: (" ^ string_of_int (get_x
-     old_boss_loc) ^ ", " ^ string_of_int (get_y old_boss_loc) );
-     print_endline ( "new player loc: (" ^ string_of_int (get_x
-     new_player_loc) ^ ", " ^ string_of_int (get_y new_player_loc) );
-     print_endline ( "new boss loc: (" ^ string_of_int (get_x
-     new_boss_loc) ^ ", " ^ string_of_int (get_y new_boss_loc) );
-     print_endline ""; *)
   draw_at_coords old_player_img old_player_loc;
   draw_at_coords old_boss_img old_boss_loc;
   draw_at_coords new_player_img new_player_loc;
@@ -257,6 +248,36 @@ let display_coins p zoom : unit =
   Graphics.draw_string
     ("Coin count: " ^ string_of_int (Player_state.get_coins p))
 
+let display_damage b zoom : unit =
+  let loc = get_window_size zoom in
+  let x = fst loc - 250 in
+  let y = snd loc - 250 in
+  Graphics.moveto x y;
+  draw_at_coords (bckg_image_gc zoom) (make_gui_coord x y);
+  Graphics.draw_string
+    ("Health: " ^ string_of_int (Boss_state.get_health b))
+
+let display_steps p zoom : unit =
+  let loc = get_window_size zoom in
+  let x = fst loc - 250 in
+  let y = snd loc - 150 in
+  Graphics.moveto x y;
+  draw_at_coords (bckg_image_gc zoom) (make_gui_coord x y);
+  Graphics.draw_string
+    ("Steps: " ^ string_of_int (Player_state.get_steps p))
+
+let unwrap_pb_state zoom resized_player player_prev_img = function
+  | p, Some b ->
+      let boss_loc =
+        Boss_state.get_current_pos b |> board_to_gui zoom
+      in
+      let boss_prev_img = get_image boss_loc zoom in
+      let resized_boss = boss_image_gc zoom in
+      Graphics.draw_image resized_boss (get_x boss_loc) (get_y boss_loc);
+      ( (resized_player, Some resized_boss),
+        (player_prev_img, Some boss_prev_img) )
+  | p, None -> ((resized_player, None), (player_prev_img, None))
+
 let redraw_window pb zoom board : unit =
   let window_info = get_window_size zoom in
   let width = fst window_info in
@@ -268,35 +289,34 @@ let redraw_window pb zoom board : unit =
 let resize_window_frame
     (pb : Player_state.p * Boss_state.b option)
     zoom
-    board : Graphics.image * Graphics.image option =
+    board :
+    (Graphics.image * Graphics.image option)
+    * (Graphics.image * Graphics.image option) =
   redraw_window pb zoom board;
   let player_loc =
     Player_state.get_current_pos (fst pb) |> board_to_gui zoom
   in
+  let player_prev_img = get_image player_loc zoom in
   let resized_player = player_image_gc zoom in
   Graphics.draw_image resized_player (get_x player_loc)
     (get_y player_loc);
-  match pb with
-  | p, Some b ->
-      let boss_loc =
-        Boss_state.get_current_pos b |> board_to_gui zoom
-      in
-      let resized_boss = boss_image_gc zoom in
-      Graphics.draw_image resized_boss (get_x boss_loc) (get_y boss_loc);
-      (resized_player, Some resized_boss)
-  | p, None -> (resized_player, None)
+  unwrap_pb_state zoom resized_player player_prev_img pb
 
-let decrease_zoom pb current_images zoom board :
-    scaling * (Graphics.image * Graphics.image option) =
+let decrease_zoom pb current_imgs prev_imgs zoom board :
+    scaling
+    * ( (Graphics.image * Graphics.image option)
+      * (Graphics.image * Graphics.image option) ) =
   match zoom with
   | Large -> (Medium, resize_window_frame pb Medium board)
   | Medium -> (Small, resize_window_frame pb Small board)
-  | Small -> (Small, current_images)
+  | Small -> (Small, (current_imgs, prev_imgs))
 
-let increase_zoom pb current_images zoom board :
-    scaling * (Graphics.image * Graphics.image option) =
+let increase_zoom pb current_imgs prev_imgs zoom board :
+    scaling
+    * ( (Graphics.image * Graphics.image option)
+      * (Graphics.image * Graphics.image option) ) =
   match zoom with
-  | Large -> (Large, current_images)
+  | Large -> (Large, (current_imgs, prev_imgs))
   | Medium -> (Large, resize_window_frame pb Large board)
   | Small -> (Medium, resize_window_frame pb Medium board)
 

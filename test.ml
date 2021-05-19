@@ -221,11 +221,19 @@ let player_state_to_string (p : p) =
   ^ string_of_int (get_current_level p)
   ^ "; Coins: "
   ^ string_of_int (get_coins p)
+  ^ ("; Steps: " ^ string_of_int (get_steps p))
   ^ "]"
 
-let state_tests name func t bt expected_output =
+let init_state_tests name t bt expected_output =
   name >:: fun _ ->
-  assert_equal expected_output (func t bt)
+  assert_equal expected_output
+    (Player_state.init_state t bt)
+    ~printer:player_state_to_string
+
+let final_state_tests name t bt steps expected_output =
+  name >:: fun _ ->
+  assert_equal expected_output
+    (Player_state.final_state t bt steps)
     ~printer:player_state_to_string
 
 let get_current_level_test name (state : p) expected_output =
@@ -250,6 +258,10 @@ let get_coins_test name (state : p) expected_output =
   name >:: fun _ ->
   assert_equal expected_output (get_coins state) ~printer:string_of_int
 
+let get_steps_test name (state : p) expected_output =
+  name >:: fun _ ->
+  assert_equal expected_output (get_steps state) ~printer:string_of_int
+
 let update_test name move_key p t b expected_output =
   name >:: fun _ ->
   assert_equal expected_output (update move_key p t b)
@@ -266,17 +278,18 @@ let up_st = update 'w' start_st basic example_board
 (* State at position (2, 2)*)
 let middle_st = update 'd' up_st basic example_board
 
-let example_p = make_player_state 13 5 Empty 4 10
+let example_p = make_player_state 13 5 Empty 4 10 50
 
 let player_state_tests =
   [
     (* state tests *)
-    (let p = make_player_state 1 1 Empty 0 0 in
-     state_tests "state test: init state test" Player_state.init_state
-       basic example_board p);
-    (let p = make_player_state 14 12 Empty 4 8 in
-     state_tests "final test: final state test" final_state basic
-       example_board p);
+    (let p = make_player_state 1 1 Empty 0 0 0 in
+     init_state_tests "state test: init state test" basic example_board
+       p);
+    (let p = make_player_state 14 12 Empty 4 8 0 in
+     let p' = final_state basic example_board 0 in
+     final_state_tests "final test: final state test" basic
+       example_board 0 p);
     (* current_level tests *)
     get_current_level_test
       "current level test: basic initial level is 0" start_st 0;
@@ -293,95 +306,95 @@ let player_state_tests =
       "current tile test: middle initial tile is empty" middle_st
       (make_tile Empty (make_coord 2 2));
     (let ru_pipe = make_pipe_tile (make_coord 6 0) Red Up in
-     let p = make_player_state 6 0 (get_tile_type ru_pipe) 1 0 in
+     let p = make_player_state 6 0 (get_tile_type ru_pipe) 1 0 0 in
      get_current_tile_test "current tile test: red pipe, up" p ru_pipe);
     (let rd_pipe = make_pipe_tile (make_coord 6 0) Red Down in
-     let p = make_player_state 6 0 (get_tile_type rd_pipe) 1 0 in
+     let p = make_player_state 6 0 (get_tile_type rd_pipe) 1 0 0 in
      get_current_tile_test "current tile test: red pipe, down" p rd_pipe);
     (let rl_pipe = make_pipe_tile (make_coord 6 0) Red Left in
-     let p = make_player_state 6 0 (get_tile_type rl_pipe) 1 0 in
+     let p = make_player_state 6 0 (get_tile_type rl_pipe) 1 0 0 in
      get_current_tile_test "current tile test: red pipe, left3" p
        rl_pipe);
     (let rr_pipe = make_pipe_tile (make_coord 6 0) Red Right in
-     let p = make_player_state 6 0 (get_tile_type rr_pipe) 1 0 in
+     let p = make_player_state 6 0 (get_tile_type rr_pipe) 1 0 0 in
      get_current_tile_test "current tile test: red pipe, right" p
        rr_pipe);
     (let bu_pipe = make_pipe_tile (make_coord 2 1) Blue Up in
-     let p = make_player_state 2 1 (get_tile_type bu_pipe) 3 0 in
+     let p = make_player_state 2 1 (get_tile_type bu_pipe) 3 0 0 in
      get_current_tile_test "current tile test: blue pipe, up" p bu_pipe);
     (let bd_pipe = make_pipe_tile (make_coord 2 1) Blue Down in
-     let p = make_player_state 2 1 (get_tile_type bd_pipe) 3 0 in
+     let p = make_player_state 2 1 (get_tile_type bd_pipe) 3 0 0 in
      get_current_tile_test "current tile test: blue pipe, down" p
        bd_pipe);
     (let bl_pipe = make_pipe_tile (make_coord 2 1) Blue Left in
-     let p = make_player_state 2 1 (get_tile_type bl_pipe) 3 0 in
+     let p = make_player_state 2 1 (get_tile_type bl_pipe) 3 0 0 in
      get_current_tile_test "current tile test: blue pipe, left" p
        bl_pipe);
     (let br_pipe = make_pipe_tile (make_coord 2 1) Blue Right in
-     let p = make_player_state 2 1 (get_tile_type br_pipe) 3 0 in
+     let p = make_player_state 2 1 (get_tile_type br_pipe) 3 0 0 in
      get_current_tile_test "current tile test: blue pipe, right" p
        br_pipe);
     (let gu_pipe = make_pipe_tile (make_coord 2 1) Green Up in
-     let p = make_player_state 2 1 (get_tile_type gu_pipe) 3 0 in
+     let p = make_player_state 2 1 (get_tile_type gu_pipe) 3 0 0 in
      get_current_tile_test "current tile test: green pipe, up" p gu_pipe);
     (let gd_pipe = make_pipe_tile (make_coord 2 1) Green Down in
-     let p = make_player_state 2 1 (get_tile_type gd_pipe) 3 0 in
+     let p = make_player_state 2 1 (get_tile_type gd_pipe) 3 0 0 in
      get_current_tile_test "current tile test: green pipe, down" p
        gd_pipe);
     (let gl_pipe = make_pipe_tile (make_coord 2 1) Green Left in
-     let p = make_player_state 2 1 (get_tile_type gl_pipe) 3 0 in
+     let p = make_player_state 2 1 (get_tile_type gl_pipe) 3 0 0 in
      get_current_tile_test "current tile test: green pipe, left" p
        gl_pipe);
     (let gr_pipe = make_pipe_tile (make_coord 2 1) Green Right in
-     let p = make_player_state 2 1 (get_tile_type gr_pipe) 3 0 in
+     let p = make_player_state 2 1 (get_tile_type gr_pipe) 3 0 0 in
      get_current_tile_test "current tile test: green pipe, right" p
        gr_pipe);
     (let goldu_pipe = make_pipe_tile (make_coord 3 4) Gold Up in
-     let p = make_player_state 3 4 (get_tile_type goldu_pipe) 2 0 in
+     let p = make_player_state 3 4 (get_tile_type goldu_pipe) 2 0 0 in
      get_current_tile_test "current tile test: gold pipe, up" p
        goldu_pipe);
     (let goldd_pipe = make_pipe_tile (make_coord 3 4) Gold Down in
-     let p = make_player_state 3 4 (get_tile_type goldd_pipe) 2 0 in
+     let p = make_player_state 3 4 (get_tile_type goldd_pipe) 2 0 0 in
      get_current_tile_test "current tile test: gold pipe, down" p
        goldd_pipe);
     (let goldl_pipe = make_pipe_tile (make_coord 3 4) Gold Left in
-     let p = make_player_state 3 4 (get_tile_type goldl_pipe) 2 0 in
+     let p = make_player_state 3 4 (get_tile_type goldl_pipe) 2 0 0 in
      get_current_tile_test "current tile test: gold pipe, left" p
        goldl_pipe);
     (let goldr_pipe = make_pipe_tile (make_coord 3 4) Gold Right in
-     let p = make_player_state 3 4 (get_tile_type goldr_pipe) 2 0 in
+     let p = make_player_state 3 4 (get_tile_type goldr_pipe) 2 0 0 in
      get_current_tile_test "current tile test: gold pipe, right" p
        goldr_pipe);
     (let blacku_pipe = make_pipe_tile (make_coord 2 2) Black Up in
-     let p = make_player_state 2 2 (get_tile_type blacku_pipe) 1 0 in
+     let p = make_player_state 2 2 (get_tile_type blacku_pipe) 1 0 0 in
      get_current_tile_test "current tile test: black pipe, up" p
        blacku_pipe);
     (let blackd_pipe = make_pipe_tile (make_coord 2 2) Black Down in
-     let p = make_player_state 2 2 (get_tile_type blackd_pipe) 1 0 in
+     let p = make_player_state 2 2 (get_tile_type blackd_pipe) 1 0 0 in
      get_current_tile_test "current tile test: black pipe, down" p
        blackd_pipe);
     (let blackl_pipe = make_pipe_tile (make_coord 2 2) Black Left in
-     let p = make_player_state 2 2 (get_tile_type blackl_pipe) 1 0 in
+     let p = make_player_state 2 2 (get_tile_type blackl_pipe) 1 0 0 in
      get_current_tile_test "current tile test: black pipe, left" p
        blackl_pipe);
     (let blackr_pipe = make_pipe_tile (make_coord 2 2) Black Right in
-     let p = make_player_state 2 2 (get_tile_type blackr_pipe) 1 0 in
+     let p = make_player_state 2 2 (get_tile_type blackr_pipe) 1 0 0 in
      get_current_tile_test "current tile test: black pipe, right" p
        blackr_pipe);
     (let entrance = make_tile (Entrance Left) (make_coord 15 12) in
-     let p = make_player_state 15 12 (get_tile_type entrance) 4 0 in
+     let p = make_player_state 15 12 (get_tile_type entrance) 4 0 0 in
      get_current_tile_test
        "current tile test: entrance pipe, down in level 4" p entrance);
     (let coin_tile = make_tile Coin (make_coord 4 2) in
-     let p = make_player_state 4 2 (get_tile_type coin_tile) 4 1 in
+     let p = make_player_state 4 2 (get_tile_type coin_tile) 4 1 0 in
      get_current_tile_test "current tile test: coin tile, level 4" p
        coin_tile);
     (let exit = make_tile (Exit Left) (make_coord 5 9) in
-     let p = make_player_state 5 9 (get_tile_type exit) 4 0 in
+     let p = make_player_state 5 9 (get_tile_type exit) 4 0 0 in
      get_current_tile_test "current tile test: exit tile, level 4" p
        exit);
     (let wall = make_tile Wall (make_coord 1 1) in
-     let p = make_player_state 1 1 (get_tile_type wall) 4 0 in
+     let p = make_player_state 1 1 (get_tile_type wall) 4 0 0 in
      get_current_tile_test "current tile test: wall tile, level 4" p
        wall);
     (* current_position tests *)
@@ -397,20 +410,23 @@ let player_state_tests =
     (* coins test *)
     get_coins_test "coin test: example p coin count is 10" example_p 10;
     get_coins_test "coin test: basic initial coin count is 0" start_st 0;
-    (let p = make_player_state 9 10 Empty 1 2 in
+    (let p = make_player_state 9 10 Empty 1 2 0 in
      let p' = update 'd' p basic example_board in
      get_coins_test "coin test: coin count + 1" p' 3);
+    (* steps test *)
+    get_steps_test "steps test: example p steps count is 50" example_p
+      50;
     (* update tests *)
-    (let p = make_player_state 2 3 Empty 0 0 in
+    (let p = make_player_state 2 3 Empty 0 0 2 in
      update_test "update test: move up to empty tile" 'w' middle_st
        basic example_board p);
-    (let p = make_player_state 1 2 Empty 0 0 in
+    (let p = make_player_state 1 2 Empty 0 0 2 in
      update_test "update test: move left to empty tile" 'a' middle_st
        basic example_board p);
-    (let p = make_player_state 2 1 Empty 0 0 in
+    (let p = make_player_state 2 1 Empty 0 0 2 in
      update_test "update test: move down to empty tile" 's' middle_st
        basic example_board p);
-    (let p = make_player_state 3 2 Empty 0 0 in
+    (let p = make_player_state 3 2 Empty 0 0 2 in
      update_test "update test: move right to empty tile" 'd' middle_st
        basic example_board p);
     (* final_level_update test *)
@@ -450,9 +466,9 @@ let move_boss_test name p_pos b board expected_output =
     (Boss_state.move_boss p_pos b board |> Boss_state.get_current_pos)
     ~printer:coords_to_string
 
-let b = Boss_state.init_state example_board
+let b = Boss_state.init_state (make_coord 0 1) example_board
 
-let b2 = Boss_state.init_state example_board
+let b2 = Boss_state.init_state (make_coord 0 1) example_board
 
 let b_x = Boss_state.get_current_pos b |> get_x
 

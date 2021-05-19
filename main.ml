@@ -20,7 +20,7 @@ let current_level_id = ref 0
 let board_info : Board.t array = Levels.make_all_boards game_info
 
 let zoom = ref Large
-
+let steps = ref 0
 (** [level_changed p] is True if player has moved onto the next level
     and False otherwise. *)
 let level_changed player : bool =
@@ -31,6 +31,7 @@ let check_tile_type t = Board.get_tile_type t = Board.Coin
 let new_player_state key player =
   (* if is_final_level game_info !current_level_id then raise
      Final_Level else *)
+  steps := get_steps player;
   try update key player game_info board_info.(!current_level_id) with
   | Levels.UnknownLevel -1 ->
       print_endline "This pipe is locked";
@@ -79,6 +80,7 @@ and move_player key player player_img prev_image =
     Pressing q quits the game and anything else re-prompts the user for
     inputs. *)
 and get_input player player_img prev_image : unit =
+  display_steps player !zoom;
   match read_key () with
   | 'w' -> move_player 'w' player player_img prev_image
   | 's' -> move_player 's' player player_img prev_image
@@ -87,23 +89,24 @@ and get_input player player_img prev_image : unit =
   | 'q' -> close_graph ()
   | 'p' ->
       let resized_info =
-        increase_zoom (player, None) (player_img, None) !zoom
+        increase_zoom (player, None) (player_img, None) (prev_image, None) !zoom
           board_info.(!current_level_id)
       in
-      let resized_player = fst (snd resized_info) in
-      let new_zoom_size = fst resized_info in
-      zoom := new_zoom_size;
-      get_input player resized_player prev_image
+      adjust_window resized_info player
   | 'm' ->
       let resized_info =
-        decrease_zoom (player, None) (player_img, None) !zoom
+        decrease_zoom (player, None) (player_img, None) (prev_image, None) !zoom
           board_info.(!current_level_id)
       in
-      let resized_player = fst (snd resized_info) in
-      let new_zoom_size = fst resized_info in
-      zoom := new_zoom_size;
-      get_input player resized_player prev_image
+      adjust_window resized_info player
   | _ -> get_input player player_img prev_image
+
+and adjust_window resized_info p : unit =
+    let resized_player = resized_info |> snd |> fst |> fst in
+    let resized_prev = resized_info |> snd |> snd |> fst in
+    let new_zoom_size = fst resized_info in
+    zoom := new_zoom_size;
+    get_input p resized_player resized_prev
 
 (** [window] creates the GUI for the game. *)
 let window () =
@@ -116,6 +119,7 @@ let window () =
   Gui.set_up_level player board_info.(!current_level_id) !zoom;
   get_input player (player_image_gc !zoom) (floor_image_gc !zoom)
 
+
 (* Execute the game engine. *)
 let () =
   try window () with
@@ -124,6 +128,6 @@ let () =
       print_endline "going to final level";
       let last_board_index = Array.length board_info - 1 in
       let last_board = board_info.(last_board_index) in
-      let player_final_state = final_state game_info last_board in
+      let player_final_state = final_state game_info last_board !steps in
       Final_level.final_level last_board !zoom player_final_state
         game_info

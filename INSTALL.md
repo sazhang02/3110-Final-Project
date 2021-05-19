@@ -40,3 +40,5 @@
 3. Change directory (aka `cd`) to the folder and `unzip desert.zip`
 4. If you are on Windows, you must open Xming (Mac should automatically open XQuartz) and run `export DISPLAY=:0`
 5. Run `make play` to open the game
+
+    

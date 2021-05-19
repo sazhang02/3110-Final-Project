@@ -89,23 +89,31 @@ val draw_board : Board.t -> scaling -> unit
 (* * [display_coins p zoom] displays the coin count. *)
 val display_coins : Player_state.p -> scaling -> unit
 
-(* * [decrease_zoom player current_image zoom board] decreases the zoom
-   size of the window. *)
+val display_steps : Player_state.p -> scaling -> unit
+
+(* * [decrease_zoom pb current_imgs prev_imgs zoom board] decreases the
+   zoom size of the window. *)
 val decrease_zoom :
   Player_state.p * Boss_state.b option ->
   Graphics.image * Graphics.image option ->
-  scaling ->
-  Board.t ->
-  scaling * (Graphics.image * Graphics.image option)
-
-(* * [increase_zoom player current_image zoom board] increases the zoom
-   size of the window. *)
-val increase_zoom :
-  Player_state.p * Boss_state.b option ->
   Graphics.image * Graphics.image option ->
   scaling ->
   Board.t ->
-  scaling * (Graphics.image * Graphics.image option)
+  scaling
+  * ( (Graphics.image * Graphics.image option)
+    * (Graphics.image * Graphics.image option) )
+
+(* * [increase_zoom pb current_imgs prev_imgs zoom board] increases the
+   zoom size of the window. *)
+val increase_zoom :
+  Player_state.p * Boss_state.b option ->
+  Graphics.image * Graphics.image option ->
+  Graphics.image * Graphics.image option ->
+  scaling ->
+  Board.t ->
+  scaling
+  * ( (Graphics.image * Graphics.image option)
+    * (Graphics.image * Graphics.image option) )
 
 (** [set_up_level p board zoom] sets up the level with its corresponding
     [board]. The board for the level is drawn and the player is drawn
@@ -127,3 +135,6 @@ val update_player_boss :
   coords * coords ->
   coords * coords ->
   unit
+
+(*[display_damage b zoom] displays the boss' remaining health.*)
+val display_damage : Boss_state.b -> scaling -> unit

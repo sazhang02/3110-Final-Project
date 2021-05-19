@@ -223,23 +223,24 @@ let random_int lower curr upper range =
   in
   random_range.(Random.int 2)
 
-let rec random_item_tile curr_x curr_y (board : t) =
+let rec random_item_tile px py b_coord (board : t) =
   Random.self_init ();
-  let rand_x = random_int 0 curr_x dimx 2 in
-  let rand_y = random_int 0 curr_y dimy 2 in
+  let rand_x = random_int 0 px dimx 2 in
+  let rand_y = random_int 0 py dimy 2 in
   let coords = { x = rand_x; y = rand_y } in
-  let tile = get_tile_c coords board in
-  match get_tile_type tile with
-  | Empty ->
-      let item = if Random.int 4 = 3 then Bomb else Damage in
-      { coords; tile_type = Item item }
-  | _ -> random_item_tile curr_x curr_y board
-
-let placeholder = { coords = { x = 0; y = 0 }; tile_type = Wall }
+  if coords = b_coord then random_item_tile px py b_coord board
+  else
+    let tile = get_tile_c coords board in
+    match get_tile_type tile with
+    | Empty ->
+        let item = if Random.int 4 = 3 then Bomb else Damage in
+        { coords; tile_type = Item item }
+    | _ -> random_item_tile px py b_coord board
 
 (** [make_board en ex r] makes a board with entrance [en], exit [ex],
     and rooms [r]. *)
 let make_board entrance exit rooms =
+  let placeholder = { coords = { x = 0; y = 0 }; tile_type = Wall } in
   let board =
     make_rooms_board rooms
       (let def = Array.make (dimx * dimy) placeholder in

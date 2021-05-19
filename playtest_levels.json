@@ -93,11 +93,46 @@
           },
           "end": {
             "x": 14,
+            "y": 6
+          }
+        },
+        {
+          "start": {
+            "x": 1,
+            "y": 9
+          },
+          "end": {
+            "x": 14,
             "y": 14
           }
         }
       ],
-      "pipes": [],
+      "pipes": [
+        {
+          "x": 4,
+          "y": 0,
+          "color": "Gold",
+          "orientation": "Up"
+        },
+        {
+          "x": 11,
+          "y": 15,
+          "color": "Gold",
+          "orientation": "Down"
+        },
+        {
+          "x": 6,
+          "y": 7,
+          "color": "Green",
+          "orientation": "Down"
+        },
+        {
+          "x": 6,
+          "y": 8,
+          "color": "Green",
+          "orientation": "Up"
+        }
+      ],
       "coins": []
     }
   ]

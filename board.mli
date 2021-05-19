@@ -99,8 +99,8 @@ val room_of_coords : coord -> coord -> room
     range [curr - range] to [curr + range]. *)
 val random_int : int -> int -> int -> int -> int
 
-(** [random_item t] is a randomly placed [Item] tile. *)
-val random_item_tile : int -> int -> t -> tile
+(** [random_item px py bx by t] is a randomly placed [Item] tile. *)
+val random_item_tile : int -> int -> coord -> t -> tile
 
 (** [alla_board en ex rooms pipes coins] makes a level with "alla" the
     properties: entrance [en], exit [ex], [rooms], [pipes], and [coins]. *)

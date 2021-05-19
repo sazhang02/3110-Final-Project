@@ -26,56 +26,87 @@ let get_health (b : b) = b.health
 
 let set_health (b : b) h : b = { b with health = h }
 
-let decrease_health b amount =
-  if b.health - amount > 0 then { b with health = b.health - amount }
+let decrease_health b amount : b =
+  let new_health = b.health - amount in
+  if new_health > 0 then { b with health = new_health }
   else { b with health = 0 }
 
-let get_distance p_pos b_pos : float =
+let get_distance p_pos b_tile : float =
+  let b_pos = get_tile_coords b_tile in
   let player_x = get_x p_pos |> float_of_int in
   let player_y = get_y p_pos |> float_of_int in
   let boss_x = get_x b_pos |> float_of_int in
   let boss_y = get_y b_pos |> float_of_int in
   sqrt (((player_x -. boss_x) ** 2.) +. ((player_y -. boss_y) ** 2.))
 
-let get_min distances init =
-  let rec get_min_helper lst min =
-    match lst with
-    | [] -> min
-    | (distance, pos) :: t -> get_min_helper t (Stdlib.min distance min)
+(* let get_min (distances : (float * Board.tile) list) (init_min :
+   float) = let rec get_min_helper lst min = match lst with | [] -> min
+   | (distance, tile) :: t -> get_min_helper t (Stdlib.min distance min)
+   in let min = get_min_helper distances init_min in List.assoc min
+   distances *)
+
+(* let get_min_sort (distances : (float * Board.tile) list) (init_min :
+   float) = *)
+let min_distance_sort distances =
+  List.sort (fun x y -> Float.compare (fst x) (fst y)) distances
+
+(* in let next_tile = get_min distances up_distance in match
+   get_tile_type next_tile with | Empty -> get_tile_coords next_tile |
+   Wall -> get_tile_coords next_tile *)
+
+let get_closest_pos p_pos b_pos (bt : Board.t) : Board.coord =
+  let up_tile =
+    get_tile_c (make_coord (get_x b_pos) (get_y b_pos + 1)) bt
   in
-  let min = get_min_helper distances init in
-  List.assoc min distances
+  let up_distance = get_distance p_pos up_tile in
+  let down_tile =
+    get_tile_c (make_coord (get_x b_pos) (get_y b_pos - 1)) bt
+  in
+  let down_distance = get_distance p_pos down_tile in
+  let left_tile =
+    get_tile_c (make_coord (get_x b_pos - 1) (get_y b_pos)) bt
+  in
+  let left_distance = get_distance p_pos left_tile in
+  let right_tile =
+    get_tile_c (make_coord (get_x b_pos + 1) (get_y b_pos)) bt
+  in
+  let right_distance = get_distance p_pos right_tile in
+  let distances =
+    [
+      (up_distance, up_tile);
+      (down_distance, down_tile);
+      (left_distance, left_tile);
+      (right_distance, right_tile);
+    ]
+    |> min_distance_sort
+  in
+  let next_tile = snd (List.hd distances) in
+  match get_tile_type next_tile with
+  | Empty | Coin | Item _ | Pipe _ -> get_tile_coords next_tile
+  | _ -> get_tile_coords (snd (List.nth distances 1))
 
-let get_closest_pos p_pos b_pos : Board.coord =
-  let b_pos_up = make_coord (get_x b_pos) (get_y b_pos + 1) in
-  let up_distance = get_distance p_pos b_pos_up in
-  let b_pos_down = make_coord (get_x b_pos) (get_y b_pos - 1) in
-  let down_distance = get_distance p_pos b_pos_down in
-  let b_pos_left = make_coord (get_x b_pos - 1) (get_y b_pos) in
-  let left_distance = get_distance p_pos b_pos_left in
-  let b_pos_right = make_coord (get_x b_pos + 1) (get_y b_pos) in
-  let right_distance = get_distance p_pos b_pos_right in
+(* let get_closest_pos2 p_pos b_pos bt = let px, py = (get_x p_pos,
+   get_y p_pos) in let bx, by = (get_x b_pos, get_y b_pos) in let distx,
+   disty = (bx - px, by - py) in if abs distx > 0 && abs disty > 0 then
+   failwith "" else failwith "" *)
 
-  (* let distances = [ (up_distance, b_pos_up); (down_distance,
-     b_pos_down); (left_distance, b_pos_left); (right_distance,
-     b_pos_right); ] in get_min distances up_distance *)
-  b_pos
+(* b_pos *)
 
 let move_bosss (p_pos : Board.coord) b board : b =
   let boss_pos = get_current_pos b in
-  let new_boss_pos = get_closest_pos p_pos boss_pos in
+  let new_boss_pos = get_closest_pos p_pos boss_pos board in
   { b with current_tile = get_tile_c new_boss_pos board }
 
 let move_boss (p_pos : Board.coord) b board : b =
   let boss_pos = get_current_pos b in
   let new_boss_pos =
     let next_tile =
-      Board.get_tile_c (get_closest_pos p_pos boss_pos) board
+      Board.get_tile_c (get_closest_pos p_pos boss_pos board) board
     in
     match get_tile_type next_tile with
     | Entrance _ | Exit _ | Wall -> boss_pos
     | Pipe pipe -> get_pipe_end_of_tile next_tile
-    | Coin | Empty | Item _ -> get_closest_pos p_pos boss_pos
+    | Coin | Empty | Item _ -> get_closest_pos p_pos boss_pos board
   in
   { b with current_tile = get_tile_c new_boss_pos board }
 
