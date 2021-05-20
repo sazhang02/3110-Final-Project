@@ -22,25 +22,34 @@ let board : Board.t ref =
 let check_item_tile t =
   match Board.get_tile_type t with Board.Item _ -> true | _ -> false
 
-let get_current_imgs t p b (board : Board.t) new_locs :
-    Graphics.image * Graphics.image =
-  if check_item_tile t then (
-    let player_loc = get_current_pos p in
-    let next_item =
-      Board.random_item_tile
-        (Board.get_x player_loc)
-        (Board.get_y player_loc)
-        (Boss_state.get_current_pos b)
-        board
-    in
-    let curr_tile = get_current_tile p in
-    Board.set_tile curr_tile board;
-    display_damage b !zoom;
-    if Boss_state.get_health b > 0 then Board.set_tile next_item board;
+let create_random_item_tile player_loc b board =
+  Board.random_item_tile
+    (Board.get_x player_loc)
+    (Board.get_y player_loc)
+    (Boss_state.get_current_pos b)
+    board
+
+let display_item b next_item board new_locs =
+  if Boss_state.get_health b > 0 then begin
+    Board.set_tile next_item board;
     draw_tile !zoom next_item
       (Board.get_tile_coords next_item |> board_to_gui !zoom)
       (Board.get_tile_type next_item);
-    (floor_image_gc !zoom, get_image (snd new_locs) !zoom) )
+    (floor_image_gc !zoom, get_image (snd new_locs) !zoom)
+  end
+  else (floor_image_gc !zoom, get_image (snd new_locs) !zoom)
+
+let create_next_item p b board new_locs =
+  let player_loc = get_current_pos p in
+  let next_item = create_random_item_tile player_loc b board in
+  let curr_tile = get_current_tile p in
+  Board.set_tile curr_tile board;
+  display_damage b !zoom;
+  display_item b next_item board new_locs
+
+let get_current_imgs t p b (board : Board.t) new_locs :
+    Graphics.image * Graphics.image =
+  if check_item_tile t then create_next_item p b board new_locs
   else (get_image (fst new_locs) !zoom, get_image (snd new_locs) !zoom)
 
 let new_player_boss_state key player t boss p_img prev_img =
@@ -58,12 +67,7 @@ let get_loc_info player_boss_state =
   in
   (new_player_loc, new_boss_loc)
 
-let rec get_input
-    player
-    (boss : Boss_state.b)
-    (pb_imgs : Graphics.image * Graphics.image)
-    prev_imgs
-    t : unit =
+let rec get_input player boss pb_imgs prev_imgs t : unit =
   steps := get_steps player;
   display_damage boss !zoom;
   display_steps player !zoom;
@@ -73,22 +77,8 @@ let rec get_input
   | 'a' -> move_player 'a' player boss pb_imgs prev_imgs t
   | 'd' -> move_player 'd' player boss pb_imgs prev_imgs t
   | 's' -> move_player 's' player boss pb_imgs prev_imgs t
-  | 'p' ->
-      let resized_info =
-        increase_zoom (player, Some boss)
-          (fst pb_imgs, Some (snd pb_imgs))
-          (fst prev_imgs, Some (snd prev_imgs))
-          !zoom !board
-      in
-      adjust_window resized_info player boss pb_imgs prev_imgs t
-  | 'm' ->
-      let resized_info =
-        decrease_zoom (player, Some boss)
-          (fst pb_imgs, Some (snd pb_imgs))
-          (fst prev_imgs, Some (snd prev_imgs))
-          !zoom !board
-      in
-      adjust_window resized_info player boss pb_imgs prev_imgs t
+  | 'p' -> increase_window_size player boss pb_imgs prev_imgs t
+  | 'm' -> decrease_window_size player boss pb_imgs prev_imgs t
   | _ -> get_input player boss pb_imgs prev_imgs t
 
 and adjust_window resized_info p b pb_imgs prev_imgs t : unit =
@@ -99,6 +89,24 @@ and adjust_window resized_info p b pb_imgs prev_imgs t : unit =
   | (p_img, Some b_img), (p_prev_img, Some b_prev_img) ->
       get_input p b (p_img, b_img) (p_prev_img, b_prev_img) t
   | _ -> failwith "impossible"
+
+and increase_window_size player boss pb_imgs prev_imgs t =
+  let resized_info =
+    increase_zoom (player, Some boss)
+      (fst pb_imgs, Some (snd pb_imgs))
+      (fst prev_imgs, Some (snd prev_imgs))
+      !zoom !board
+  in
+  adjust_window resized_info player boss pb_imgs prev_imgs t
+
+and decrease_window_size player boss pb_imgs prev_imgs t =
+  let resized_info =
+    decrease_zoom (player, Some boss)
+      (fst pb_imgs, Some (snd pb_imgs))
+      (fst prev_imgs, Some (snd prev_imgs))
+      !zoom !board
+  in
+  adjust_window resized_info player boss pb_imgs prev_imgs t
 
 and move_player key player boss pb_imgs prev_img t : unit =
   let curr_player_boss_loc = get_loc_info (player, boss) in
@@ -118,44 +126,53 @@ and move_player_helper p pb_imgs prev_img new_loc loc new_pb_st tile t =
   in
   check_scenarios p new_pb_st pb_imgs prev_img new_loc loc curr_pics t
 
+and player_same_pos p pb_imgs prev_img pb_loc new_pb_loc new_st t =
+  update_player_boss pb_imgs prev_img
+    (fst pb_loc, snd new_pb_loc)
+    pb_loc;
+  get_input p (snd new_st) pb_imgs prev_img t
+
+and boss_same_pos pb_imgs prev_img pb_loc new_pb_loc new_st pics t =
+  update_player_boss pb_imgs prev_img
+    (fst new_pb_loc, snd pb_loc)
+    pb_loc;
+  get_input (fst new_st) (snd new_st) pb_imgs (fst pics, snd prev_img) t
+
+and player_boss_swap_pos prev_img pb_imgs new_pb_loc pb_loc new_st t =
+  let updated_pics = (snd prev_img, fst prev_img) in
+  update_player_boss pb_imgs prev_img new_pb_loc pb_loc;
+  get_input (fst new_st) (snd new_st) pb_imgs updated_pics t
+
+and boss_loc_was_old_player pic prev pb_img new_pb_loc pb_loc new_st t =
+  let updated_pics = (fst pic, fst prev) in
+  update_player_boss pb_img prev new_pb_loc pb_loc;
+  get_input (fst new_st) (snd new_st) pb_img updated_pics t
+
+and player_loc_was_old_boss pic prev pb_img new_pb_loc pb_loc new_st t =
+  let updated_pics = (snd prev, snd pic) in
+  update_player_boss pb_img prev new_pb_loc pb_loc;
+  get_input (fst new_st) (snd new_st) pb_img updated_pics t
+
+and boss_died new_st pb_imgs prev_img =
+  raise
+    (Finish_Game
+       { p = fst new_st; p_img = fst pb_imgs; prev_img = fst prev_img })
+
 and check_scenarios p new_st pb_imgs prev_img new_pb_loc pb_loc pics t =
-  if check_movement (fst pb_loc) (fst new_pb_loc) then begin
-    print_endline "camel in same position";
-    update_player_boss pb_imgs prev_img
-      (fst pb_loc, snd new_pb_loc)
-      pb_loc;
-    get_input p (snd new_st) pb_imgs prev_img t
-  end
-  else if check_movement (snd pb_loc) (snd new_pb_loc) then begin
-    print_endline "boss hit a wall";
-    update_player_boss pb_imgs prev_img
-      (fst new_pb_loc, snd pb_loc)
-      pb_loc;
-    get_input (fst new_st) (snd new_st) pb_imgs
-      (fst pics, snd prev_img)
-      t
-  end
+  if check_movement (fst pb_loc) (fst new_pb_loc) then
+    player_same_pos p pb_imgs prev_img pb_loc new_pb_loc new_st t
+  else if check_movement (snd pb_loc) (snd new_pb_loc) then
+    boss_same_pos pb_imgs prev_img pb_loc new_pb_loc new_st pics t
   else if fst new_pb_loc = snd pb_loc && snd new_pb_loc = fst pb_loc
-  then (
-    let updated_pics = (snd prev_img, fst prev_img) in
-    update_player_boss pb_imgs prev_img new_pb_loc pb_loc;
-    get_input (fst new_st) (snd new_st) pb_imgs updated_pics t )
-  else if snd new_pb_loc = fst pb_loc then (
-    let updated_pics = (fst pics, fst prev_img) in
-    update_player_boss pb_imgs prev_img new_pb_loc pb_loc;
-    get_input (fst new_st) (snd new_st) pb_imgs updated_pics t )
-  else if fst new_pb_loc = snd pb_loc then (
-    let updated_pics = (snd prev_img, snd pics) in
-    update_player_boss pb_imgs prev_img new_pb_loc pb_loc;
-    get_input (fst new_st) (snd new_st) pb_imgs updated_pics t )
+  then player_boss_swap_pos prev_img pb_imgs new_pb_loc pb_loc new_st t
+  else if snd new_pb_loc = fst pb_loc then
+    boss_loc_was_old_player pics prev_img pb_imgs new_pb_loc pb_loc
+      new_st t
+  else if fst new_pb_loc = snd pb_loc then
+    player_loc_was_old_boss pics prev_img pb_imgs new_pb_loc pb_loc
+      new_st t
   else if Boss_state.get_health (snd new_st) = 0 then
-    raise
-      (Finish_Game
-         {
-           p = fst new_st;
-           p_img = fst pb_imgs;
-           prev_img = fst prev_img;
-         })
+    boss_died new_st pb_imgs prev_img
   else begin
     update_player_boss pb_imgs prev_img new_pb_loc pb_loc;
     get_input (fst new_st) (snd new_st) pb_imgs pics t
@@ -165,7 +182,7 @@ let rec quit_game () =
   match read_key () with 'q' -> close_graph () | _ -> quit_game ()
 
 let endscreen () =
-  print_endline "endscreen";
+  set_window_title "Game Over!";
   clear_graph ();
   draw_screen_background !zoom;
   display_score !steps !zoom;
@@ -180,19 +197,23 @@ let rec endgame_input player p_img prev_img t =
   | 'a' -> move_p 'a' player p_img prev_img t
   | 'd' -> move_p 'd' player p_img prev_img t
   | 's' -> move_p 's' player p_img prev_img t
-  | 'p' ->
-      let resized_info =
-        increase_zoom (player, None) (p_img, None) (prev_img, None)
-          !zoom !board
-      in
-      adjust_window_endgame resized_info player t
-  | 'm' ->
-      let resized_info =
-        decrease_zoom (player, None) (p_img, None) (prev_img, None)
-          !zoom !board
-      in
-      adjust_window_endgame resized_info player t
+  | 'p' -> increase_endgame_window_size player p_img prev_img t
+  | 'm' -> decrease_endgame_window_size player p_img prev_img t
   | _ -> endgame_input player p_img prev_img t
+
+and decrease_endgame_window_size player p_img prev_img t =
+  let resized_info =
+    decrease_zoom (player, None) (p_img, None) (prev_img, None) !zoom
+      !board
+  in
+  adjust_window_endgame resized_info player t
+
+and increase_endgame_window_size player p_img prev_img t =
+  let resized_info =
+    increase_zoom (player, None) (p_img, None) (prev_img, None) !zoom
+      !board
+  in
+  adjust_window_endgame resized_info player t
 
 and adjust_window_endgame resized_info p t : unit =
   let resized_player = resized_info |> snd |> fst |> fst in
@@ -222,31 +243,27 @@ let boss_defeated t e =
   draw_at_coords e.p_img p_loc;
   endgame_input e.p e.p_img e.prev_img t
 
-let final_level
-    (b : Board.t)
-    (z : Gui.scaling)
-    (p : Player_state.p)
-    (t : Levels.t) =
-  print_endline "at final level";
+let setup_references b z p =
   zoom := z;
-  let player_loc = Player_state.get_current_pos p in
   board := b;
-  steps := Player_state.get_steps p;
+  steps := Player_state.get_steps p
+
+let setup_initial_board p b z t =
+  let player_loc = Player_state.get_current_pos p in
   let entrance_pos =
     Player_state.get_current_pos (Player_state.final_state t !board 0)
   in
   let boss = Boss_state.init_state entrance_pos !board in
-  Board.set_tile
-    (Board.random_item_tile
-       (Board.get_x player_loc)
-       (Board.get_y player_loc)
-       (Boss_state.get_current_pos boss)
-       !board)
-    !board;
+  Board.set_tile (create_random_item_tile player_loc boss !board) !board;
   set_up_level p b z;
   draw_at_coords (boss_image_gc !zoom)
     (Boss_state.get_current_pos boss |> board_to_gui !zoom);
+  boss
+
+let final_level b z p t =
+  setup_references b z p;
   set_window_title "Boss Battle!";
+  let boss = setup_initial_board p b z t in
   try
     get_input p boss
       (player_image_gc !zoom, boss_image_gc !zoom)

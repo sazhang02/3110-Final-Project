@@ -289,7 +289,7 @@ let display_damage b zoom : unit =
   Graphics.moveto x y;
   draw_at_coords (bckg_image_gc zoom) (make_gui_coord x y);
   Graphics.draw_string
-    ("Health: " ^ string_of_int (Boss_state.get_health b))
+    ("Boss Health: " ^ string_of_int (Boss_state.get_health b))
 
 let display_steps p zoom : unit =
   let loc = get_window_size zoom in
