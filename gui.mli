@@ -83,6 +83,11 @@ val update_player :
 (** [board_to_gui] is the Gui.coords equivalent of Board.coord. *)
 val board_to_gui : scaling -> Board.coord -> coords
 
+(** [draw_tile scale_factor tile coords tile_type] draws [tile] at
+    [coords] on the board.*)
+val draw_tile :
+  scaling -> Board.tile -> coords -> Board.tile_type -> unit
+
 (* * [draw_board] draws the board. val draw_board : unit *)
 val draw_board : Board.t -> scaling -> unit
 
@@ -90,6 +95,8 @@ val draw_board : Board.t -> scaling -> unit
 val display_coins : Player_state.p -> scaling -> unit
 
 val display_steps : Player_state.p -> scaling -> unit
+
+val display_score : int -> scaling -> unit
 
 (* * [decrease_zoom pb current_imgs prev_imgs zoom board] decreases the
    zoom size of the window. *)
@@ -138,3 +145,7 @@ val update_player_boss :
 
 (*[display_damage b zoom] displays the boss' remaining health.*)
 val display_damage : Boss_state.b -> scaling -> unit
+
+(*[draw_screen_background scale_factor] draws the floor tile on the
+  entire gui*)
+val draw_screen_background : scaling -> unit

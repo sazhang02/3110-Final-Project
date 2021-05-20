@@ -116,6 +116,8 @@ let rec proceed () =
 
 let homescreen () =
   (* open_graph ""; *)
+  Gui.draw_screen_background Gui.Large;
+
   draw_button start;
 
   (* draw_all_buttons [ start; !hard_mode ]; *)

@@ -20,7 +20,9 @@ let current_level_id = ref 0
 let board_info : Board.t array = Levels.make_all_boards game_info
 
 let zoom = ref Large
+
 let steps = ref 0
+
 (** [level_changed p] is True if player has moved onto the next level
     and False otherwise. *)
 let level_changed player : bool =
@@ -89,36 +91,38 @@ and get_input player player_img prev_image : unit =
   | 'q' -> close_graph ()
   | 'p' ->
       let resized_info =
-        increase_zoom (player, None) (player_img, None) (prev_image, None) !zoom
+        increase_zoom (player, None) (player_img, None)
+          (prev_image, None) !zoom
           board_info.(!current_level_id)
       in
       adjust_window resized_info player
   | 'm' ->
       let resized_info =
-        decrease_zoom (player, None) (player_img, None) (prev_image, None) !zoom
+        decrease_zoom (player, None) (player_img, None)
+          (prev_image, None) !zoom
           board_info.(!current_level_id)
       in
       adjust_window resized_info player
   | _ -> get_input player player_img prev_image
 
 and adjust_window resized_info p : unit =
-    let resized_player = resized_info |> snd |> fst |> fst in
-    let resized_prev = resized_info |> snd |> snd |> fst in
-    let new_zoom_size = fst resized_info in
-    zoom := new_zoom_size;
-    get_input p resized_player resized_prev
+  let resized_player = resized_info |> snd |> fst |> fst in
+  let resized_prev = resized_info |> snd |> snd |> fst in
+  let new_zoom_size = fst resized_info in
+  zoom := new_zoom_size;
+  get_input p resized_player resized_prev
 
 (** [window] creates the GUI for the game. *)
 let window () =
   open_graph window_size;
   set_window_title window_title;
   let g = Homescreen.homescreen () in
+  clear_graph ();
   (*homescreen here let game_info = something from home screen depending
     on difficulty mode *)
   let player = init_state game_info board_info.(!current_level_id) in
   Gui.set_up_level player board_info.(!current_level_id) !zoom;
   get_input player (player_image_gc !zoom) (floor_image_gc !zoom)
-
 
 (* Execute the game engine. *)
 let () =
@@ -128,6 +132,8 @@ let () =
       print_endline "going to final level";
       let last_board_index = Array.length board_info - 1 in
       let last_board = board_info.(last_board_index) in
-      let player_final_state = final_state game_info last_board !steps in
+      let player_final_state =
+        final_state game_info last_board !steps
+      in
       Final_level.final_level last_board !zoom player_final_state
         game_info

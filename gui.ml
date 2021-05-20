@@ -55,6 +55,14 @@ let bckg_image_gc scale = cm_to_gc scale "background"
 
 let boss_image_gc scale = cm_to_gc scale "boss"
 
+let bomb_image_gc scale = cm_to_gc scale "bomb"
+
+let damage_image_gc scale = cm_to_gc scale "damage"
+
+let title_image_gc scale = cm_to_gc scale "title"
+
+let win_image_gc scale = cm_to_gc scale "win"
+
 (* ENTRANCE IMAGES *)
 
 let entr_up_image_gc scale = cm_to_gc scale "entr_up"
@@ -219,25 +227,51 @@ let choose_pipe_img p t scale =
   | Blue -> choose_colored_img blue_imgs t scale
   | Black -> choose_entr_img t scale
 
+let draw_item scale_factor obj_coords = function
+  | Bomb -> draw_at_coords (bomb_image_gc scale_factor) obj_coords
+  | Damage -> draw_at_coords (damage_image_gc scale_factor) obj_coords
+
+let draw_tile scale_factor tile coords = function
+  | Wall -> draw_at_coords (wall_image_gc scale_factor) coords
+  | Pipe p ->
+      draw_at_coords (choose_pipe_img p tile scale_factor) coords
+  | Entrance _ ->
+      draw_at_coords (choose_entr_img tile scale_factor) coords
+  | Exit _ -> draw_at_coords (choose_exit_img tile scale_factor) coords
+  | Empty -> draw_at_coords (floor_image_gc scale_factor) coords
+  | Coin -> draw_at_coords (coin_image_gc scale_factor) coords
+  | Item i -> draw_item scale_factor coords i
+
 let draw_board t scale_factor =
   for i = 0 to get_size t - 1 do
     let tile = get_tile i t in
     let obj_coords =
       Board.get_tile_coords tile |> board_to_gui scale_factor
     in
-    match Board.get_tile_type tile with
-    | Wall -> draw_at_coords (wall_image_gc scale_factor) obj_coords
-    | Pipe p ->
-        draw_at_coords (choose_pipe_img p tile scale_factor) obj_coords
-    | Entrance _ ->
-        draw_at_coords (choose_entr_img tile scale_factor) obj_coords
-    | Exit _ ->
-        draw_at_coords (choose_exit_img tile scale_factor) obj_coords
-    | Empty -> draw_at_coords (floor_image_gc scale_factor) obj_coords
-    | Coin -> draw_at_coords (coin_image_gc scale_factor) obj_coords
-    (* TODO: draw item not coin*)
-    | Item _ -> draw_at_coords (coin_image_gc scale_factor) obj_coords
+    draw_tile scale_factor tile obj_coords (Board.get_tile_type tile)
   done
+
+let draw_screen_background scale_factor =
+  for i = 0 to 21 do
+    for j = 0 to 15 do
+      draw_at_coords
+        (floor_image_gc scale_factor)
+        { x = i * 50; y = j * 50 }
+    done
+  done
+
+let display_score steps zoom : unit =
+  let loc = get_window_size zoom in
+  let center_x = fst loc / 2 in
+  let center_y = snd loc / 2 in
+  Graphics.moveto (center_x - 175) (center_y - 50);
+  Graphics.draw_string
+    ( "You took " ^ string_of_int steps
+    ^ " steps to complete this game!. Press q to quit." );
+  draw_at_coords (title_image_gc zoom)
+    { x = center_x - 207; y = center_y + 25 };
+  draw_at_coords (win_image_gc zoom)
+    { x = center_x - 87; y = center_y - 25 }
 
 let display_coins p zoom : unit =
   let loc = get_window_size zoom in
