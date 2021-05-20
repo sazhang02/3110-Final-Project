@@ -98,6 +98,7 @@ let proceed () =
   (get_mode !is_easy_game, 0)
 
 let homescreen () =
+  (* open_graph ""; *)
   draw_button start;
 
   draw_all_buttons [ start; hard_mode; easy_mode ];

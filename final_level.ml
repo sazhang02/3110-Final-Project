@@ -19,7 +19,6 @@ let empty_tile = Board.make_tile Board.Empty (Board.make_coord 0 0)
 let board : Board.t ref =
   ref (Board.alla_board empty_tile empty_tile [] [] [])
 
-(*TODO: Draw boss on new zoomed board*)
 let check_item_tile t =
   match Board.get_tile_type t with Board.Item _ -> true | _ -> false
 
@@ -38,8 +37,9 @@ let get_current_imgs t p b (board : Board.t) new_locs :
     Board.set_tile curr_tile board;
     display_damage b !zoom;
     if Boss_state.get_health b > 0 then Board.set_tile next_item board;
-    draw_at_coords (coin_image_gc !zoom)
-      (Board.get_tile_coords next_item |> board_to_gui !zoom);
+    draw_tile !zoom next_item
+      (Board.get_tile_coords next_item |> board_to_gui !zoom)
+      (Board.get_tile_type next_item);
     (floor_image_gc !zoom, get_image (snd new_locs) !zoom) )
   else (get_image (fst new_locs) !zoom, get_image (snd new_locs) !zoom)
 
@@ -64,6 +64,7 @@ let rec get_input
     (pb_imgs : Graphics.image * Graphics.image)
     prev_imgs
     t : unit =
+  steps := get_steps player;
   display_damage boss !zoom;
   display_steps player !zoom;
   match read_key () with
@@ -95,7 +96,6 @@ and adjust_window resized_info p b pb_imgs prev_imgs t : unit =
   let new_zoom_size = fst resized_info in
   zoom := new_zoom_size;
   match resized_pb with
-  (* | p_img, Some b_img -> get_input p b (p_img, b_img) prev_imgs t *)
   | (p_img, Some b_img), (p_prev_img, Some b_prev_img) ->
       get_input p b (p_img, b_img) (p_prev_img, b_prev_img) t
   | _ -> failwith "impossible"
@@ -112,37 +112,13 @@ and move_player key player boss pb_imgs prev_img t : unit =
   move_player_helper player pb_imgs prev_img new_player_boss_loc
     curr_player_boss_loc new_pb_state tile_in_board t
 
-and move_player_helper
-    p
-    pb_imgs
-    prev_img
-    new_pb_loc
-    curr_pb_loc
-    new_pb_state
-    tile
-    t =
+and move_player_helper p pb_imgs prev_img new_loc loc new_pb_st tile t =
   let curr_pics =
-    get_current_imgs tile (fst new_pb_state) (snd new_pb_state) !board
-      new_pb_loc
+    get_current_imgs tile (fst new_pb_st) (snd new_pb_st) !board new_loc
   in
-  check_scenarios p new_pb_state pb_imgs prev_img new_pb_loc curr_pb_loc
-    curr_pics t
+  check_scenarios p new_pb_st pb_imgs prev_img new_loc loc curr_pics t
 
 and check_scenarios p new_st pb_imgs prev_img new_pb_loc pb_loc pics t =
-  (* print_endline ( "current player loc: (" ^ string_of_int (get_x (fst
-     pb_loc)) ^ ", " ^ string_of_int (get_y (fst pb_loc)) );
-     print_endline ( "current boss loc: (" ^ string_of_int (get_x (snd
-     pb_loc)) ^ ", " ^ string_of_int (get_y (snd pb_loc)) );
-     print_endline ( "new player loc: (" ^ string_of_int (get_x (fst
-     new_pb_loc)) ^ ", " ^ string_of_int (get_y (fst new_pb_loc)) );
-     print_endline ( "new boss loc: (" ^ string_of_int (get_x (snd
-     new_pb_loc)) ^ ", " ^ string_of_int (get_y (snd new_pb_loc)) );
-     print_endline ""; *)
-  (* print_endline ( "new player loc: (" ^ string_of_int (get_x (fst
-     new_pb_loc)) ^ ", " ^ string_of_int (get_y (fst new_pb_loc)) );
-     print_endline ( "old boss loc: (" ^ string_of_int (get_x (snd
-     pb_loc)) ^ ", " ^ string_of_int (get_y (snd pb_loc)) );
-     print_endline ""; *)
   if check_movement (fst pb_loc) (fst new_pb_loc) then begin
     print_endline "camel in same position";
     update_player_boss pb_imgs prev_img
@@ -161,7 +137,6 @@ and check_scenarios p new_st pb_imgs prev_img new_pb_loc pb_loc pics t =
   end
   else if fst new_pb_loc = snd pb_loc && snd new_pb_loc = fst pb_loc
   then (
-    print_endline "THIS IS THE SCENARIO";
     let updated_pics = (snd prev_img, fst prev_img) in
     update_player_boss pb_imgs prev_img new_pb_loc pb_loc;
     get_input (fst new_st) (snd new_st) pb_imgs updated_pics t )
@@ -189,7 +164,16 @@ and check_scenarios p new_st pb_imgs prev_img new_pb_loc pb_loc pics t =
 let rec quit_game () =
   match read_key () with 'q' -> close_graph () | _ -> quit_game ()
 
+let endscreen () =
+  print_endline "endscreen";
+  clear_graph ();
+  draw_screen_background !zoom;
+  display_score !steps !zoom;
+  quit_game ()
+
 let rec endgame_input player p_img prev_img t =
+  steps := get_steps player;
+  display_steps player !zoom;
   match read_key () with
   | 'q' -> close_graph ()
   | 'w' -> move_p 'w' player p_img prev_img t
@@ -228,10 +212,7 @@ and move_p key player p_img prev_img t =
     try
       update_player p_img prev_img new_loc loc;
       endgame_input new_player p_img curr_pic t
-    with Levels.UnknownLevel -2 ->
-      print_endline "endscreen";
-      clear_graph ();
-      quit_game ()
+    with Levels.UnknownLevel -2 -> endscreen ()
 
 let boss_defeated t e =
   let exit_pipe_tile = Levels.exit_pipe t (Levels.final_level_id t) in
