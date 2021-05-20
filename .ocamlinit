@@ -6,9 +6,9 @@
 #load "graphics.cma";;
 #directory "_build";;
 #load "board.cmo";;
-#load "gui.cmo";;
 #load "levels.cmo";;
-#load "player_state.cmo";;
 #load "boss_state.cmo";;
+#load "player_state.cmo";;
+#load "gui.cmo";;
 #load "homescreen.cmo";;
 
