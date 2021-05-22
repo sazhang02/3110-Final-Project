@@ -63,6 +63,17 @@ let title_image_gc scale = cm_to_gc scale "title"
 
 let win_image_gc scale = cm_to_gc scale "win"
 
+(* HOMESCREEN IMAGES *)
+let start_img () = cm_to_gc Large "start_game"
+
+let easy_unselected_img () = cm_to_gc Large "easy_unselected"
+
+let easy_selected_img () = cm_to_gc Large "easy_selected"
+
+let hard_unselected_img () = cm_to_gc Large "hard_unselected"
+
+let hard_selected_img () = cm_to_gc Large "hard_selected"
+
 (* ENTRANCE IMAGES *)
 
 let entr_up_image_gc scale = cm_to_gc scale "entr_up"
@@ -266,8 +277,8 @@ let display_score steps zoom : unit =
   let center_y = snd loc / 2 in
   Graphics.moveto (center_x - 175) (center_y - 50);
   Graphics.draw_string
-    ( "You took " ^ string_of_int steps
-    ^ " steps to complete this game!. Press q to quit." );
+    ("You took " ^ string_of_int steps
+   ^ " steps to complete this game!. Press q to quit.");
   draw_at_coords (title_image_gc zoom)
     { x = center_x - 207; y = center_y + 25 };
   draw_at_coords (win_image_gc zoom)
@@ -338,8 +349,8 @@ let resize_window_frame
 
 let decrease_zoom pb current_imgs prev_imgs zoom board :
     scaling
-    * ( (Graphics.image * Graphics.image option)
-      * (Graphics.image * Graphics.image option) ) =
+    * ((Graphics.image * Graphics.image option)
+      * (Graphics.image * Graphics.image option)) =
   match zoom with
   | Large -> (Medium, resize_window_frame pb Medium board)
   | Medium -> (Small, resize_window_frame pb Small board)
@@ -347,8 +358,8 @@ let decrease_zoom pb current_imgs prev_imgs zoom board :
 
 let increase_zoom pb current_imgs prev_imgs zoom board :
     scaling
-    * ( (Graphics.image * Graphics.image option)
-      * (Graphics.image * Graphics.image option) ) =
+    * ((Graphics.image * Graphics.image option)
+      * (Graphics.image * Graphics.image option)) =
   match zoom with
   | Large -> (Large, (current_imgs, prev_imgs))
   | Medium -> (Large, resize_window_frame pb Large board)

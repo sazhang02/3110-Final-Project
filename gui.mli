@@ -55,6 +55,26 @@ val bckg_image_gc : scaling -> Graphics.image
     [scaling]. *)
 val boss_image_gc : scaling -> Graphics.image
 
+(** [start_img ()] is start_game.png as a Graphics.image*)
+val start_img : unit -> Graphics.image
+
+(** [easy_unselected_img ()] is the image of an unselected easy mode
+    button.*)
+val easy_unselected_img : unit -> Graphics.image
+
+(** [easy_selected_img ()] is the image of a selected easy mode button*)
+val easy_selected_img : unit -> Graphics.image
+
+(** [hard_unselected_img ()] is the image of an unselected hard mode
+    button. *)
+val hard_unselected_img : unit -> Graphics.image
+
+(** [hard_selected_img ()] is the image of a selected hard mode button*)
+val hard_selected_img : unit -> Graphics.image
+
+(** [title_img_gc zoom] is the title, scaled to [zoom].*)
+val title_image_gc : scaling -> Graphics.image
+
 (** [load_png png_name] is the Images.t equivalent of the png file with
     name [png_name]. Required: [png_name] is the name of the directory
     reference. For example, if png.png is in the same directory, a valid
@@ -94,8 +114,10 @@ val draw_board : Board.t -> scaling -> unit
 (* * [display_coins p zoom] displays the coin count. *)
 val display_coins : Player_state.p -> scaling -> unit
 
+(** [display_steps p zoom] displays the total number of steps taken.*)
 val display_steps : Player_state.p -> scaling -> unit
 
+(** [display_score i zoom] displays the final score. *)
 val display_score : int -> scaling -> unit
 
 (* * [decrease_zoom pb current_imgs prev_imgs zoom board] decreases the
@@ -107,8 +129,8 @@ val decrease_zoom :
   scaling ->
   Board.t ->
   scaling
-  * ( (Graphics.image * Graphics.image option)
-    * (Graphics.image * Graphics.image option) )
+  * ((Graphics.image * Graphics.image option)
+    * (Graphics.image * Graphics.image option))
 
 (* * [increase_zoom pb current_imgs prev_imgs zoom board] increases the
    zoom size of the window. *)
@@ -119,8 +141,8 @@ val increase_zoom :
   scaling ->
   Board.t ->
   scaling
-  * ( (Graphics.image * Graphics.image option)
-    * (Graphics.image * Graphics.image option) )
+  * ((Graphics.image * Graphics.image option)
+    * (Graphics.image * Graphics.image option))
 
 (** [set_up_level p board zoom] sets up the level with its corresponding
     [board]. The board for the level is drawn and the player is drawn
