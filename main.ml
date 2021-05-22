@@ -11,10 +11,27 @@ let game_of_file file = Yojson.Basic.from_file file |> from_json
 (* let game_info = game_of_file "basic_levels.json" *)
 
 (** [level_info] is the game information of all the levels. *)
-let game_info = game_of_file "playtest_levels.json"
+
+(* let game_info = ref (game_of_file "playtest_levels.json") *)
+
+(** [setup_window] will call Homescreen and setup the game immediately. *)
+let setup_window =
+  open_graph window_size;
+  set_window_title window_title;
+  Homescreen.homescreen ()
+
+(* let g = Homescreen.homescreen () in clear_graph (); print_endline g;
+   game_info := game_of_file g *)
+
+let game_info = game_of_file setup_window
 
 (** [current_level_id] is the current level the player is on. *)
 let current_level_id = ref 0
+
+(* let empty_tile = Board.make_tile Board.Empty (Board.make_coord 0 0)
+
+   let board : Board.t ref = ref (Board.alla_board empty_tile empty_tile
+   [] [] []) *)
 
 (** [board_info] is the current board info for the game. *)
 let board_info : Board.t array = Levels.make_all_boards game_info
@@ -45,7 +62,7 @@ let get_current_img t p new_loc : Graphics.image =
     let board = board_info.(!current_level_id) in
     Board.set_tile (get_current_tile p) board;
     display_coins p !zoom;
-    floor_image_gc !zoom )
+    floor_image_gc !zoom)
   else get_image new_loc !zoom
 
 let rec check_scenarios new_p p_img prev_img new_loc loc curr_pic =
@@ -112,14 +129,15 @@ and adjust_window resized_info p : unit =
   zoom := new_zoom_size;
   get_input p resized_player resized_prev
 
+(* let game_info = Homescreen.homescreen () |> fst |> game_of_file *)
+
 (** [window] creates the GUI for the game. *)
+
 let window () =
-  open_graph window_size;
-  set_window_title window_title;
-  let g = Homescreen.homescreen () in
+  (* open_graph window_size; set_window_title window_title; let g =
+     Homescreen.homescreen () in clear_graph (); print_endline g;
+     game_info := game_of_file g; *)
   clear_graph ();
-  (*homescreen here let game_info = something from home screen depending
-    on difficulty mode *)
   let player = init_state game_info board_info.(!current_level_id) in
   Gui.set_up_level player board_info.(!current_level_id) !zoom;
   get_input player (player_image_gc !zoom) (floor_image_gc !zoom)

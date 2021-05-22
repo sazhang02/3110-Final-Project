@@ -120,7 +120,7 @@ let rec choose_mode () =
 
 let get_mode is_easy = if is_easy then easy_game else hard_game
 
-let proceed () = (get_mode !is_easy_game, 0)
+let proceed () = get_mode !is_easy_game
 
 let homescreen () =
   draw_screen_background Large;
