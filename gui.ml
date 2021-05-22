@@ -36,6 +36,8 @@ let img_height img = snd (Images.size img)
 let image_name scale file =
   "images/" ^ string_of_int scale ^ "/" ^ file ^ ".png"
 
+(* Note that cm stands for camlimages Images.t and gc stands for
+   Graphics.image. *)
 let cm_of_image scale_factor name =
   let scale = scale_size scale_factor in
   name |> image_name scale |> load_png
@@ -43,6 +45,7 @@ let cm_of_image scale_factor name =
 let cm_to_gc scale_factor name =
   name |> cm_of_image scale_factor |> Graphic_image.of_image
 
+(* MISC. IMAGES *)
 let player_image_gc scale = cm_to_gc scale "camel"
 
 let floor_image_gc scale = cm_to_gc scale "floor"
@@ -84,7 +87,7 @@ let entr_left_image_gc scale = cm_to_gc scale "entr_left"
 
 let entr_right_image_gc scale = cm_to_gc scale "entr_right"
 
-(* EXIT IMAGES *)
+(* EXIT PIPE IMAGES *)
 
 let exit_up_image_gc scale = cm_to_gc scale "exit_up"
 
@@ -94,7 +97,7 @@ let exit_left_image_gc scale = cm_to_gc scale "exit_left"
 
 let exit_right_image_gc scale = cm_to_gc scale "exit_right"
 
-(* GREEN IMAGES *)
+(* GREEN PIPE IMAGES *)
 
 let green_up_image_gc scale = cm_to_gc scale "green_up"
 
@@ -104,7 +107,7 @@ let green_left_image_gc scale = cm_to_gc scale "green_left"
 
 let green_right_image_gc scale = cm_to_gc scale "green_right"
 
-(* RED IMAGES *)
+(* RED PIPE IMAGES *)
 
 let red_up_image_gc scale = cm_to_gc scale "red_up"
 
@@ -114,7 +117,7 @@ let red_left_image_gc scale = cm_to_gc scale "red_left"
 
 let red_right_image_gc scale = cm_to_gc scale "red_right"
 
-(* GOLD IMAGES *)
+(* GOLD PIPE IMAGES *)
 
 let gold_up_image_gc scale = cm_to_gc scale "gold_up"
 
@@ -124,7 +127,7 @@ let gold_left_image_gc scale = cm_to_gc scale "gold_left"
 
 let gold_right_image_gc scale = cm_to_gc scale "gold_right"
 
-(* BLUE IMAGES *)
+(* BLUE PIPE IMAGES *)
 
 let blue_up_image_gc scale = cm_to_gc scale "blue_up"
 
@@ -134,9 +137,9 @@ let blue_left_image_gc scale = cm_to_gc scale "blue_left"
 
 let blue_right_image_gc scale = cm_to_gc scale "blue_right"
 
-let tile_width scaling_factor = scale_size scaling_factor
+let tile_width scale = scale_size scale
 
-let tile_height scaling_factor = scale_size scaling_factor
+let tile_height scale = scale_size scale
 
 let board_to_gui scale_factor (board_coords : Board.coord) =
   {
@@ -144,9 +147,9 @@ let board_to_gui scale_factor (board_coords : Board.coord) =
     y = Board.get_y board_coords * tile_height scale_factor;
   }
 
-let get_image (loc : coords) zoom =
-  Graphics.get_image (get_x loc) (get_y loc) (tile_width zoom)
-    (tile_height zoom)
+let get_image loc scale =
+  Graphics.get_image (get_x loc) (get_y loc) (tile_width scale)
+    (tile_height scale)
 
 let draw_at_coords img loc = Graphics.draw_image img loc.x loc.y
 
@@ -238,140 +241,129 @@ let choose_pipe_img p t scale =
   | Blue -> choose_colored_img blue_imgs t scale
   | Black -> choose_entr_img t scale
 
-let draw_item scale_factor obj_coords = function
-  | Bomb -> draw_at_coords (bomb_image_gc scale_factor) obj_coords
-  | Damage -> draw_at_coords (damage_image_gc scale_factor) obj_coords
+let draw_item scale obj_coords = function
+  | Bomb -> draw_at_coords (bomb_image_gc scale) obj_coords
+  | Damage -> draw_at_coords (damage_image_gc scale) obj_coords
 
-let draw_tile scale_factor tile coords = function
-  | Wall -> draw_at_coords (wall_image_gc scale_factor) coords
-  | Pipe p ->
-      draw_at_coords (choose_pipe_img p tile scale_factor) coords
-  | Entrance _ ->
-      draw_at_coords (choose_entr_img tile scale_factor) coords
-  | Exit _ -> draw_at_coords (choose_exit_img tile scale_factor) coords
-  | Empty -> draw_at_coords (floor_image_gc scale_factor) coords
-  | Coin -> draw_at_coords (coin_image_gc scale_factor) coords
-  | Item i -> draw_item scale_factor coords i
+let draw_tile scale tile coords = function
+  | Wall -> draw_at_coords (wall_image_gc scale) coords
+  | Pipe p -> draw_at_coords (choose_pipe_img p tile scale) coords
+  | Entrance _ -> draw_at_coords (choose_entr_img tile scale) coords
+  | Exit _ -> draw_at_coords (choose_exit_img tile scale) coords
+  | Empty -> draw_at_coords (floor_image_gc scale) coords
+  | Coin -> draw_at_coords (coin_image_gc scale) coords
+  | Item i -> draw_item scale coords i
 
-let draw_board t scale_factor =
+let draw_board t scale =
   for i = 0 to get_size t - 1 do
     let tile = get_tile i t in
-    let obj_coords =
-      Board.get_tile_coords tile |> board_to_gui scale_factor
-    in
-    draw_tile scale_factor tile obj_coords (Board.get_tile_type tile)
+    let obj_coords = Board.get_tile_coords tile |> board_to_gui scale in
+    draw_tile scale tile obj_coords (Board.get_tile_type tile)
   done
 
-let draw_screen_background scale_factor =
+let draw_screen_background scale =
   for i = 0 to 21 do
     for j = 0 to 15 do
-      draw_at_coords
-        (floor_image_gc scale_factor)
-        { x = i * 50; y = j * 50 }
+      draw_at_coords (floor_image_gc scale) { x = i * 50; y = j * 50 }
     done
   done
 
-let display_score steps zoom : unit =
-  let loc = get_window_size zoom in
+let display_score steps scale : unit =
+  let loc = get_window_size scale in
   let center_x = fst loc / 2 in
   let center_y = snd loc / 2 in
   Graphics.moveto (center_x - 175) (center_y - 50);
   Graphics.draw_string
-    ("You took " ^ string_of_int steps
-   ^ " steps to complete this game!. Press q to quit.");
-  draw_at_coords (title_image_gc zoom)
+    ( "You took " ^ string_of_int steps
+    ^ " steps to complete this game!. Press q to quit." );
+  draw_at_coords (title_image_gc scale)
     { x = center_x - 207; y = center_y + 25 };
-  draw_at_coords (win_image_gc zoom)
+  draw_at_coords (win_image_gc scale)
     { x = center_x - 87; y = center_y - 25 }
 
-let display_coins p zoom : unit =
-  let loc = get_window_size zoom in
+let display_coins p scale : unit =
+  let loc = get_window_size scale in
   let x = fst loc - 250 in
   let y = snd loc - 50 in
   Graphics.moveto x y;
-  draw_at_coords (bckg_image_gc zoom) (make_gui_coord x y);
+  draw_at_coords (bckg_image_gc scale) (make_gui_coord x y);
   Graphics.draw_string
     ("Coin count: " ^ string_of_int (Player_state.get_coins p))
 
-let display_damage b zoom : unit =
-  let loc = get_window_size zoom in
+let display_damage b scale : unit =
+  let loc = get_window_size scale in
   let x = fst loc - 250 in
   let y = snd loc - 250 in
   Graphics.moveto x y;
-  draw_at_coords (bckg_image_gc zoom) (make_gui_coord x y);
+  draw_at_coords (bckg_image_gc scale) (make_gui_coord x y);
   Graphics.draw_string
     ("Boss Health: " ^ string_of_int (Boss_state.get_health b))
 
-let display_steps p zoom : unit =
-  let loc = get_window_size zoom in
+let display_steps p scale : unit =
+  let loc = get_window_size scale in
   let x = fst loc - 250 in
   let y = snd loc - 150 in
   Graphics.moveto x y;
-  draw_at_coords (bckg_image_gc zoom) (make_gui_coord x y);
+  draw_at_coords (bckg_image_gc scale) (make_gui_coord x y);
   Graphics.draw_string
     ("Steps: " ^ string_of_int (Player_state.get_steps p))
 
-let unwrap_pb_state zoom resized_player player_prev_img = function
+let unwrap_pb_state scale resized_player player_prev_img = function
   | p, Some b ->
       let boss_loc =
-        Boss_state.get_current_pos b |> board_to_gui zoom
+        Boss_state.get_current_pos b |> board_to_gui scale
       in
-      let boss_prev_img = get_image boss_loc zoom in
-      let resized_boss = boss_image_gc zoom in
+      let boss_prev_img = get_image boss_loc scale in
+      let resized_boss = boss_image_gc scale in
       Graphics.draw_image resized_boss (get_x boss_loc) (get_y boss_loc);
       ( (resized_player, Some resized_boss),
         (player_prev_img, Some boss_prev_img) )
   | p, None -> ((resized_player, None), (player_prev_img, None))
 
-let redraw_window pb zoom board : unit =
-  let window_info = get_window_size zoom in
+let redraw_window pb scale board : unit =
+  let window_info = get_window_size scale in
   let width = fst window_info in
   let height = snd window_info in
   Graphics.resize_window width height;
-  draw_board board zoom;
-  display_coins (fst pb) zoom
+  draw_board board scale;
+  display_coins (fst pb) scale
 
-let resize_window_frame
-    (pb : Player_state.p * Boss_state.b option)
-    zoom
-    board :
-    (Graphics.image * Graphics.image option)
-    * (Graphics.image * Graphics.image option) =
-  redraw_window pb zoom board;
+let redraw_player_info pb scale =
   let player_loc =
-    Player_state.get_current_pos (fst pb) |> board_to_gui zoom
+    Player_state.get_current_pos (fst pb) |> board_to_gui scale
   in
-  let player_prev_img = get_image player_loc zoom in
-  let resized_player = player_image_gc zoom in
+  let player_prev_img = get_image player_loc scale in
+  let resized_player = player_image_gc scale in
   Graphics.draw_image resized_player (get_x player_loc)
     (get_y player_loc);
-  unwrap_pb_state zoom resized_player player_prev_img pb
+  (resized_player, player_prev_img)
 
-let decrease_zoom pb current_imgs prev_imgs zoom board :
-    scaling
-    * ((Graphics.image * Graphics.image option)
-      * (Graphics.image * Graphics.image option)) =
-  match zoom with
+let resize_window_frame pb scale board =
+  redraw_window pb scale board;
+  let resize_p_info = redraw_player_info pb scale in
+  let resized_player = fst resize_p_info in
+  let player_prev_img = snd resize_p_info in
+  unwrap_pb_state scale resized_player player_prev_img pb
+
+let decrease_zoom pb current_imgs prev_imgs scale board =
+  match scale with
   | Large -> (Medium, resize_window_frame pb Medium board)
   | Medium -> (Small, resize_window_frame pb Small board)
   | Small -> (Small, (current_imgs, prev_imgs))
 
-let increase_zoom pb current_imgs prev_imgs zoom board :
-    scaling
-    * ((Graphics.image * Graphics.image option)
-      * (Graphics.image * Graphics.image option)) =
-  match zoom with
+let increase_zoom pb current_imgs prev_imgs scale board =
+  match scale with
   | Large -> (Large, (current_imgs, prev_imgs))
   | Medium -> (Large, resize_window_frame pb Large board)
   | Small -> (Medium, resize_window_frame pb Medium board)
 
-(** [starting_loc p zoom] is the coordinates at the beginning of a level
-    for the player with state [p]. *)
-let starting_loc p zoom =
-  Player_state.get_current_pos p |> board_to_gui zoom
+(** [starting_loc p scale] is the coordinates at the beginning of a
+    level for the player with state [p]. *)
+let starting_loc p scale =
+  Player_state.get_current_pos p |> board_to_gui scale
 
-let set_up_level p board zoom =
-  let loc = starting_loc p zoom in
-  draw_board board zoom;
-  display_coins p zoom;
-  Graphics.draw_image (player_image_gc zoom) (get_x loc) (get_y loc)
+let set_up_level p board scale =
+  let loc = starting_loc p scale in
+  draw_board board scale;
+  display_coins p scale;
+  Graphics.draw_image (player_image_gc scale) (get_x loc) (get_y loc)
