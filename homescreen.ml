@@ -32,11 +32,14 @@ let hard_mode_unselected_img_cm =
 
 let title_pos =
   let w = img_width title_img_cm in
-  make_gui_coord (fst center_pos - (w / 2)) (snd center_pos + 100)
+  make_gui_coord (fst center_pos - (w / 2)) (snd center_pos + 125)
 
 let description =
   "Pick up all the coins to proceed to the next level and help the \
    camel get out of the desert!"
+
+let home_instructions =
+  "Choose EASY or HARD mode, and then click START GAME to begin"
 
 let start =
   {
@@ -108,13 +111,13 @@ let rec choose_mode () =
       (* print_endline (string_of_bool !is_easy_game); *)
       draw_at_coords (easy_unselected_img ()) easy_button_coords;
       draw_at_coords (hard_selected_img ()) hard_button_coords;
-      choose_mode ())
+      choose_mode () )
     else if button_is_clicked easy_mode e then (
       is_easy_game := true;
       (* print_endline (string_of_bool !is_easy_game); *)
       draw_at_coords (hard_unselected_img ()) hard_button_coords;
       draw_at_coords (easy_selected_img ()) easy_button_coords;
-      choose_mode ())
+      choose_mode () )
     else choose_mode ()
   else ()
 
@@ -122,11 +125,13 @@ let get_mode is_easy = if is_easy then easy_game else hard_game
 
 let proceed () = get_mode !is_easy_game
 
-let homescreen () =
+let create_homescreen () =
   draw_screen_background Large;
   draw_at_coords (title_image_gc Large) title_pos;
   moveto (get_x title_pos - 50) (get_y title_pos - 25);
   draw_string description;
+  moveto (get_x title_pos + 25) (get_y title_pos - 50);
+  draw_string home_instructions;
   init_button_imgs
     [
       (start, start_img ());
@@ -136,3 +141,7 @@ let homescreen () =
   draw_all_buttons [ start; hard_mode; easy_mode ];
   choose_mode ();
   proceed ()
+
+let homescreen () =
+  try create_homescreen ()
+  with Graphic_failure "fatal I/O error" -> "close gui"

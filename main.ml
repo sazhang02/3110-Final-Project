@@ -15,8 +15,12 @@ let setup_game =
   set_window_title window_title;
   Homescreen.homescreen ()
 
-(** [game_info] is the game information of all the levels. *)
-let game_info = game_of_file setup_game
+(** [game_info] is the game information of all the levels. If the player
+    has exited from the game, a game information is created from
+    empty.json.*)
+let game_info =
+  if setup_game <> "close gui" then game_of_file setup_game
+  else game_of_file "empty.json"
 
 (** [current_level_id] is the current level the player is on. *)
 let current_level_id = ref 0
@@ -134,17 +138,19 @@ and adjust_window resized_info p : unit =
 
 (** [window] starts the GUI for the game. *)
 let window () =
-  clear_graph ();
-  let player = init_state game_info board_info.(!current_level_id) in
-  Gui.set_up_level player board_info.(!current_level_id) !zoom;
-  get_input player (player_image_gc !zoom) (floor_image_gc !zoom)
+  if setup_game <> "close gui" then begin
+    clear_graph ();
+    let player = init_state game_info board_info.(!current_level_id) in
+    Gui.set_up_level player board_info.(!current_level_id) !zoom;
+    get_input player (player_image_gc !zoom) (floor_image_gc !zoom)
+  end
+  else close_graph ()
 
 (* Execute the game engine. *)
 let () =
   try window () with
   | Graphic_failure "fatal I/O error" -> close_graph ()
   | Final_Level ->
-      print_endline "going to final level";
       let last_board_index = Array.length board_info - 1 in
       let last_board = board_info.(last_board_index) in
       let player_final_state =

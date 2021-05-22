@@ -290,10 +290,39 @@ let display_coins p scale : unit =
   Graphics.draw_string
     ("Coin count: " ^ string_of_int (Player_state.get_coins p))
 
+let instructions =
+  [
+    "Keyboard Instructions:";
+    "w: Move up";
+    "a: Move left";
+    "s: Move down";
+    "d: Move right";
+    "q: Quit Game";
+    "p: Zoom in";
+    "m: Zoom out";
+  ]
+
+let draw_game_instructions x y =
+  let rec draw_helper x y = function
+    | [] -> ()
+    | h :: t ->
+        let new_y = y - 20 in
+        Graphics.moveto x new_y;
+        Graphics.draw_string h;
+        draw_helper x new_y t
+  in
+  draw_helper x y instructions
+
+let display_game_instructions scale =
+  let loc = get_window_size scale in
+  let x = fst loc - 250 in
+  let y = snd loc - 300 in
+  draw_game_instructions x y
+
 let display_damage b scale : unit =
   let loc = get_window_size scale in
   let x = fst loc - 250 in
-  let y = snd loc - 250 in
+  let y = snd loc - 200 in
   Graphics.moveto x y;
   draw_at_coords (bckg_image_gc scale) (make_gui_coord x y);
   Graphics.draw_string
@@ -302,7 +331,7 @@ let display_damage b scale : unit =
 let display_steps p scale : unit =
   let loc = get_window_size scale in
   let x = fst loc - 250 in
-  let y = snd loc - 150 in
+  let y = snd loc - 100 in
   Graphics.moveto x y;
   draw_at_coords (bckg_image_gc scale) (make_gui_coord x y);
   Graphics.draw_string
@@ -326,6 +355,7 @@ let redraw_window pb scale board : unit =
   let height = snd window_info in
   Graphics.resize_window width height;
   draw_board board scale;
+  display_game_instructions scale;
   display_coins (fst pb) scale
 
 let redraw_player_info pb scale =
@@ -365,5 +395,6 @@ let starting_loc p scale =
 let set_up_level p board scale =
   let loc = starting_loc p scale in
   draw_board board scale;
+  display_game_instructions scale;
   display_coins p scale;
   Graphics.draw_image (player_image_gc scale) (get_x loc) (get_y loc)

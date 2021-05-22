@@ -181,9 +181,17 @@ and check_scenarios p new_st pb_imgs prev_img new_pb_loc pb_loc pics t =
 let rec quit_game () =
   match read_key () with 'q' -> close_graph () | _ -> quit_game ()
 
+let screen_size_large () =
+  let window_info = get_window_size Gui.Large in
+  let width = fst window_info in
+  let height = snd window_info in
+  Graphics.resize_window width height
+
 let endscreen () =
   set_window_title "Game Over!";
   clear_graph ();
+  screen_size_large ();
+  zoom := Gui.Large;
   draw_screen_background !zoom;
   display_score !steps !zoom;
   quit_game ()
