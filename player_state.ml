@@ -65,7 +65,7 @@ let new_level_state p (t : Levels.t) (bt : Board.t) f level_id =
   {
     current_tile;
     current_level = level_id;
-    coins = coin_count t p.current_level;
+    coins = p.coins;
     steps = p.steps + 1;
   }
 
