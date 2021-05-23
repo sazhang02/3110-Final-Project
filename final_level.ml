@@ -265,6 +265,8 @@ let setup_initial_board p b z t =
   let boss = Boss_state.init_state entrance_pos !board in
   Board.set_tile (create_random_item_tile player_loc boss !board) !board;
   set_up_level p b z;
+  draw_at_coords (player_image_gc !zoom)
+    (p |> get_current_pos |> board_to_gui !zoom);
   draw_at_coords (boss_image_gc !zoom)
     (Boss_state.get_current_pos boss |> board_to_gui !zoom);
   boss
