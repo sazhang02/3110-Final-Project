@@ -194,7 +194,8 @@ let endscreen () =
   zoom := Gui.Large;
   draw_screen_background !zoom;
   display_score !steps !zoom;
-  quit_game ()
+  try quit_game ()
+  with Graphic_failure "fatal I/O error" -> close_graph ()
 
 let rec endgame_input player p_img prev_img t =
   steps := get_steps player;

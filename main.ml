@@ -87,28 +87,31 @@ and move_player key player player_img prev_image =
   let loc = get_current_pos player |> board_to_gui !zoom in
   let new_player = new_player_state key player in
   let new_loc = get_current_pos new_player |> board_to_gui !zoom in
+  check_scenarios new_player player_img prev_image new_loc loc
+    (current_pic new_player new_loc)
+
+and current_pic new_player new_loc =
   let tile_in_board =
     Board.get_tile_c
       (get_current_pos new_player)
       board_info.(!current_level_id)
   in
-  let curr_pic = get_current_img tile_in_board new_player new_loc in
-  check_scenarios new_player player_img prev_image new_loc loc curr_pic
+  get_current_img tile_in_board new_player new_loc
 
 and check_scenarios new_p p_img prev_img new_loc loc curr_pic =
-  if level_changed new_p then
-    player_goes_next_level new_p p_img new_loc curr_pic
+  if level_changed new_p then player_goes_next_level new_p p_img new_loc
   else if check_movement loc new_loc then get_input new_p p_img prev_img
   else begin
     update_player p_img prev_img new_loc loc;
     get_input new_p p_img curr_pic
   end
 
-and player_goes_next_level new_p p_img new_loc curr_pic =
+and player_goes_next_level new_p p_img new_loc =
   current_level_id := get_current_level new_p;
   if is_final_level game_info !current_level_id then raise Final_Level
   else begin
     set_up_level new_p board_info.(!current_level_id) !zoom;
+    let curr_pic = current_pic new_p new_loc in
     draw_at_coords p_img new_loc;
     get_input new_p p_img curr_pic
   end
@@ -142,6 +145,8 @@ let window () =
     clear_graph ();
     let player = init_state game_info board_info.(!current_level_id) in
     Gui.set_up_level player board_info.(!current_level_id) !zoom;
+    draw_at_coords (player_image_gc !zoom)
+      (player |> get_current_pos |> board_to_gui !zoom);
     get_input player (player_image_gc !zoom) (floor_image_gc !zoom)
   end
   else close_graph ()

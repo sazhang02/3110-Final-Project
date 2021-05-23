@@ -393,8 +393,6 @@ let starting_loc p scale =
   Player_state.get_current_pos p |> board_to_gui scale
 
 let set_up_level p board scale =
-  let loc = starting_loc p scale in
   draw_board board scale;
   display_game_instructions scale;
-  display_coins p scale;
-  Graphics.draw_image (player_image_gc scale) (get_x loc) (get_y loc)
+  display_coins p scale
