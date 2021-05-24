@@ -6,7 +6,7 @@
 (** CS 3110 Final Project - Stuck In The Desert
 
     @author Samantha Zhang (sjz46)
-    @author Brooke Wu (bw377
+    @author Brooke Wu (bw377)
     @author Willy Jiang (wjj26)
     @author Emily Liu (el572) *)
 
