@@ -186,7 +186,7 @@ let rec add_tiles (tiles : tile list) board =
           let i = index_of_coord dimx h.coords in
           board.(i) <- h;
           add_tiles t board
-      | _ -> failwith "" )
+      | _ -> failwith "")
 
 (** [tile_to_string tile] is the string representation of a tile. *)
 let tile_to_string tile =
@@ -197,7 +197,7 @@ let tile_to_string tile =
       | Right -> ">"
       | Left -> "<"
       | Up -> "^"
-      | Down -> "v" )
+      | Down -> "v")
   | Entrance _ -> "I"
   | Exit _ -> "O"
   | Empty -> " "
@@ -214,16 +214,18 @@ let random_int lower curr upper range =
   Random.self_init ();
   let random_range =
     [|
-      ( if curr > lower + range then Random.int (curr - range)
-      else random_int_range (curr + range + 1) upper );
-      ( if curr < upper - range - 1 then
-        random_int_range (curr + range + 1) upper
-      else Random.int (curr - range) );
+      (if curr > lower + range then Random.int (curr - range)
+      else random_int_range (curr + range + 1) upper);
+      (if curr < upper - range - 1 then
+       random_int_range (curr + range + 1) upper
+      else Random.int (curr - range));
     |]
   in
   random_range.(Random.int 2)
 
-let bomb_or_damage = if Random.int 4 = 3 then Bomb else Damage
+let bomb_or_damage =
+  Random.self_init ();
+  if Random.int 4 = 3 then Bomb else Damage
 
 let rec random_item_tile px py b_coord (board : t) =
   Random.self_init ();
