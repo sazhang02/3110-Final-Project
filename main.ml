@@ -50,9 +50,7 @@ let check_tile_type t = Board.get_tile_type t = Board.Coin
 let new_player_state key player =
   steps := get_steps player;
   try update key player game_info board_info.(!current_level_id)
-  with Levels.UnknownLevel -1 ->
-    print_endline "This pipe is locked";
-    player
+  with Levels.UnknownLevel -1 -> player
 
 (** [get_current_img t p new_loc] is the Graphics.image at of where the
     player is currently located. This will also update the display if

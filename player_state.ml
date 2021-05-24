@@ -2,8 +2,6 @@ open Levels
 open Board
 open Boss_state
 
-type level_id = Levels.level_id
-
 type move = {
   pos : coord;
   action : orientation;
@@ -155,23 +153,6 @@ let check_tile tile p t b move =
   | Item _ ->
       failwith "Cannot get items in levels other than final level."
 
-let final_enter_pipe tile move p b_state b_state' t bt =
-  if check_orientation tile move p then
-    (player_enter_pipe tile move p t bt, b_state')
-  else (p, b_state)
-
-let final_enter_entrance tile p t bt b_state b_state' move =
-  if is_final_level t p.current_level then (p, b_state)
-  else if check_orientation tile move p then
-    (player_prev_level p t bt, b_state')
-  else (p, b_state)
-
-let final_enter_exit tile p t bt b_state b_state' move =
-  if p.coins < coin_count t p.current_level then (p, b_state)
-  else if check_orientation tile move p then
-    (player_next_level p t bt, b_state')
-  else (p, b_state)
-
 let check_item
     (item : item)
     (tile : tile)
@@ -190,6 +171,27 @@ let check_item
     }
   in
   (p', b_state')
+
+let final_enter_pipe tile move p b_state b_state' t bt =
+  let end_pipe_pos = get_pipe_end_of_tile tile in
+  let end_pipe_tile = get_tile_c end_pipe_pos bt in
+  if check_orientation tile move p then
+    match get_tile_type end_pipe_tile with
+    | Item item -> check_item item end_pipe_tile p bt b_state'
+    | _ -> (player_enter_pipe tile move p t bt, b_state')
+  else (p, b_state)
+
+let final_enter_entrance tile p t bt b_state b_state' move =
+  if is_final_level t p.current_level then (p, b_state)
+  else if check_orientation tile move p then
+    (player_prev_level p t bt, b_state')
+  else (p, b_state)
+
+let final_enter_exit tile p t bt b_state b_state' move =
+  if p.coins < coin_count t p.current_level then (p, b_state)
+  else if check_orientation tile move p then
+    (player_next_level p t bt, b_state')
+  else (p, b_state)
 
 let check_final_level_tile tile p t bt b_state b_state' move =
   match get_tile_type tile with

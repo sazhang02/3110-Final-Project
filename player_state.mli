@@ -1,10 +1,9 @@
-(* The abstract type representing player state *)
+(** Representation of player state data *)
+
+(** The abstract type representing player state *)
 type p
 
-(* The type of the level identifier. Each level's [level_id] is unique. *)
-type level_id = int
-
-(* The abstract type representing player's intended move *)
+(** The abstract type representing player's intended move *)
 type move
 
 (** [init_state t bt] is the initial state of the game. In that state
@@ -50,4 +49,4 @@ val final_level_update :
     [tile] at coordinate [(x, y)], level at [id], [coin] number of
     coins, and [step] number of steps taken. *)
 val make_player_state :
-  int -> int -> Board.tile_type -> level_id -> int -> int -> p
+  int -> int -> Board.tile_type -> Levels.level_id -> int -> int -> p

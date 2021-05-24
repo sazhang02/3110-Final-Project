@@ -139,7 +139,13 @@ and boss_same_pos pb_imgs prev_img pb_loc new_pb_loc new_st pics t =
   get_input (fst new_st) (snd new_st) pb_imgs (fst pics, snd prev_img) t
 
 and player_boss_swap_pos prev_img pb_imgs new_pb_loc pb_loc new_st t =
-  let updated_pics = (snd prev_img, fst prev_img) in
+  let updated_pics =
+    if
+      check_item_tile
+        (Board.get_tile_c (new_st |> fst |> get_current_pos) !board)
+    then (snd prev_img, fst prev_img)
+    else (floor_image_gc !zoom, fst prev_img)
+  in
   update_player_boss pb_imgs prev_img new_pb_loc pb_loc;
   get_input (fst new_st) (snd new_st) pb_imgs updated_pics t
 

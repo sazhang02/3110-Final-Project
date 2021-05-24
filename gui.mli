@@ -1,4 +1,4 @@
-(** Representation of gui data *)
+(** Functions that create and interact with the GUI window *)
 
 (** The type representing the position of a coordinate on the GUI window *)
 type coords

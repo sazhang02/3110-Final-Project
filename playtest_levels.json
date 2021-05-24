@@ -3,72 +3,170 @@
     {
       "id": 0,
       "entrance": {
-        "x": 0,
-        "y": 1,
+        "x": 1,
+        "y": 11,
         "orientation": "Right"
       },
       "exit": {
-        "x": 1,
-        "y": 0,
-        "orientation": "Up"
+        "x": 12,
+        "y": 14,
+        "orientation": "Down"
       },
       "exit_id": 1,
       "rooms": [
         {
           "start": {
-            "x": 1,
-            "y": 1
+            "x": 2,
+            "y": 2
           },
           "end": {
-            "x": 14,
+            "x": 7,
             "y": 6
           }
         },
         {
           "start": {
-            "x": 1,
-            "y": 8
+            "x": 9,
+            "y": 2
           },
           "end": {
-            "x": 14,
-            "y": 14
+            "x": 13,
+            "y": 4
+          }
+        },
+        {
+          "start": {
+            "x": 9,
+            "y": 6
+          },
+          "end": {
+            "x": 13,
+            "y": 10
+          }
+        },
+        {
+          "start": {
+            "x": 2,
+            "y": 9
+          },
+          "end": {
+            "x": 7,
+            "y": 13
+          }
+        },
+        {
+          "start": {
+            "x": 9,
+            "y": 12
+          },
+          "end": {
+            "x": 13,
+            "y": 13
           }
         }
       ],
       "pipes": [
         {
-          "x": 0,
-          "y": 2,
+          "x": 1,
+          "y": 3,
           "color": "Green",
           "orientation": "Right"
         },
         {
-          "x": 15,
-          "y": 2,
+          "x": 1,
+          "y": 6,
+          "color": "Green",
+          "orientation": "Right"
+        },
+        {
+          "x": 1,
+          "y": 9,
+          "color": "Green",
+          "orientation": "Right"
+        },
+        {
+          "x": 1,
+          "y": 12,
+          "color": "Green",
+          "orientation": "Right"
+        },
+        {
+          "x": 14,
+          "y": 3,
           "color": "Green",
           "orientation": "Left"
         },
         {
-          "x": 4,
-          "y": 0,
-          "color": "Gold",
+          "x": 14,
+          "y": 6,
+          "color": "Green",
+          "orientation": "Left"
+        },
+        {
+          "x": 14,
+          "y": 9,
+          "color": "Green",
+          "orientation": "Left"
+        },
+        {
+          "x": 14,
+          "y": 12,
+          "color": "Green",
+          "orientation": "Left"
+        },
+        {
+          "x": 3,
+          "y": 1,
+          "color": "Green",
           "orientation": "Up"
         },
         {
-          "x": 11,
-          "y": 15,
-          "color": "Gold",
+          "x": 6,
+          "y": 1,
+          "color": "Green",
+          "orientation": "Up"
+        },
+        {
+          "x": 9,
+          "y": 1,
+          "color": "Green",
+          "orientation": "Up"
+        },
+        {
+          "x": 3,
+          "y": 14,
+          "color": "Green",
+          "orientation": "Down"
+        },
+        {
+          "x": 6,
+          "y": 14,
+          "color": "Green",
+          "orientation": "Down"
+        },
+        {
+          "x": 9,
+          "y": 14,
+          "color": "Green",
           "orientation": "Down"
         }
       ],
       "coins": [
         {
-          "x": 10,
-          "y": 10
+          "x": 5,
+          "y": 4
+        },
+        {
+          "x": 11,
+          "y": 3
+        },
+        {
+          "x": 11,
+          "y": 8
         },
         {
           "x": 13,
-          "y": 3
+          "y": 12
         }
       ]
     },

@@ -39,22 +39,10 @@ let get_distance p_pos b_tile : float =
   let boss_y = get_y b_pos |> float_of_int in
   sqrt (((player_x -. boss_x) ** 2.) +. ((player_y -. boss_y) ** 2.))
 
-(* let get_min (distances : (float * Board.tile) list) (init_min :
-   float) = let rec get_min_helper lst min = match lst with | [] -> min
-   | (distance, tile) :: t -> get_min_helper t (Stdlib.min distance min)
-   in let min = get_min_helper distances init_min in List.assoc min
-   distances *)
-
-(* let get_min_sort (distances : (float * Board.tile) list) (init_min :
-   float) = *)
 let min_distance_sort distances =
   List.sort (fun x y -> Float.compare (fst x) (fst y)) distances
 
-(* in let next_tile = get_min distances up_distance in match
-   get_tile_type next_tile with | Empty -> get_tile_coords next_tile |
-   Wall -> get_tile_coords next_tile *)
-
-let get_closest_pos p_pos b_pos (bt : Board.t) : Board.coord =
+let get_distances p_pos b_pos bt =
   let up_tile =
     get_tile_c (make_coord (get_x b_pos) (get_y b_pos + 1)) bt
   in
@@ -71,31 +59,19 @@ let get_closest_pos p_pos b_pos (bt : Board.t) : Board.coord =
     get_tile_c (make_coord (get_x b_pos + 1) (get_y b_pos)) bt
   in
   let right_distance = get_distance p_pos right_tile in
-  let distances =
-    [
-      (up_distance, up_tile);
-      (down_distance, down_tile);
-      (left_distance, left_tile);
-      (right_distance, right_tile);
-    ]
-    |> min_distance_sort
-  in
+  [
+    (up_distance, up_tile);
+    (down_distance, down_tile);
+    (left_distance, left_tile);
+    (right_distance, right_tile);
+  ]
+
+let get_closest_pos p_pos b_pos (bt : Board.t) : Board.coord =
+  let distances = get_distances p_pos b_pos bt |> min_distance_sort in
   let next_tile = snd (List.hd distances) in
   match get_tile_type next_tile with
   | Empty | Coin | Item _ | Pipe _ -> get_tile_coords next_tile
   | _ -> get_tile_coords (snd (List.nth distances 1))
-
-(* let get_closest_pos2 p_pos b_pos bt = let px, py = (get_x p_pos,
-   get_y p_pos) in let bx, by = (get_x b_pos, get_y b_pos) in let distx,
-   disty = (bx - px, by - py) in if abs distx > 0 && abs disty > 0 then
-   failwith "" else failwith "" *)
-
-(* b_pos *)
-
-let move_bosss (p_pos : Board.coord) b board : b =
-  let boss_pos = get_current_pos b in
-  let new_boss_pos = get_closest_pos p_pos boss_pos board in
-  { b with current_tile = get_tile_c new_boss_pos board }
 
 let move_boss (p_pos : Board.coord) b board : b =
   let boss_pos = get_current_pos b in

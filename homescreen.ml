@@ -108,13 +108,11 @@ let rec choose_mode () =
   if button_is_clicked start e |> not then
     if button_is_clicked hard_mode e then (
       is_easy_game := false;
-      (* print_endline (string_of_bool !is_easy_game); *)
       draw_at_coords (easy_unselected_img ()) easy_button_coords;
       draw_at_coords (hard_selected_img ()) hard_button_coords;
       choose_mode () )
     else if button_is_clicked easy_mode e then (
       is_easy_game := true;
-      (* print_endline (string_of_bool !is_easy_game); *)
       draw_at_coords (hard_unselected_img ()) hard_button_coords;
       draw_at_coords (easy_selected_img ()) easy_button_coords;
       choose_mode () )

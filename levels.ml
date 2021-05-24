@@ -15,8 +15,6 @@ type pipe_info = {
   orientation : Board.orientation;
 }
 
-(* type coin = { pos : Board.coord } *)
-
 type level = {
   level_id : level_id;
   entrance_pos : entr_ex_info;
@@ -129,8 +127,6 @@ let exit_orientation level = level.exit_pos.orientation
 let exit_pipe (levels : t) (id : level_id) : tile =
   let o = to_orientation levels id exit_orientation in
   let exit_tile = to_tile levels id exit_pos (Exit o) in
-  (* if exit_tile.coords.x = -1 || exit_tile.coords.y = -1 then raise
-     (InvalidTile exit_tile.coords) else *)
   exit_tile
 
 let exit_id level = level.exit_id
@@ -153,7 +149,6 @@ let pipe_info_to_tile (pipe_info : pipe_info) : tile =
 
 let pipes_list (pipe_info_lst : pipe_info list) : Board.tile list =
   let pipes = List.map pipe_info_to_tile pipe_info_lst in
-  print_endline (List.length pipes |> string_of_int);
   pipes
 
 let pipes_info_list level = level.pipes
@@ -183,7 +178,6 @@ let init_coins levels id =
 let make_board levels id =
   let entr = entrance_pipe levels id in
   let exit = exit_pipe levels id in
-  (*if exit is negative, make a board with no exit??? *)
   let rooms = map_level id levels.levels rooms_list in
   let pipes =
     map_level id levels.levels pipes_info_list |> pipes_list
@@ -195,9 +189,6 @@ let make_board levels id =
 
 let final_level_id levels = List.length levels.levels - 1
 
-(* try update key player game_info board_info.(!current_level_id) with |
-   Levels.UnknownLevel -1 -> print_endline "This pipe is locked"; player
-   | Levels.UnknownLevel -2 -> print_endline "BOSS BATTLEEEE"; player *)
 let make_all_boards levels : Board.t array =
   let rec loop_levels (lst : Board.t list) id =
     match id with

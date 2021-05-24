@@ -1,5 +1,7 @@
+(** Representation of board data *)
 type coord
 
+(** [color] represents the color of pipes *)
 type color =
   | Green
   | Red
@@ -7,18 +9,22 @@ type color =
   | Blue
   | Black
 
+(** [orientation] represents the orientation of pipes *)
 type orientation =
   | Left
   | Right
   | Up
   | Down
 
+(** The type representing pipes *)
 type pipe
 
+(** [item] represents objects the player can pick up in the final levels *)
 type item =
   | Damage
   | Bomb
 
+(** [tile_type] represents the different types of tiles *)
 type tile_type =
   | Wall
   | Pipe of pipe
@@ -28,6 +34,7 @@ type tile_type =
   | Coin
   | Item of item
 
+(** The type representing the space surrounded with walls *)
 type room
 
 (** [index_of_coord] is the index in the array with width [dimx] of a
@@ -78,9 +85,6 @@ val get_pipe_end_of_tile : tile -> coord
 
 (** [get_pipe_color p] is the color of pipe [p]. *)
 val get_pipe_color : pipe -> color
-
-(** [get_pipe_oreintation p] is the direction pipe [p] is facing. val
-    get_pipe_orientation : pipe -> orientation *)
 
 (** [get_tile_orientation t] is the orientation of the tile [t].
     Requires: tile has tile_type [Entrance], [Exit], or [Pipe]. *)

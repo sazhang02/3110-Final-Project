@@ -1,3 +1,33 @@
+(* 1. The backend modules (Board, Levels, Player_state, Boss_state) were
+   automatically tested by OUnit. The other modules were play tested,
+   because they required a GUI display.
+
+   2. The modules that were tested by OUnit were Board, Levels,
+   Player_state, and Boss_state. Levels uses glass box testing when
+   testing entrance and exit pipes to consider all pipe orientations.
+   For total coin count and invalid levels, we used black box testing.
+   Board uses glass box testing for pipe mapping because it accounts for
+   every color and every pipe orientation. We manually tested board
+   creation in the GUI to visually compare the output to the expected,
+   rather than test each tile. For Player_state, we used glass box
+   testing to construct the expected player state to ensure that it was
+   returned for every function. For Boss_state, we used glass box
+   testing to test the movement of the boss. Glass box testing was
+   necessary because the shortest distance between the boss and the
+   player depended on our implementation (ie. which tile had preference
+   if the distance was the same between two tiles). We also used black
+   box testing for decreasing health and getting position because they
+   did not depend on implementation.
+
+   3. Our testing approach of a combination of manual and automatic
+   demonstrates correctness of our system because the automatic testing
+   ensures correctness of smaller parts of the system, while manually
+   testing allows us to test the interaction between the different
+   elements of the system and test the correctness of parts of our
+   system that use random generation. Automatic testing allowed us to
+   create specific cases. Manual testing allowed us to ensure the
+   correctness of the user’s actual experience. *)
+
 open OUnit2
 open Levels
 open Board
@@ -198,18 +228,6 @@ let board_tests =
     get_end_coord_test "Blue Down"
       (make_pipe_tile (make_coord 4 14) Blue Down)
       (make_coord 13 11);
-    (* (let board = Levels.make_board basic 4 in board_to_string_test
-       "board" board ""); *)
-    (* (let board = Levels.make_board basic 1 in board_to_string_test
-       "board" (add_random_item 3 3 board) ""); *)
-    (* let coord = make_coord 0 0 in let entrance = make_tile coord
-       Entrance in let exit = { coords = { x = 1; y = 1 }; tile_type =
-       Exit } in let rooms = [] in let t = make_board entrance exit
-       rooms in *)
-    (*[ get_tile_test "entrance 0,0" 0 t "Entrance @ (0, 0)";
-      get_tile_test "blank 1,0" 1 t "Blank @ (1, 0)"; get_tile_test
-      "blank 0,1" 2 t "Blank @ (0, 1)"; get_tile_test "exit 1,1" 3 t
-      "Exit @ (1, 1)"; *)
   ]
 
 (* Player_state tests *)
@@ -223,6 +241,16 @@ let player_state_to_string (p : p) =
   ^ string_of_int (get_coins p)
   ^ ("; Steps: " ^ string_of_int (get_steps p))
   ^ "]"
+
+let boss_state_to_string (b : b) =
+  "[Current tile: "
+  ^ tile_to_string (Boss_state.get_current_tile b)
+  ^ "; Health: "
+  ^ string_of_int (get_health b)
+  ^ "]"
+
+let player_boss_state_to_string (p, b) =
+  player_state_to_string p ^ boss_state_to_string b
 
 let init_state_tests name t bt expected_output =
   name >:: fun _ ->
@@ -267,6 +295,13 @@ let update_test name move_key p t b expected_output =
   assert_equal expected_output (update move_key p t b)
     ~printer:player_state_to_string
 
+let final_level_update_test name move_key p t b b_state expected_output
+    =
+  name >:: fun _ ->
+  assert_equal expected_output
+    (final_level_update move_key p t b b_state)
+    ~printer:player_boss_state_to_string
+
 let example_board = Levels.make_board basic 0
 
 (* State at position (1, 1) *)
@@ -278,7 +313,9 @@ let up_st = update 'w' start_st basic example_board
 (* State at position (2, 2)*)
 let middle_st = update 'd' up_st basic example_board
 
-let example_p = make_player_state 13 5 Empty 4 10 50
+let example_p = make_player_state 12 5 Empty 4 10 50
+
+let example_b = make_boss_state 12 2 Empty 100
 
 let player_state_tests =
   [
@@ -287,7 +324,6 @@ let player_state_tests =
      init_state_tests "state test: init state test" basic example_board
        p);
     (let p = make_player_state 14 12 Empty 4 8 0 in
-     let p' = final_state basic example_board 0 in
      final_state_tests "final test: final state test" basic
        example_board 0 p);
     (* current_level tests *)
@@ -298,7 +334,7 @@ let player_state_tests =
     (* current_tile tests *)
     get_current_tile_test "current tile test: example p tile is Empty"
       example_p
-      (make_tile Empty (make_coord 13 5));
+      (make_tile Empty (make_coord 12 5));
     get_current_tile_test
       "current tile test: basic initial tile is entrance" start_st
       (make_tile Empty (make_coord 1 1));
@@ -400,7 +436,7 @@ let player_state_tests =
     (* current_position tests *)
     get_current_pos_test
       "current position test: example p current position is 13 5"
-      example_p (make_coord 13 5);
+      example_p (make_coord 12 5);
     get_current_pos_test
       "current position test: basic initial position is (1, 1)" start_st
       (make_coord 1 1);
@@ -429,15 +465,13 @@ let player_state_tests =
     (let p = make_player_state 3 2 Empty 0 0 3 in
      update_test "update test: move right to empty tile" 'd' middle_st
        basic example_board p);
-    (* final_level_update test *)
+    (* final_leveL_update tests *)
+    (let p' = make_player_state 12 4 Empty 4 10 51 in
+     let b' = make_boss_state 12 3 Empty 100 in
+     final_level_update_test
+       "final level update test: boss moves up if player moves down" 's'
+       example_p basic example_board example_b (p', b'));
   ]
-
-let boss_state_to_string (b : b) =
-  "[Current tile: "
-  ^ tile_to_string (Boss_state.get_current_tile b)
-  ^ "; Health: "
-  ^ string_of_int (get_health b)
-  ^ "]"
 
 let boss_get_current_tile_test name b expected_output =
   name >:: fun _ ->
@@ -466,9 +500,11 @@ let move_boss_test name p_pos b board expected_output =
     (Boss_state.move_boss p_pos b board |> Boss_state.get_current_pos)
     ~printer:coords_to_string
 
-let b = Boss_state.init_state (make_coord 0 1) example_board
+(* let b = Boss_state.init_state (make_coord 0 1) example_board *)
 
-let b2 = Boss_state.init_state (make_coord 0 1) example_board
+let example_b = make_boss_state 10 10 Empty 75
+
+let b = Boss_state.make_boss_state 9 9 Empty 100
 
 let b_x = Boss_state.get_current_pos b |> get_x
 
@@ -489,8 +525,6 @@ let b_move_up_twice =
   Boss_state.move_boss
     (make_coord b_x (b_y + 1))
     b_move_up_once example_board
-
-let example_b = make_boss_state 10 10 Empty 75
 
 let boss_state_tests =
   [
@@ -523,42 +557,50 @@ let boss_state_tests =
        example_b 100 b');
     (* move_boss_tests *)
     move_boss_test
-      "player two spaces to the right of boss moves boss one space to \
-       the right"
+      "move boss test1: player two spaces to the right of boss moves \
+       boss one space to the right"
       (make_coord (b_x + 2) b_y)
       b example_board
       (make_coord (b_x + 1) b_y);
     move_boss_test
-      "player two spaces to left of boss moves boss one space to left"
+      "move boss test2: player two spaces to left of boss moves boss \
+       one space to left"
       (make_coord (b_x - 2) b_y)
       b example_board
       (make_coord (b_x - 1) b_y);
     move_boss_test
-      "player two spaces above boss moves boss one space up"
+      "move boss test3: player two spaces above boss moves boss one \
+       space up"
       (make_coord b_x (b_y + 2))
       b example_board
       (make_coord b_x (b_y + 1));
     move_boss_test
-      "player two spaces below boss moves boss one space below"
+      "move boss test3: player two spaces below boss moves boss one \
+       space below"
       (make_coord b_x (b_y - 2))
       b example_board
       (make_coord b_x (b_y - 1));
-    move_boss_test "player right 1, up 1 from boss moves boss up 1"
+    move_boss_test
+      "move boss test4: player right 1, up 1 from boss moves boss up 1"
       (make_coord (b_x + 1) (b_y + 1))
       b example_board
       (make_coord b_x (b_y + 1));
-    move_boss_test "boss right 1 and player right 3 moves boss right 2"
+    move_boss_test
+      "move boss test5: boss right 1 and player right 3 moves boss \
+       right 2"
       (make_coord (b_x + 3) b_y)
       b_move_right_once example_board
       (make_coord (b_x + 2) b_y);
     move_boss_test
-      "boss right 2 and player at boss init moves boss left 1"
+      "move boss test6: boss right 2 and player at boss init moves \
+       boss left 1"
       (make_coord b_x b_y) b_move_right_twice example_board
       (make_coord (b_x + 1) b_y);
-    move_boss_test "boss up 2 and player at boss init moves boss down 1"
+    move_boss_test
+      "move boss test6: boss up 2 and player at boss init moves boss \
+       down 1"
       (make_coord b_x b_y) b_move_up_twice example_board
       (make_coord b_x (b_y + 1));
-    (* move_boss_test "boss 2 should have diff coords idk" (make_coord ) *)
   ]
 
 let suite =
