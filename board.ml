@@ -223,10 +223,6 @@ let random_int lower curr upper range =
   in
   random_range.(Random.int 2)
 
-let bomb_or_damage =
-  Random.self_init ();
-  if Random.int 4 = 3 then Bomb else Damage
-
 let rec random_item_tile px py b_coord (board : t) =
   Random.self_init ();
   let rand_x = random_int 0 px dimx 2 in
@@ -237,7 +233,7 @@ let rec random_item_tile px py b_coord (board : t) =
     let tile = get_tile_c coords board in
     match get_tile_type tile with
     | Empty ->
-        let item = bomb_or_damage in
+        let item = if Random.int 4 = 3 then Bomb else Damage in
         { coords; tile_type = Item item }
     | _ -> random_item_tile px py b_coord board
 
