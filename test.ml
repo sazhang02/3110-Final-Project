@@ -417,16 +417,16 @@ let player_state_tests =
     get_steps_test "steps test: example p steps count is 50" example_p
       50;
     (* update tests *)
-    (let p = make_player_state 2 3 Empty 0 0 2 in
+    (let p = make_player_state 2 3 Empty 0 0 3 in
      update_test "update test: move up to empty tile" 'w' middle_st
        basic example_board p);
-    (let p = make_player_state 1 2 Empty 0 0 2 in
+    (let p = make_player_state 1 2 Empty 0 0 3 in
      update_test "update test: move left to empty tile" 'a' middle_st
        basic example_board p);
-    (let p = make_player_state 2 1 Empty 0 0 2 in
+    (let p = make_player_state 2 1 Empty 0 0 3 in
      update_test "update test: move down to empty tile" 's' middle_st
        basic example_board p);
-    (let p = make_player_state 3 2 Empty 0 0 2 in
+    (let p = make_player_state 3 2 Empty 0 0 3 in
      update_test "update test: move right to empty tile" 'd' middle_st
        basic example_board p);
     (* final_level_update test *)

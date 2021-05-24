@@ -60,30 +60,12 @@ let final_state (t : Levels.t) (bt : Board.t) steps =
     steps;
   }
 
-let check_coin (tile : tile) p t =
-  let coins =
-    if get_tile_type tile = Coin then p.coins + 1 else p.coins
-  in
-  let current_tile = make_tile Empty (get_tile_coords tile) in
-  {
-    current_tile;
-    current_level = p.current_level;
-    coins;
-    steps = p.steps + 1;
-  }
-
-let check_current_coin_tile current_pos p bt t =
-  let tile = get_tile_c current_pos bt in
-  match get_tile_type tile with
-  | Coin ->
-      let p' = check_coin tile p t in
-      get_coins p'
-  | _ -> p.coins
-
 let new_level_state p (t : Levels.t) (bt : Board.t) f level_id =
   let current_tile = get_tile_c (offset_player t bt f level_id) bt in
   let coin_count =
-    check_current_coin_tile (get_tile_coords current_tile) p bt t
+    match get_tile_type current_tile with
+    | Coin -> p.coins + 1
+    | _ -> p.coins
   in
   {
     current_tile;
@@ -118,9 +100,26 @@ let player_next_level p t b =
   let new_level = next_level t p.current_level in
   new_level_state p t b entrance_pipe new_level
 
+let check_coin (tile : tile) p t =
+  let coins =
+    if get_tile_type tile = Coin then p.coins + 1 else p.coins
+  in
+  let current_tile = make_tile Empty (get_tile_coords tile) in
+  {
+    current_tile;
+    current_level = p.current_level;
+    coins;
+    steps = p.steps + 1;
+  }
+
 let player_enter_pipe (pipe : Board.tile) move p t bt =
   let current_pos = get_pipe_end_of_tile pipe in
-  let coin_count = check_current_coin_tile current_pos p bt t in
+  let current_tile = get_tile_c current_pos bt in
+  let coin_count =
+    match get_tile_type current_tile with
+    | Coin -> p.coins + 1
+    | _ -> p.coins
+  in
   {
     current_tile = make_tile Empty current_pos;
     current_level = p.current_level;
@@ -152,7 +151,6 @@ let check_tile tile p t b move =
       else if check_orientation tile move p then player_next_level p t b
       else p
   | Coin -> check_coin tile p t
-  (* | Coin collected -> check_coin tile collected p t *)
   | Empty -> player_next_tile tile p t
   | Item _ ->
       failwith "Cannot get items in levels other than final level."
@@ -239,10 +237,6 @@ let final_level_update
   else
     check_final_level_tile next_tile p t bt b_state b_state'
       predicted_move
-
-(* let boss_move = p = p' in if boss_move then let b_state' = move_boss
-   (get_pos p.current_tile) b_state bt in (p', b_state') *)
-(* else (p, b_state) *)
 
 let make_player_state x y tile_type level coins steps =
   let tile = make_tile tile_type (make_coord x y) in
