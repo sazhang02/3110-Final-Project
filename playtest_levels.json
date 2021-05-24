@@ -173,13 +173,13 @@
     {
       "id": 1,
       "entrance": {
-        "x": 9,
-        "y": 0,
-        "orientation": "Up"
+        "x": 15,
+        "y": 1,
+        "orientation": "Left"
       },
       "exit": {
         "x": 0,
-        "y": 1,
+        "y": 14,
         "orientation": "Right"
       },
       "exit_id": -2,
@@ -187,6 +187,16 @@
         {
           "start": {
             "x": 1,
+            "y": 1
+          },
+          "end": {
+            "x": 6,
+            "y": 6
+          }
+        },
+        {
+          "start": {
+            "x": 9,
             "y": 1
           },
           "end": {
@@ -200,6 +210,16 @@
             "y": 9
           },
           "end": {
+            "x": 6,
+            "y": 14
+          }
+        },
+        {
+          "start": {
+            "x": 9,
+            "y": 9
+          },
+          "end": {
             "x": 14,
             "y": 14
           }
@@ -207,28 +227,232 @@
       ],
       "pipes": [
         {
-          "x": 4,
-          "y": 0,
-          "color": "Gold",
+          "x": 6,
+          "y": 8,
+          "color": "Blue",
           "orientation": "Up"
         },
         {
-          "x": 11,
-          "y": 15,
-          "color": "Gold",
-          "orientation": "Down"
+          "x": 9,
+          "y": 8,
+          "color": "Blue",
+          "orientation": "Up"
         },
         {
           "x": 6,
+          "y": 7,
+          "color": "Blue",
+          "orientation": "Down"
+        },
+        {
+          "x": 9,
+          "y": 7,
+          "color": "Blue",
+          "orientation": "Down"
+        },
+        {
+          "x": 8,
+          "y": 6,
+          "color": "Blue",
+          "orientation": "Right"
+        },
+        {
+          "x": 8,
+          "y": 9,
+          "color": "Blue",
+          "orientation": "Right"
+        },
+        {
+          "x": 7,
+          "y": 6,
+          "color": "Blue",
+          "orientation": "Left"
+        },
+        {
+          "x": 7,
+          "y": 9,
+          "color": "Blue",
+          "orientation": "Left"
+        },
+        {
+          "x": 5,
+          "y": 8,
+          "color": "Green",
+          "orientation": "Up"
+        },
+        {
+          "x": 10,
+          "y": 8,
+          "color": "Green",
+          "orientation": "Up"
+        },
+        {
+          "x": 10,
           "y": 7,
           "color": "Green",
           "orientation": "Down"
         },
         {
-          "x": 6,
+          "x": 5,
+          "y": 7,
+          "color": "Green",
+          "orientation": "Down"
+        },
+        {
+          "x": 8,
+          "y": 5,
+          "color": "Green",
+          "orientation": "Right"
+        },
+        {
+          "x": 8,
+          "y": 10,
+          "color": "Green",
+          "orientation": "Right"
+        },
+        {
+          "x": 7,
+          "y": 5,
+          "color": "Green",
+          "orientation": "Left"
+        },
+        {
+          "x": 7,
+          "y": 10,
+          "color": "Green",
+          "orientation": "Left"
+        },
+        {
+          "x": 2,
           "y": 8,
           "color": "Green",
           "orientation": "Up"
+        },
+        {
+          "x": 13,
+          "y": 8,
+          "color": "Green",
+          "orientation": "Up"
+        },
+        {
+          "x": 13,
+          "y": 7,
+          "color": "Green",
+          "orientation": "Down"
+        },
+        {
+          "x": 2,
+          "y": 7,
+          "color": "Green",
+          "orientation": "Down"
+        },
+        {
+          "x": 8,
+          "y": 2,
+          "color": "Green",
+          "orientation": "Right"
+        },
+        {
+          "x": 8,
+          "y": 13,
+          "color": "Green",
+          "orientation": "Right"
+        },
+        {
+          "x": 7,
+          "y": 2,
+          "color": "Green",
+          "orientation": "Left"
+        },
+        {
+          "x": 7,
+          "y": 13,
+          "color": "Green",
+          "orientation": "Left"
+        },
+        {
+          "x": 1,
+          "y": 8,
+          "color": "Blue",
+          "orientation": "Up"
+        },
+        {
+          "x": 14,
+          "y": 8,
+          "color": "Blue",
+          "orientation": "Up"
+        },
+        {
+          "x": 1,
+          "y": 7,
+          "color": "Blue",
+          "orientation": "Down"
+        },
+        {
+          "x": 14,
+          "y": 7,
+          "color": "Blue",
+          "orientation": "Down"
+        },
+        {
+          "x": 8,
+          "y": 1,
+          "color": "Blue",
+          "orientation": "Right"
+        },
+        {
+          "x": 8,
+          "y": 14,
+          "color": "Blue",
+          "orientation": "Right"
+        },
+        {
+          "x": 7,
+          "y": 1,
+          "color": "Blue",
+          "orientation": "Left"
+        },
+        {
+          "x": 7,
+          "y": 14,
+          "color": "Blue",
+          "orientation": "Left"
+        },
+        {
+          "x": 0,
+          "y": 1,
+          "color": "Blue",
+          "orientation": "Right"
+        },
+        {
+          "x": 15,
+          "y": 14,
+          "color": "Blue",
+          "orientation": "Left"
+        },
+        {
+          "x": 1,
+          "y": 0,
+          "color": "Red",
+          "orientation": "Up"
+        },
+        {
+          "x": 14,
+          "y": 15,
+          "color": "Red",
+          "orientation": "Down"
+        },
+        {
+          "x": 14,
+          "y": 0,
+          "color": "Gold",
+          "orientation": "Up"
+        },
+        {
+          "x": 1,
+          "y": 15,
+          "color": "Gold",
+          "orientation": "Down"
         }
       ],
       "coins": []
