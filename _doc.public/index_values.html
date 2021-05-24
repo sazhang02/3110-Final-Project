@@ -1,0 +1,610 @@
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="Start" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Gui" rel="Chapter" href="Gui.html">
+<link title="Levels" rel="Chapter" href="Levels.html">
+<link title="Board" rel="Chapter" href="Board.html">
+<link title="Player_state" rel="Chapter" href="Player_state.html">
+<link title="Boss_state" rel="Chapter" href="Boss_state.html"><title>Index of values</title>
+</head>
+<body>
+<div class="navbar">&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;</div>
+<h1>Index of values</h1>
+<table>
+<tr><td align="left"><div>A</div></td></tr>
+<tr><td><a href="Board.html#VALalla_board">alla_board</a> [<a href="Board.html">Board</a>]</td>
+<td><div class="info">
+<p><code class="code">alla_board en ex rooms pipes coins</code> makes a level with "alla" the
+    properties: entrance <code class="code">en</code>, exit <code class="code">ex</code>, <code class="code">rooms</code>, <code class="code">pipes</code>, and <code class="code">coins</code>.</p>
+
+</div>
+</td></tr>
+<tr><td align="left"><div>B</div></td></tr>
+<tr><td><a href="Gui.html#VALbckg_image_gc">bckg_image_gc</a> [<a href="Gui.html">Gui</a>]</td>
+<td><div class="info">
+<p><code class="code">bckg_image_gc scale</code> is background.png as a Graphics.image with
+    scaling size <code class="code">scale</code>.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Gui.html#VALboard_to_gui">board_to_gui</a> [<a href="Gui.html">Gui</a>]</td>
+<td><div class="info">
+<p><code class="code">board_to_gui</code> is the Gui.coords equivalent of Board.coord
+    (translates coordinate under Board coordinate grid to one of the GUI
+    coordinate grid).</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Board.html#VALboard_to_string">board_to_string</a> [<a href="Board.html">Board</a>]</td>
+<td><div class="info">
+<p><code class="code">board_to_string t</code> is the string representation of board <code class="code">t</code>.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Gui.html#VALboss_image_gc">boss_image_gc</a> [<a href="Gui.html">Gui</a>]</td>
+<td><div class="info">
+<p><code class="code">boss_image_gc scale</code> is boss.png as a Graphics.image with scaling
+    size <code class="code">scale</code>.</p>
+
+</div>
+</td></tr>
+<tr><td align="left"><div>C</div></td></tr>
+<tr><td><a href="Gui.html#VALcheck_movement">check_movement</a> [<a href="Gui.html">Gui</a>]</td>
+<td><div class="info">
+<p><code class="code">check_movement old_loc new_loc</code> is true if <code class="code">old_loc</code> is equal to
+    <code class="code">new_loc</code>, otherwise it is false.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Levels.html#VALcoin_count">coin_count</a> [<a href="Levels.html">Levels</a>]</td>
+<td><div class="info">
+<p><code class="code">total_coin_count levels id</code> is the sum of the number of coins on
+   level number <code class="code">id</code> and of the coin counts o n previous levels in
+   <code class="code">levels</code></p>
+
+</div>
+</td></tr>
+<tr><td><a href="Gui.html#VALcoin_image_gc">coin_image_gc</a> [<a href="Gui.html">Gui</a>]</td>
+<td><div class="info">
+<p><code class="code">coin_image_gc scale</code> is coin.png as a Graphics.image with scaling
+    size <code class="code">scale</code>.</p>
+
+</div>
+</td></tr>
+<tr><td align="left"><div>D</div></td></tr>
+<tr><td><a href="Boss_state.html#VALdecrease_health">decrease_health</a> [<a href="Boss_state.html">Boss_state</a>]</td>
+<td><div class="info">
+<p><code class="code">decrease_health b damage</code> decreases the health of the boss by
+    <code class="code">damage</code> in state <code class="code">b</code>.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Gui.html#VALdecrease_zoom">decrease_zoom</a> [<a href="Gui.html">Gui</a>]</td>
+<td><div class="info">
+<p><code class="code">decrease_zoom pb current_imgs prev_imgs scale board</code> decreases the
+    scale size of GUI the window.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Gui.html#VALdisplay_coins">display_coins</a> [<a href="Gui.html">Gui</a>]</td>
+<td><div class="info">
+<p><code class="code">display_coins p scale</code> displays the coin count on the GUI window.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Gui.html#VALdisplay_damage">display_damage</a> [<a href="Gui.html">Gui</a>]</td>
+<td><div class="info">
+<p><code class="code">display_damage b scale</code> displays the boss' remaining health on the
+   GUI window.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Gui.html#VALdisplay_score">display_score</a> [<a href="Gui.html">Gui</a>]</td>
+<td><div class="info">
+<p><code class="code">display_score steps scale</code> displays the final score on the GUI
+    window.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Gui.html#VALdisplay_steps">display_steps</a> [<a href="Gui.html">Gui</a>]</td>
+<td><div class="info">
+<p><code class="code">display_steps p scale</code> displays the total number of steps taken on
+    the GUI window.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Gui.html#VALdraw_at_coords">draw_at_coords</a> [<a href="Gui.html">Gui</a>]</td>
+<td><div class="info">
+<p><code class="code">draw_at_coords img loc</code> draws <code class="code">img</code> at <code class="code">loc</code> on the GUI window.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Gui.html#VALdraw_board">draw_board</a> [<a href="Gui.html">Gui</a>]</td>
+<td><div class="info">
+<p><code class="code">draw_board t scale</code> draws the board <code class="code">t</code> at scaling size <code class="code">scale</code> on
+    the GUI window.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Gui.html#VALdraw_screen_background">draw_screen_background</a> [<a href="Gui.html">Gui</a>]</td>
+<td><div class="info">
+<p><code class="code">draw_screen_background scale</code> draws the floor tile on the entire
+    GUI window.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Gui.html#VALdraw_tile">draw_tile</a> [<a href="Gui.html">Gui</a>]</td>
+<td><div class="info">
+<p><code class="code">draw_tile scale_factor tile coords tile_type</code> draws <code class="code">tile</code> at
+    <code class="code">coords</code> on the board displayed on the GUI window.</p>
+
+</div>
+</td></tr>
+<tr><td align="left"><div>E</div></td></tr>
+<tr><td><a href="Gui.html#VALeasy_selected_img">easy_selected_img</a> [<a href="Gui.html">Gui</a>]</td>
+<td><div class="info">
+<p><code class="code">easy_selected_img ()</code> is easy_selected.png as a Graphics.image with
+    scaling size Large.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Gui.html#VALeasy_unselected_img">easy_unselected_img</a> [<a href="Gui.html">Gui</a>]</td>
+<td><div class="info">
+<p><code class="code">easy_unselected_img ()</code> is easy_unselected.png as a Graphics.image
+    with scaling size Large.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Levels.html#VALentrance_pipe">entrance_pipe</a> [<a href="Levels.html">Levels</a>]</td>
+<td><div class="info">
+<p><code class="code">entrance_pipe levels lev</code> a <code class="code">pipe</code> with position <code class="code">pos</code> of the
+    entrance pipe of the level <code class="code">lev</code> in levels <code class="code">levels</code>.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Levels.html#VALexit_pipe">exit_pipe</a> [<a href="Levels.html">Levels</a>]</td>
+<td><div class="info">
+<p><code class="code">exit_pipe levels lev</code> is a <code class="code">tile</code> with position <code class="code">pos</code> of the exit
+    pipe of the level <code class="code">lev</code> in levels <code class="code">levels</code>.</p>
+
+</div>
+</td></tr>
+<tr><td align="left"><div>F</div></td></tr>
+<tr><td><a href="Levels.html#VALfinal_level_id">final_level_id</a> [<a href="Levels.html">Levels</a>]</td>
+<td><div class="info">
+<p><code class="code">final_level_id levels</code> is the id of the last level in <code class="code">levels</code></p>
+
+</div>
+</td></tr>
+<tr><td><a href="Player_state.html#VALfinal_level_update">final_level_update</a> [<a href="Player_state.html">Player_state</a>]</td>
+<td><div class="info">
+<p><code class="code">final_level_update m p t bt b_state</code> is a state after the player
+    has moved and interacted with a tile in the final level.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Player_state.html#VALfinal_state">final_state</a> [<a href="Player_state.html">Player_state</a>]</td>
+<td><div class="info">
+<p><code class="code">final_state t bt</code> is the initial state of the final level in the
+    game.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Gui.html#VALfloor_image_gc">floor_image_gc</a> [<a href="Gui.html">Gui</a>]</td>
+<td><div class="info">
+<p><code class="code">floor_image_gc scale</code> is floor.png as a Graphics.image with scaling
+    size <code class="code">scale</code>.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Levels.html#VALfrom_json">from_json</a> [<a href="Levels.html">Levels</a>]</td>
+<td><div class="info">
+<p><code class="code">from_json j</code> is the set of levels that <code class="code">j</code> represents.</p>
+
+</div>
+</td></tr>
+<tr><td align="left"><div>G</div></td></tr>
+<tr><td><a href="Player_state.html#VALget_coins">get_coins</a> [<a href="Player_state.html">Player_state</a>]</td>
+<td><div class="info">
+<p><code class="code">get_coins p</code> is the coin count for the coins that the player
+    currently has in state <code class="code">p</code>.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Player_state.html#VALget_current_level">get_current_level</a> [<a href="Player_state.html">Player_state</a>]</td>
+<td><div class="info">
+<p><code class="code">get_current_level p</code> is the identifier of the level in which the
+    player currently is located in state <code class="code">p</code>.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Boss_state.html#VALget_current_pos">get_current_pos</a> [<a href="Boss_state.html">Boss_state</a>]</td>
+<td><div class="info">
+<p><code class="code">get current_pos b</code> is the position coordinate in which the boss is
+    currently located in state <code class="code">b</code>.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Player_state.html#VALget_current_pos">get_current_pos</a> [<a href="Player_state.html">Player_state</a>]</td>
+<td><div class="info">
+<p><code class="code">get current_pos p</code> is the position coordinate in which the player
+    currently is located in state <code class="code">p</code>.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Boss_state.html#VALget_current_tile">get_current_tile</a> [<a href="Boss_state.html">Boss_state</a>]</td>
+<td><div class="info">
+<p><code class="code">get_current_tile b</code> is the tile in which the boss is currently
+    located in state <code class="code">b</code>.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Player_state.html#VALget_current_tile">get_current_tile</a> [<a href="Player_state.html">Player_state</a>]</td>
+<td><div class="info">
+<p><code class="code">get_current_tile p</code> is the tile in which the player currently is
+    located in state <code class="code">p</code>.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Boss_state.html#VALget_health">get_health</a> [<a href="Boss_state.html">Boss_state</a>]</td>
+<td><div class="info">
+<p><code class="code">get_health b</code> is the health that the boss currently has in state
+    <code class="code">b</code>.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Gui.html#VALget_image">get_image</a> [<a href="Gui.html">Gui</a>]</td>
+<td><div class="info">
+<p><code class="code">get_image loc scale</code> is the image at <code class="code">loc</code> with size determined by
+    scaling size <code class="code">scale</code>.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Board.html#VALget_pipe_color">get_pipe_color</a> [<a href="Board.html">Board</a>]</td>
+<td><div class="info">
+<p><code class="code">get_pipe_color p</code> is the color of pipe <code class="code">p</code>.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Board.html#VALget_pipe_end_of_tile">get_pipe_end_of_tile</a> [<a href="Board.html">Board</a>]</td>
+<td><div class="info">
+<p><code class="code">get_pipe_end_of_tile t</code> is the end coordinate pair of pipe in tile
+    <code class="code">t</code>.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Board.html#VALget_size">get_size</a> [<a href="Board.html">Board</a>]</td>
+<td><div class="info">
+<p><code class="code">get_size t</code> is the number of tiles in level <code class="code">t</code>.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Player_state.html#VALget_steps">get_steps</a> [<a href="Player_state.html">Player_state</a>]</td>
+<td><div class="info">
+<p><code class="code">get_coins p</code> is the step count for the steps that the player took
+    in state <code class="code">p</code>.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Board.html#VALget_tile">get_tile</a> [<a href="Board.html">Board</a>]</td>
+<td><div class="info">
+<p><code class="code">get_tile i t</code> is the tile at index <code class="code">i</code> of board <code class="code">t</code>.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Board.html#VALget_tile_c">get_tile_c</a> [<a href="Board.html">Board</a>]</td>
+<td><div class="info">
+<p><code class="code">get_tile_c c t</code> is the tile at coordinates <code class="code">c</code> of board <code class="code">t</code>.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Board.html#VALget_tile_coords">get_tile_coords</a> [<a href="Board.html">Board</a>]</td>
+<td><div class="info">
+<p><code class="code">get_tile_coords t</code> is the coordinates of tile <code class="code">t</code>.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Board.html#VALget_tile_orientation">get_tile_orientation</a> [<a href="Board.html">Board</a>]</td>
+<td><div class="info">
+<p><code class="code">get_tile_orientation t</code> is the orientation of the tile <code class="code">t</code>.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Board.html#VALget_tile_type">get_tile_type</a> [<a href="Board.html">Board</a>]</td>
+<td><div class="info">
+<p><code class="code">get_tile_type t</code> is the tile_type of tile <code class="code">t</code></p>
+
+</div>
+</td></tr>
+<tr><td><a href="Gui.html#VALget_window_size">get_window_size</a> [<a href="Gui.html">Gui</a>]</td>
+<td><div class="info">
+<p><code class="code">get_window_size scaling</code> is the width and height of the GUI window.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Board.html#VALget_x">get_x</a> [<a href="Board.html">Board</a>]</td>
+<td><div class="info">
+<p><code class="code">get_x pos</code> is the x coordinate.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Gui.html#VALget_x">get_x</a> [<a href="Gui.html">Gui</a>]</td>
+<td><div class="info">
+<p><code class="code">get_x pos</code> is the x coordinate with respect to the GUI coordinate
+    grid.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Board.html#VALget_y">get_y</a> [<a href="Board.html">Board</a>]</td>
+<td><div class="info">
+<p><code class="code">get_y pos</code> is the y coordinate.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Gui.html#VALget_y">get_y</a> [<a href="Gui.html">Gui</a>]</td>
+<td><div class="info">
+<p><code class="code">get_y pos</code> is the y coordinate with respect to the GUI coordinate
+    grid.</p>
+
+</div>
+</td></tr>
+<tr><td align="left"><div>H</div></td></tr>
+<tr><td><a href="Gui.html#VALhard_selected_img">hard_selected_img</a> [<a href="Gui.html">Gui</a>]</td>
+<td><div class="info">
+<p><code class="code">hard_selected_img ()</code> is hard_selected.png as a Graphics.image with
+    scaling size Large.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Gui.html#VALhard_unselected_img">hard_unselected_img</a> [<a href="Gui.html">Gui</a>]</td>
+<td><div class="info">
+<p><code class="code">hard_unselected_img ()</code> is hard_unselected.png as a Graphics.image
+    with scaling size Large.</p>
+
+</div>
+</td></tr>
+<tr><td align="left"><div>I</div></td></tr>
+<tr><td><a href="Gui.html#VALimg_height">img_height</a> [<a href="Gui.html">Gui</a>]</td>
+<td><div class="info">
+<p><code class="code">img_height img</code> is height of <code class="code">img</code> in pixels.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Gui.html#VALimg_width">img_width</a> [<a href="Gui.html">Gui</a>]</td>
+<td><div class="info">
+<p><code class="code">img_width img</code> is width of <code class="code">img</code> in pixels.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Gui.html#VALincrease_zoom">increase_zoom</a> [<a href="Gui.html">Gui</a>]</td>
+<td><div class="info">
+<p><code class="code">increase_zoom pb current_imgs prev_imgs scale board</code> increases the
+    scale size of the GUI window.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Board.html#VALindex_of_coord">index_of_coord</a> [<a href="Board.html">Board</a>]</td>
+<td><div class="info">
+<p><code class="code">index_of_coord</code> is the index in the array with width <code class="code">dimx</code> of a
+    coordinate <code class="code">coord</code>.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Boss_state.html#VALinit_state">init_state</a> [<a href="Boss_state.html">Boss_state</a>]</td>
+<td><div class="info">
+<p><code class="code">init_state entrance_pos bt</code> is the initial state of the boss in the
+    game.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Player_state.html#VALinit_state">init_state</a> [<a href="Player_state.html">Player_state</a>]</td>
+<td><div class="info">
+<p><code class="code">init_state t bt</code> is the initial state of the game.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Levels.html#VALis_final_level">is_final_level</a> [<a href="Levels.html">Levels</a>]</td>
+<td><div class="info">
+<p><code class="code">is_final levels level_id</code> is true if <code class="code">level_id</code> is the id of the
+   last level in <code class="code">levels</code>, else false</p>
+
+</div>
+</td></tr>
+<tr><td align="left"><div>L</div></td></tr>
+<tr><td><a href="Gui.html#VALload_png">load_png</a> [<a href="Gui.html">Gui</a>]</td>
+<td><div class="info">
+<p><code class="code">load_png png_name</code> is the Images.t equivalent of the png file with
+    name <code class="code">png_name</code>.</p>
+
+</div>
+</td></tr>
+<tr><td align="left"><div>M</div></td></tr>
+<tr><td><a href="Levels.html#VALmake_all_boards">make_all_boards</a> [<a href="Levels.html">Levels</a>]</td>
+<td><div class="info">
+<p><code class="code">make_all_boards levels</code> is a set of boards representing <code class="code">levels</code></p>
+
+</div>
+</td></tr>
+<tr><td><a href="Levels.html#VALmake_board">make_board</a> [<a href="Levels.html">Levels</a>]</td>
+<td><div class="info">
+<p><code class="code">make_board levels id</code> is a 16x16 board of <code class="code">Board.t</code> type with
+    information from level number <code class="code">id</code> in <code class="code">levels</code>.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Boss_state.html#VALmake_boss_state">make_boss_state</a> [<a href="Boss_state.html">Boss_state</a>]</td>
+<td><div class="info">
+<p><code class="code">make_boss_state x y tile_type health</code> is the boss state with <code class="code">tile</code>
+    at coordinate <code class="code">(x, y)</code> and <code class="code">health</code> is its health level.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Board.html#VALmake_coord">make_coord</a> [<a href="Board.html">Board</a>]</td>
+<td><div class="info">
+<p><code class="code">make_coord x y</code> is a <code class="code">coord</code> at <code class="code">(x, y)</code>.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Gui.html#VALmake_gui_coord">make_gui_coord</a> [<a href="Gui.html">Gui</a>]</td>
+<td><div class="info">
+<p><code class="code">make_gui_coord x y</code> is a GUI coordinate with x-coordinate <code class="code">x</code> and
+    y-coordinate <code class="code">y</code>.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Board.html#VALmake_pipe_tile">make_pipe_tile</a> [<a href="Board.html">Board</a>]</td>
+<td><div class="info">
+<p><code class="code">make_pipe_tile e c o</code> is the tile at coordinate <code class="code">e</code> and tile type
+    pipe with color <code class="code">c</code> and orientation <code class="code">o</code>.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Player_state.html#VALmake_player_state">make_player_state</a> [<a href="Player_state.html">Player_state</a>]</td>
+<td><div class="info">
+<p><code class="code">make_player_state x y tile id coins</code> is the player state with
+    <code class="code">tile</code> at coordinate <code class="code">(x, y)</code>, level at <code class="code">id</code>, <code class="code">coin</code> number of
+    coins, and <code class="code">step</code> number of steps taken.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Board.html#VALmake_tile">make_tile</a> [<a href="Board.html">Board</a>]</td>
+<td><div class="info">
+<p><code class="code">make_tile i tt</code> is a tile with coord at <code class="code">i</code> and tile_type <code class="code">tt</code></p>
+
+</div>
+</td></tr>
+<tr><td><a href="Boss_state.html#VALmove_boss">move_boss</a> [<a href="Boss_state.html">Boss_state</a>]</td>
+<td><div class="info">
+<p><code class="code">move_boss p_pos b board</code> moves the boss depending on the player
+    position <code class="code">p_pos</code> and getes a new boss position and uses <code class="code">board</code> to
+    update the boss state <code class="code">b</code>.</p>
+
+</div>
+</td></tr>
+<tr><td align="left"><div>N</div></td></tr>
+<tr><td><a href="Levels.html#VALnext_level">next_level</a> [<a href="Levels.html">Levels</a>]</td>
+<td><div class="info">
+<p><code class="code">next_level levels id</code> is the <code class="code">level_id</code> of the level to which the
+    level <code class="code">lev</code> exits.</p>
+
+</div>
+</td></tr>
+<tr><td align="left"><div>P</div></td></tr>
+<tr><td><a href="Gui.html#VALplayer_image_gc">player_image_gc</a> [<a href="Gui.html">Gui</a>]</td>
+<td><div class="info">
+<p><code class="code">player_image_gc scale</code> is player.png as a Graphics.image with
+    scaling size <code class="code">scale</code>.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Levels.html#VALprev_level">prev_level</a> [<a href="Levels.html">Levels</a>]</td>
+<td><div class="info">
+<p><code class="code">prev_level levels</code> is the <code class="code">level_id</code> level <code class="code">lev</code> enters.</p>
+
+</div>
+</td></tr>
+<tr><td align="left"><div>R</div></td></tr>
+<tr><td><a href="Board.html#VALrandom_int">random_int</a> [<a href="Board.html">Board</a>]</td>
+<td><div class="info">
+<p><code class="code">random_int lower curr upper</code> is a random int <code class="code">x</code> from lower
+    (inclusive) to upper (exclusive) such that <code class="code">x</code> is outside of the
+    range <code class="code">curr - range</code> to <code class="code">curr + range</code>.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Board.html#VALrandom_item_tile">random_item_tile</a> [<a href="Board.html">Board</a>]</td>
+<td><div class="info">
+<p><code class="code">random_item px py bx by t</code> is a randomly placed <code class="code">Item</code> tile.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Board.html#VALroom_of_coords">room_of_coords</a> [<a href="Board.html">Board</a>]</td>
+<td><div class="info">
+<p><code class="code">room_of_coords s e</code> makes a <code class="code">room</code> whose bottom-left coordinate is
+    <code class="code">s</code> and top-right coordinate is <code class="code">e</code>.</p>
+
+</div>
+</td></tr>
+<tr><td align="left"><div>S</div></td></tr>
+<tr><td><a href="Boss_state.html#VALset_health">set_health</a> [<a href="Boss_state.html">Boss_state</a>]</td>
+<td><div class="info">
+<p><code class="code">set_health b health</code> sets the health of the boss to <code class="code">health</code> in
+    state <code class="code">b</code>.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Board.html#VALset_tile">set_tile</a> [<a href="Board.html">Board</a>]</td>
+<td><div class="info">
+<p><code class="code">set_tile tile x t</code> replaces the existing tile is <code class="code">t</code> with <code class="code">tile</code>.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Gui.html#VALset_up_level">set_up_level</a> [<a href="Gui.html">Gui</a>]</td>
+<td><div class="info">
+<p><code class="code">set_up_level p board scale</code> sets up the level with its
+    corresponding <code class="code">board</code>.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Gui.html#VALstart_img">start_img</a> [<a href="Gui.html">Gui</a>]</td>
+<td><div class="info">
+<p><code class="code">start_img ()</code> is start_game.png as a Graphics.image with scaling
+    size Large.</p>
+
+</div>
+</td></tr>
+<tr><td align="left"><div>T</div></td></tr>
+<tr><td><a href="Gui.html#VALtitle_image_gc">title_image_gc</a> [<a href="Gui.html">Gui</a>]</td>
+<td><div class="info">
+<p><code class="code">title_img_gc scale</code> is title.png as a Graphics.image with scaling
+    size <code class="code">scale</code>.</p>
+
+</div>
+</td></tr>
+<tr><td align="left"><div>U</div></td></tr>
+<tr><td><a href="Player_state.html#VALupdate">update</a> [<a href="Player_state.html">Player_state</a>]</td>
+<td><div class="info">
+<p><code class="code">update m p t bt</code> is a state after the player has moved and
+    interacted with a tile in the levels before the final level.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Gui.html#VALupdate_player">update_player</a> [<a href="Gui.html">Gui</a>]</td>
+<td><div class="info">
+<p><code class="code">update_player new_img old_img new_loc old_loc</code> replaces the image
+    at <code class="code">old_loc</code> with <code class="code">old_img</code> and <code class="code">new_loc</code> with <code class="code">new_img</code>.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Gui.html#VALupdate_player_boss">update_player_boss</a> [<a href="Gui.html">Gui</a>]</td>
+<td><div class="info">
+<p><code class="code">update_player_boss new_imgs old_imgs new_locs old_locs</code> replaces
+    the images at <code class="code">old_locs</code> with <code class="code">old_imgs</code> and <code class="code">new_locs</code> with
+    <code class="code">new_imgs</code> for the player and boss respectively.</p>
+
+</div>
+</td></tr>
+<tr><td align="left"><div>W</div></td></tr>
+<tr><td><a href="Gui.html#VALwindow_size">window_size</a> [<a href="Gui.html">Gui</a>]</td>
+<td><div class="info">
+<p><code class="code">window_size</code> is the dimensions of the window.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Gui.html#VALwindow_title">window_title</a> [<a href="Gui.html">Gui</a>]</td>
+<td><div class="info">
+<p><code class="code">window_title</code> is name of the window.</p>
+
+</div>
+</td></tr>
+</table>
+</body>
+</html>

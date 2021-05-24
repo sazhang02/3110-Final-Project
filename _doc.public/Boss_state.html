@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Player_state.html">
+<link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Gui" rel="Chapter" href="Gui.html">
+<link title="Levels" rel="Chapter" href="Levels.html">
+<link title="Board" rel="Chapter" href="Board.html">
+<link title="Player_state" rel="Chapter" href="Player_state.html">
+<link title="Boss_state" rel="Chapter" href="Boss_state.html"><title>Boss_state</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Player_state.html" title="Player_state">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;</div>
+<h1>Module <a href="type_Boss_state.html">Boss_state</a></h1>
+
+<pre><span id="MODULEBoss_state"><span class="keyword">module</span> Boss_state</span>: <code class="code">sig</code> <a href="Boss_state.html">..</a> <code class="code">end</code></pre><div class="info module top">
+<div class="info-desc">
+<p>Representation of boss state data</p>
+</div>
+</div>
+<hr width="100%">
+
+<pre><span id="TYPEb"><span class="keyword">type</span> <code class="type"></code>b</span> </pre>
+<div class="info ">
+<div class="info-desc">
+<p>The abstract type representing boss state</p>
+</div>
+</div>
+
+
+<pre><span id="VALinit_state"><span class="keyword">val</span> init_state</span> : <code class="type"><a href="Board.html#TYPEcoord">Board.coord</a> -> <a href="Board.html#TYPEt">Board.t</a> -> <a href="Boss_state.html#TYPEb">b</a></code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">init_state entrance_pos bt</code> is the initial state of the boss in the
+    game. In that state the boss is on the starting tile and has full
+    health.</p>
+</div>
+</div>
+
+<pre><span id="VALget_current_tile"><span class="keyword">val</span> get_current_tile</span> : <code class="type"><a href="Boss_state.html#TYPEb">b</a> -> <a href="Board.html#TYPEtile">Board.tile</a></code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">get_current_tile b</code> is the tile in which the boss is currently
+    located in state <code class="code">b</code>.</p>
+</div>
+</div>
+
+<pre><span id="VALget_current_pos"><span class="keyword">val</span> get_current_pos</span> : <code class="type"><a href="Boss_state.html#TYPEb">b</a> -> <a href="Board.html#TYPEcoord">Board.coord</a></code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">get current_pos b</code> is the position coordinate in which the boss is
+    currently located in state <code class="code">b</code>.</p>
+</div>
+</div>
+
+<pre><span id="VALget_health"><span class="keyword">val</span> get_health</span> : <code class="type"><a href="Boss_state.html#TYPEb">b</a> -> int</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">get_health b</code> is the health that the boss currently has in state
+    <code class="code">b</code>.</p>
+</div>
+</div>
+
+<pre><span id="VALset_health"><span class="keyword">val</span> set_health</span> : <code class="type"><a href="Boss_state.html#TYPEb">b</a> -> int -> <a href="Boss_state.html#TYPEb">b</a></code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">set_health b health</code> sets the health of the boss to <code class="code">health</code> in
+    state <code class="code">b</code>.</p>
+</div>
+</div>
+
+<pre><span id="VALdecrease_health"><span class="keyword">val</span> decrease_health</span> : <code class="type"><a href="Boss_state.html#TYPEb">b</a> -> int -> <a href="Boss_state.html#TYPEb">b</a></code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">decrease_health b damage</code> decreases the health of the boss by
+    <code class="code">damage</code> in state <code class="code">b</code>.</p>
+</div>
+</div>
+
+<pre><span id="VALmove_boss"><span class="keyword">val</span> move_boss</span> : <code class="type"><a href="Board.html#TYPEcoord">Board.coord</a> -> <a href="Boss_state.html#TYPEb">b</a> -> <a href="Board.html#TYPEt">Board.t</a> -> <a href="Boss_state.html#TYPEb">b</a></code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">move_boss p_pos b board</code> moves the boss depending on the player
+    position <code class="code">p_pos</code> and getes a new boss position and uses <code class="code">board</code> to
+    update the boss state <code class="code">b</code>.</p>
+</div>
+</div>
+
+<pre><span id="VALmake_boss_state"><span class="keyword">val</span> make_boss_state</span> : <code class="type">int -> int -> <a href="Board.html#TYPEtile_type">Board.tile_type</a> -> int -> <a href="Boss_state.html#TYPEb">b</a></code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">make_boss_state x y tile_type health</code> is the boss state with <code class="code">tile</code>
+    at coordinate <code class="code">(x, y)</code> and <code class="code">health</code> is its health level.</p>
+</div>
+</div>
+</body></html>

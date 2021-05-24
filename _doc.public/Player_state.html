@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Board.html">
+<link rel="next" href="Boss_state.html">
+<link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Gui" rel="Chapter" href="Gui.html">
+<link title="Levels" rel="Chapter" href="Levels.html">
+<link title="Board" rel="Chapter" href="Board.html">
+<link title="Player_state" rel="Chapter" href="Player_state.html">
+<link title="Boss_state" rel="Chapter" href="Boss_state.html"><title>Player_state</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Board.html" title="Board">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="Boss_state.html" title="Boss_state">Next</a>
+</div>
+<h1>Module <a href="type_Player_state.html">Player_state</a></h1>
+
+<pre><span id="MODULEPlayer_state"><span class="keyword">module</span> Player_state</span>: <code class="code">sig</code> <a href="Player_state.html">..</a> <code class="code">end</code></pre><div class="info module top">
+<div class="info-desc">
+<p>Representation of player state data</p>
+</div>
+</div>
+<hr width="100%">
+
+<pre><span id="TYPEp"><span class="keyword">type</span> <code class="type"></code>p</span> </pre>
+<div class="info ">
+<div class="info-desc">
+<p>The abstract type representing player state</p>
+</div>
+</div>
+
+
+<pre><span id="TYPEmove"><span class="keyword">type</span> <code class="type"></code>move</span> </pre>
+<div class="info ">
+<div class="info-desc">
+<p>The abstract type representing player's intended move</p>
+</div>
+</div>
+
+
+<pre><span id="VALinit_state"><span class="keyword">val</span> init_state</span> : <code class="type"><a href="Levels.html#TYPEt">Levels.t</a> -> <a href="Board.html#TYPEt">Board.t</a> -> <a href="Player_state.html#TYPEp">p</a></code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">init_state t bt</code> is the initial state of the game. In that state
+    the character is currently located in the starting position, and
+    they have visited only that level.</p>
+</div>
+</div>
+
+<pre><span id="VALfinal_state"><span class="keyword">val</span> final_state</span> : <code class="type"><a href="Levels.html#TYPEt">Levels.t</a> -> <a href="Board.html#TYPEt">Board.t</a> -> int -> <a href="Player_state.html#TYPEp">p</a></code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">final_state t bt</code> is the initial state of the final level in the
+    game. In that state the character is currently located in the
+    starting position of the last level in the game.</p>
+</div>
+</div>
+
+<pre><span id="VALget_current_level"><span class="keyword">val</span> get_current_level</span> : <code class="type"><a href="Player_state.html#TYPEp">p</a> -> <a href="Levels.html#TYPElevel_id">Levels.level_id</a></code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">get_current_level p</code> is the identifier of the level in which the
+    player currently is located in state <code class="code">p</code>.</p>
+</div>
+</div>
+
+<pre><span id="VALget_current_tile"><span class="keyword">val</span> get_current_tile</span> : <code class="type"><a href="Player_state.html#TYPEp">p</a> -> <a href="Board.html#TYPEtile">Board.tile</a></code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">get_current_tile p</code> is the tile in which the player currently is
+    located in state <code class="code">p</code>.</p>
+</div>
+</div>
+
+<pre><span id="VALget_current_pos"><span class="keyword">val</span> get_current_pos</span> : <code class="type"><a href="Player_state.html#TYPEp">p</a> -> <a href="Board.html#TYPEcoord">Board.coord</a></code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">get current_pos p</code> is the position coordinate in which the player
+    currently is located in state <code class="code">p</code>.</p>
+</div>
+</div>
+
+<pre><span id="VALget_coins"><span class="keyword">val</span> get_coins</span> : <code class="type"><a href="Player_state.html#TYPEp">p</a> -> int</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">get_coins p</code> is the coin count for the coins that the player
+    currently has in state <code class="code">p</code>.</p>
+</div>
+</div>
+
+<pre><span id="VALget_steps"><span class="keyword">val</span> get_steps</span> : <code class="type"><a href="Player_state.html#TYPEp">p</a> -> int</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">get_coins p</code> is the step count for the steps that the player took
+    in state <code class="code">p</code>.</p>
+</div>
+</div>
+
+<pre><span id="VALupdate"><span class="keyword">val</span> update</span> : <code class="type">char -> <a href="Player_state.html#TYPEp">p</a> -> <a href="Levels.html#TYPEt">Levels.t</a> -> <a href="Board.html#TYPEt">Board.t</a> -> <a href="Player_state.html#TYPEp">p</a></code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">update m p t bt</code> is a state after the player has moved and
+    interacted with a tile in the levels before the final level.</p>
+</div>
+</div>
+
+<pre><span id="VALfinal_level_update"><span class="keyword">val</span> final_level_update</span> : <code class="type">char -><br>       <a href="Player_state.html#TYPEp">p</a> -><br>       <a href="Levels.html#TYPEt">Levels.t</a> -> <a href="Board.html#TYPEt">Board.t</a> -> <a href="Boss_state.html#TYPEb">Boss_state.b</a> -> <a href="Player_state.html#TYPEp">p</a> * <a href="Boss_state.html#TYPEb">Boss_state.b</a></code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">final_level_update m p t bt b_state</code> is a state after the player
+    has moved and interacted with a tile in the final level.</p>
+</div>
+</div>
+
+<pre><span id="VALmake_player_state"><span class="keyword">val</span> make_player_state</span> : <code class="type">int -><br>       int -> <a href="Board.html#TYPEtile_type">Board.tile_type</a> -> <a href="Levels.html#TYPElevel_id">Levels.level_id</a> -> int -> int -> <a href="Player_state.html#TYPEp">p</a></code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">make_player_state x y tile id coins</code> is the player state with
+    <code class="code">tile</code> at coordinate <code class="code">(x, y)</code>, level at <code class="code">id</code>, <code class="code">coin</code> number of
+    coins, and <code class="code">step</code> number of steps taken.</p>
+</div>
+</div>
+</body></html>

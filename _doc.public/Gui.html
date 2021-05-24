@@ -1,0 +1,328 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="Start" href="index.html">
+<link rel="next" href="Levels.html">
+<link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Gui" rel="Chapter" href="Gui.html">
+<link title="Levels" rel="Chapter" href="Levels.html">
+<link title="Board" rel="Chapter" href="Board.html">
+<link title="Player_state" rel="Chapter" href="Player_state.html">
+<link title="Boss_state" rel="Chapter" href="Boss_state.html"><title>Gui</title>
+</head>
+<body>
+<div class="navbar">&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="Levels.html" title="Levels">Next</a>
+</div>
+<h1>Module <a href="type_Gui.html">Gui</a></h1>
+
+<pre><span id="MODULEGui"><span class="keyword">module</span> Gui</span>: <code class="code">sig</code> <a href="Gui.html">..</a> <code class="code">end</code></pre><div class="info module top">
+<div class="info-desc">
+<p>Representation of gui data</p>
+</div>
+</div>
+<hr width="100%">
+
+<pre><span id="TYPEcoords"><span class="keyword">type</span> <code class="type"></code>coords</span> </pre>
+<div class="info ">
+<div class="info-desc">
+<p>The type representing the position of a coordinate on the GUI window</p>
+</div>
+</div>
+
+
+<pre><code><span id="TYPEscaling"><span class="keyword">type</span> <code class="type"></code>scaling</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTscaling.Small"><span class="constructor">Small</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTscaling.Medium"><span class="constructor">Medium</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTscaling.Large"><span class="constructor">Large</span></span></code></td>
+
+</tr></table>
+
+<div class="info ">
+<div class="info-desc">
+<p><code class="code">scaling</code> representing the zoom size of the GUI window in three
+    different scales: Small, Medium, Large</p>
+</div>
+</div>
+
+
+<pre><span id="VALget_x"><span class="keyword">val</span> get_x</span> : <code class="type"><a href="Gui.html#TYPEcoords">coords</a> -> int</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">get_x pos</code> is the x coordinate with respect to the GUI coordinate
+    grid.</p>
+</div>
+</div>
+
+<pre><span id="VALget_y"><span class="keyword">val</span> get_y</span> : <code class="type"><a href="Gui.html#TYPEcoords">coords</a> -> int</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">get_y pos</code> is the y coordinate with respect to the GUI coordinate
+    grid.</p>
+</div>
+</div>
+
+<pre><span id="VALmake_gui_coord"><span class="keyword">val</span> make_gui_coord</span> : <code class="type">int -> int -> <a href="Gui.html#TYPEcoords">coords</a></code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">make_gui_coord x y</code> is a GUI coordinate with x-coordinate <code class="code">x</code> and
+    y-coordinate <code class="code">y</code>.</p>
+</div>
+</div>
+
+<pre><span id="VALget_window_size"><span class="keyword">val</span> get_window_size</span> : <code class="type"><a href="Gui.html#TYPEscaling">scaling</a> -> int * int</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">get_window_size scaling</code> is the width and height of the GUI window.
+    For example, (1000, 800) is for a window of width 1000 pixels and
+    height 800 pixels.</p>
+</div>
+</div>
+
+<pre><span id="VALwindow_size"><span class="keyword">val</span> window_size</span> : <code class="type">string</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">window_size</code> is the dimensions of the window. Required: If the
+    string is non-empty, it must start with a space and then follow the
+    format widthxheight. For example, " 1100x800"</p>
+</div>
+</div>
+
+<pre><span id="VALwindow_title"><span class="keyword">val</span> window_title</span> : <code class="type">string</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">window_title</code> is name of the window.</p>
+</div>
+</div>
+
+<pre><span id="VALplayer_image_gc"><span class="keyword">val</span> player_image_gc</span> : <code class="type"><a href="Gui.html#TYPEscaling">scaling</a> -> Graphics.image</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">player_image_gc scale</code> is player.png as a Graphics.image with
+    scaling size <code class="code">scale</code>.</p>
+</div>
+</div>
+
+<pre><span id="VALfloor_image_gc"><span class="keyword">val</span> floor_image_gc</span> : <code class="type"><a href="Gui.html#TYPEscaling">scaling</a> -> Graphics.image</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">floor_image_gc scale</code> is floor.png as a Graphics.image with scaling
+    size <code class="code">scale</code>.</p>
+</div>
+</div>
+
+<pre><span id="VALcoin_image_gc"><span class="keyword">val</span> coin_image_gc</span> : <code class="type"><a href="Gui.html#TYPEscaling">scaling</a> -> Graphics.image</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">coin_image_gc scale</code> is coin.png as a Graphics.image with scaling
+    size <code class="code">scale</code>.</p>
+</div>
+</div>
+
+<pre><span id="VALbckg_image_gc"><span class="keyword">val</span> bckg_image_gc</span> : <code class="type"><a href="Gui.html#TYPEscaling">scaling</a> -> Graphics.image</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">bckg_image_gc scale</code> is background.png as a Graphics.image with
+    scaling size <code class="code">scale</code>.</p>
+</div>
+</div>
+
+<pre><span id="VALboss_image_gc"><span class="keyword">val</span> boss_image_gc</span> : <code class="type"><a href="Gui.html#TYPEscaling">scaling</a> -> Graphics.image</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">boss_image_gc scale</code> is boss.png as a Graphics.image with scaling
+    size <code class="code">scale</code>.</p>
+</div>
+</div>
+
+<pre><span id="VALtitle_image_gc"><span class="keyword">val</span> title_image_gc</span> : <code class="type"><a href="Gui.html#TYPEscaling">scaling</a> -> Graphics.image</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">title_img_gc scale</code> is title.png as a Graphics.image with scaling
+    size <code class="code">scale</code>.</p>
+</div>
+</div>
+
+<pre><span id="VALstart_img"><span class="keyword">val</span> start_img</span> : <code class="type">unit -> Graphics.image</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">start_img ()</code> is start_game.png as a Graphics.image with scaling
+    size Large.</p>
+</div>
+</div>
+
+<pre><span id="VALeasy_unselected_img"><span class="keyword">val</span> easy_unselected_img</span> : <code class="type">unit -> Graphics.image</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">easy_unselected_img ()</code> is easy_unselected.png as a Graphics.image
+    with scaling size Large.</p>
+</div>
+</div>
+
+<pre><span id="VALeasy_selected_img"><span class="keyword">val</span> easy_selected_img</span> : <code class="type">unit -> Graphics.image</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">easy_selected_img ()</code> is easy_selected.png as a Graphics.image with
+    scaling size Large.</p>
+</div>
+</div>
+
+<pre><span id="VALhard_unselected_img"><span class="keyword">val</span> hard_unselected_img</span> : <code class="type">unit -> Graphics.image</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">hard_unselected_img ()</code> is hard_unselected.png as a Graphics.image
+    with scaling size Large.</p>
+</div>
+</div>
+
+<pre><span id="VALhard_selected_img"><span class="keyword">val</span> hard_selected_img</span> : <code class="type">unit -> Graphics.image</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">hard_selected_img ()</code> is hard_selected.png as a Graphics.image with
+    scaling size Large.</p>
+</div>
+</div>
+
+<pre><span id="VALload_png"><span class="keyword">val</span> load_png</span> : <code class="type">string -> Images.t</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">load_png png_name</code> is the Images.t equivalent of the png file with
+    name <code class="code">png_name</code>. Required: <code class="code">png_name</code> is the name of the directory
+    reference. For example, if png.png is in the same directory, a valid
+    <code class="code">png_name</code> is "png.png". If png.png is in folder "images" which is
+    in the same directory, a valid <code class="code">png_name</code> is "images/png.png".</p>
+</div>
+</div>
+
+<pre><span id="VALimg_width"><span class="keyword">val</span> img_width</span> : <code class="type">Images.t -> int</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">img_width img</code> is width of <code class="code">img</code> in pixels.</p>
+</div>
+</div>
+
+<pre><span id="VALimg_height"><span class="keyword">val</span> img_height</span> : <code class="type">Images.t -> int</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">img_height img</code> is height of <code class="code">img</code> in pixels.</p>
+</div>
+</div>
+
+<pre><span id="VALdraw_at_coords"><span class="keyword">val</span> draw_at_coords</span> : <code class="type">Graphics.image -> <a href="Gui.html#TYPEcoords">coords</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">draw_at_coords img loc</code> draws <code class="code">img</code> at <code class="code">loc</code> on the GUI window.</p>
+</div>
+</div>
+
+<pre><span id="VALcheck_movement"><span class="keyword">val</span> check_movement</span> : <code class="type"><a href="Gui.html#TYPEcoords">coords</a> -> <a href="Gui.html#TYPEcoords">coords</a> -> bool</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">check_movement old_loc new_loc</code> is true if <code class="code">old_loc</code> is equal to
+    <code class="code">new_loc</code>, otherwise it is false.</p>
+</div>
+</div>
+
+<pre><span id="VALupdate_player"><span class="keyword">val</span> update_player</span> : <code class="type">Graphics.image -> Graphics.image -> <a href="Gui.html#TYPEcoords">coords</a> -> <a href="Gui.html#TYPEcoords">coords</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">update_player new_img old_img new_loc old_loc</code> replaces the image
+    at <code class="code">old_loc</code> with <code class="code">old_img</code> and <code class="code">new_loc</code> with <code class="code">new_img</code>.</p>
+</div>
+</div>
+
+<pre><span id="VALboard_to_gui"><span class="keyword">val</span> board_to_gui</span> : <code class="type"><a href="Gui.html#TYPEscaling">scaling</a> -> <a href="Board.html#TYPEcoord">Board.coord</a> -> <a href="Gui.html#TYPEcoords">coords</a></code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">board_to_gui</code> is the Gui.coords equivalent of Board.coord
+    (translates coordinate under Board coordinate grid to one of the GUI
+    coordinate grid).</p>
+</div>
+</div>
+
+<pre><span id="VALdraw_tile"><span class="keyword">val</span> draw_tile</span> : <code class="type"><a href="Gui.html#TYPEscaling">scaling</a> -> <a href="Board.html#TYPEtile">Board.tile</a> -> <a href="Gui.html#TYPEcoords">coords</a> -> <a href="Board.html#TYPEtile_type">Board.tile_type</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">draw_tile scale_factor tile coords tile_type</code> draws <code class="code">tile</code> at
+    <code class="code">coords</code> on the board displayed on the GUI window.</p>
+</div>
+</div>
+
+<pre><span id="VALdraw_board"><span class="keyword">val</span> draw_board</span> : <code class="type"><a href="Board.html#TYPEt">Board.t</a> -> <a href="Gui.html#TYPEscaling">scaling</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">draw_board t scale</code> draws the board <code class="code">t</code> at scaling size <code class="code">scale</code> on
+    the GUI window.</p>
+</div>
+</div>
+
+<pre><span id="VALdisplay_coins"><span class="keyword">val</span> display_coins</span> : <code class="type"><a href="Player_state.html#TYPEp">Player_state.p</a> -> <a href="Gui.html#TYPEscaling">scaling</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">display_coins p scale</code> displays the coin count on the GUI window.</p>
+</div>
+</div>
+
+<pre><span id="VALdisplay_damage"><span class="keyword">val</span> display_damage</span> : <code class="type"><a href="Boss_state.html#TYPEb">Boss_state.b</a> -> <a href="Gui.html#TYPEscaling">scaling</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">display_damage b scale</code> displays the boss' remaining health on the
+   GUI window.</p>
+</div>
+</div>
+
+<pre><span id="VALdisplay_steps"><span class="keyword">val</span> display_steps</span> : <code class="type"><a href="Player_state.html#TYPEp">Player_state.p</a> -> <a href="Gui.html#TYPEscaling">scaling</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">display_steps p scale</code> displays the total number of steps taken on
+    the GUI window.</p>
+</div>
+</div>
+
+<pre><span id="VALdisplay_score"><span class="keyword">val</span> display_score</span> : <code class="type">int -> <a href="Gui.html#TYPEscaling">scaling</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">display_score steps scale</code> displays the final score on the GUI
+    window.</p>
+</div>
+</div>
+
+<pre><span id="VALdecrease_zoom"><span class="keyword">val</span> decrease_zoom</span> : <code class="type"><a href="Player_state.html#TYPEp">Player_state.p</a> * <a href="Boss_state.html#TYPEb">Boss_state.b</a> option -><br>       Graphics.image * Graphics.image option -><br>       Graphics.image * Graphics.image option -><br>       <a href="Gui.html#TYPEscaling">scaling</a> -><br>       <a href="Board.html#TYPEt">Board.t</a> -><br>       <a href="Gui.html#TYPEscaling">scaling</a> *<br>       ((Graphics.image * Graphics.image option) *<br>        (Graphics.image * Graphics.image option))</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">decrease_zoom pb current_imgs prev_imgs scale board</code> decreases the
+    scale size of GUI the window.</p>
+</div>
+</div>
+
+<pre><span id="VALincrease_zoom"><span class="keyword">val</span> increase_zoom</span> : <code class="type"><a href="Player_state.html#TYPEp">Player_state.p</a> * <a href="Boss_state.html#TYPEb">Boss_state.b</a> option -><br>       Graphics.image * Graphics.image option -><br>       Graphics.image * Graphics.image option -><br>       <a href="Gui.html#TYPEscaling">scaling</a> -><br>       <a href="Board.html#TYPEt">Board.t</a> -><br>       <a href="Gui.html#TYPEscaling">scaling</a> *<br>       ((Graphics.image * Graphics.image option) *<br>        (Graphics.image * Graphics.image option))</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">increase_zoom pb current_imgs prev_imgs scale board</code> increases the
+    scale size of the GUI window.</p>
+</div>
+</div>
+
+<pre><span id="VALset_up_level"><span class="keyword">val</span> set_up_level</span> : <code class="type"><a href="Player_state.html#TYPEp">Player_state.p</a> -> <a href="Board.html#TYPEt">Board.t</a> -> <a href="Gui.html#TYPEscaling">scaling</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">set_up_level p board scale</code> sets up the level with its
+    corresponding <code class="code">board</code>. The board for the level is drawn and the
+    player is drawn according to the information stored in <code class="code">p</code>.</p>
+</div>
+</div>
+
+<pre><span id="VALget_image"><span class="keyword">val</span> get_image</span> : <code class="type"><a href="Gui.html#TYPEcoords">coords</a> -> <a href="Gui.html#TYPEscaling">scaling</a> -> Graphics.image</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">get_image loc scale</code> is the image at <code class="code">loc</code> with size determined by
+    scaling size <code class="code">scale</code>.</p>
+</div>
+</div>
+
+<pre><span id="VALdraw_screen_background"><span class="keyword">val</span> draw_screen_background</span> : <code class="type"><a href="Gui.html#TYPEscaling">scaling</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">draw_screen_background scale</code> draws the floor tile on the entire
+    GUI window.</p>
+</div>
+</div>
+
+<pre><span id="VALupdate_player_boss"><span class="keyword">val</span> update_player_boss</span> : <code class="type">Graphics.image * Graphics.image -><br>       Graphics.image * Graphics.image -><br>       <a href="Gui.html#TYPEcoords">coords</a> * <a href="Gui.html#TYPEcoords">coords</a> -> <a href="Gui.html#TYPEcoords">coords</a> * <a href="Gui.html#TYPEcoords">coords</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">update_player_boss new_imgs old_imgs new_locs old_locs</code> replaces
+    the images at <code class="code">old_locs</code> with <code class="code">old_imgs</code> and <code class="code">new_locs</code> with
+    <code class="code">new_imgs</code> for the player and boss respectively. Note that the
+    tuples are stored with player related information first then boss
+    related information second.</p>
+</div>
+</div>
+</body></html>

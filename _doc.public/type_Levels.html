@@ -1,0 +1,33 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="Start" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Gui" rel="Chapter" href="Gui.html">
+<link title="Levels" rel="Chapter" href="Levels.html">
+<link title="Board" rel="Chapter" href="Board.html">
+<link title="Player_state" rel="Chapter" href="Player_state.html">
+<link title="Boss_state" rel="Chapter" href="Boss_state.html"><title>Levels</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;pos&nbsp;=&nbsp;<span class="constructor">Board</span>.coord<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;level_id&nbsp;=&nbsp;int<br>
+&nbsp;&nbsp;<span class="keyword">exception</span>&nbsp;<span class="constructor">UnknownLevel</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Levels</span>.level_id<br>
+&nbsp;&nbsp;<span class="keyword">exception</span>&nbsp;<span class="constructor">InvalidTile</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Levels</span>.pos<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;from_json&nbsp;:&nbsp;<span class="constructor">Yojson</span>.<span class="constructor">Basic</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Levels</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;entrance_pipe&nbsp;:&nbsp;<span class="constructor">Levels</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Levels</span>.level_id&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Board</span>.tile<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;exit_pipe&nbsp;:&nbsp;<span class="constructor">Levels</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Levels</span>.level_id&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Board</span>.tile<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;next_level&nbsp;:&nbsp;<span class="constructor">Levels</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Levels</span>.level_id&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Levels</span>.level_id<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;prev_level&nbsp;:&nbsp;<span class="constructor">Levels</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Levels</span>.level_id&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Levels</span>.level_id<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;coin_count&nbsp;:&nbsp;<span class="constructor">Levels</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Levels</span>.level_id&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;is_final_level&nbsp;:&nbsp;<span class="constructor">Levels</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Levels</span>.level_id&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;final_level_id&nbsp;:&nbsp;<span class="constructor">Levels</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Levels</span>.level_id<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;make_board&nbsp;:&nbsp;<span class="constructor">Levels</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Levels</span>.level_id&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Board</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;make_all_boards&nbsp;:&nbsp;<span class="constructor">Levels</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Board</span>.t&nbsp;array<br>
+<span class="keyword">end</span></code></body></html>
