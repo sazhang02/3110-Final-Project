@@ -1,7 +1,7 @@
 MODULES=gui levels board player_state boss_state main final_level homescreen
 OBJECTS=$(MODULES:=.cmo)
 MLS=$(MODULES:=.ml)
-MLIS=gui.mli levels.mli board.mli player_state.mli boss_state.mli
+MLIS=gui.mli levels.mli board.mli player_state.mli boss_state.mli final_level.mli homescreen.mli
 TEST=test.byte
 MAIN=main.byte
 OCAMLBUILD=ocamlbuild -use-ocamlfind
