@@ -137,6 +137,16 @@ let blue_left_image_gc scale = cm_to_gc scale "blue_left"
 
 let blue_right_image_gc scale = cm_to_gc scale "blue_right"
 
+(* GRAY PIPE IMAGES *)
+
+let black_up_image_gc scale = cm_to_gc scale "black_up"
+
+let black_down_image_gc scale = cm_to_gc scale "black_down"
+
+let black_left_image_gc scale = cm_to_gc scale "black_left"
+
+let black_right_image_gc scale = cm_to_gc scale "black_right"
+
 let tile_width scale = scale_size scale
 
 let tile_height scale = scale_size scale
@@ -212,6 +222,14 @@ let blue_imgs =
     down = blue_down_image_gc;
   }
 
+let black_imgs =
+  {
+    left = black_left_image_gc;
+    right = black_right_image_gc;
+    up = black_up_image_gc;
+    down = black_down_image_gc;
+  }
+
 let choose_colored_img cp t scale =
   match get_tile_orientation t with
   | Left -> cp.left scale
@@ -239,7 +257,7 @@ let choose_pipe_img p t scale =
   | Red -> choose_colored_img red_imgs t scale
   | Gold -> choose_colored_img gold_imgs t scale
   | Blue -> choose_colored_img blue_imgs t scale
-  | Black -> choose_entr_img t scale
+  | Black -> choose_colored_img black_imgs t scale
 
 let draw_item scale obj_coords = function
   | Bomb -> draw_at_coords (bomb_image_gc scale) obj_coords
